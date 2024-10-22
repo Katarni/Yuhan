@@ -1,0 +1,9 @@
+for
+while
+int
+double
+bool
+char
+or
+and
+not
