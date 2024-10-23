@@ -1,30 +1,34 @@
-#include "include/Trie.h"
+#include "include/LexicalAnalyzer.h"
 
 int main() {
-    std::ifstream fin("../service-words.txt");
-    fin.seekg(0, std::ios::end);
-    size_t file_size = fin.tellg();
-    fin.seekg(0, std::ios::beg);
-    char * text = new char[file_size];
-    fin.read(text, file_size);
-    std::vector<std::pair<char *, char *>> words_ptrs;
-    auto now_it = text;
-    words_ptrs.emplace_back(now_it, now_it);
-    int cnt_lines = 1;
-    for (int i = 0; i < file_size; ++i) {
-        if (*(text + i) == '\n' || *(text + i) == '\r' || *(text + i) == ' ' || *(text + i) == '\t') {
-            words_ptrs[cnt_lines - 1].second = text + i - 1;
-            if (i != file_size - 1) {
-                words_ptrs.emplace_back((text + i + 1), (text + i + 1));
-                cnt_lines++;
+    std::ifstream reserved_words_fin("../reserved-words.txt");
+    reserved_words_fin.seekg(0, std::ios::end);
+    std::streamsize reserved_words_file_size = reserved_words_fin.tellg();
+    reserved_words_fin.seekg(0, std::ios::beg);
+
+    auto reserved_words_text = new char[reserved_words_file_size];
+    reserved_words_fin.read(reserved_words_text, reserved_words_file_size);
+
+    std::vector<std::pair<char *, size_t>> words_ptrs;
+    words_ptrs.emplace_back(reserved_words_text, 0);
+    for (int i = 0; i < reserved_words_file_size; ++i) {
+        if (*(reserved_words_text + i) == '\n') {
+            words_ptrs.back().second = reserved_words_text + i - words_ptrs.back().first;
+
+            if (i != reserved_words_file_size - 1) {
+                words_ptrs.emplace_back((reserved_words_text + i + 1), 0);
             }
         }
     }
-    Trie bor;
-    for (auto [start, end] : words_ptrs) {
-        size_t length = end - start + 1;
+
+    auto reserved_words_trie = new Trie;
+    for (auto [start, length]: words_ptrs) {
         if (length == 0) continue;
-        bor.insert(start, length);
+
+        reserved_words_trie->insert(start, length);
     }
-    delete[] text;
+
+    delete[] reserved_words_text;
+
+    LexicalAnalyzer lexical_analyzer(reserved_words_trie);
 }
