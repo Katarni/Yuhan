@@ -1,40 +1,30 @@
-#include "includes.h"
+#include "Trie.h"
 
-bool Node::isTerminal() const {
+bool Trie::Node::isTerminal() const {
     return terminal_;
 }
 
-Node *Node::next(char let) {
+Trie::Node *Trie::Node::next(char let) {
     return go_[let];
 }
 
-void Node::addChild(char let) {
+void Trie::Node::addChild(char let) {
     if (go_[let] != nullptr) return;
     go_[let] = new Node();
 }
 
-void Node::setTerminal() {
+void Trie::Node::setTerminal() {
     terminal_ = true;
 }
 
-Node::~Node() {
+Trie::Node::~Node() {
     for (auto& [let, to] : go_) {
         delete to;
         to = nullptr;
     }
 }
 
-Node::Node() : terminal_(false) {}
-
-
-void Trie::insert(std::string& word) {
-    Node *ptr = root_;
-    for (auto& let : word) {
-        ptr->addChild(let);
-        ptr = ptr->next(let);
-    }
-    ptr->setTerminal();
-}
+Trie::Node::Node() : terminal_(false) {}
 
 void Trie::goNext(char let) {
     if (cur_ptr_ == nullptr) return;

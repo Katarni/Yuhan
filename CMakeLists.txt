@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.23)
-project(yuhan)
+project(Yuhan)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 23)
 
 add_executable(yuhan main.cpp Trie.cpp Trie.h includes.h)
