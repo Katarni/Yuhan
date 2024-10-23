@@ -1,4 +1,4 @@
-#include "../inlcude/Trie.h"
+#include "../include/Trie.h"
 
 bool Trie::Node::isTerminal() const {
     return terminal_;
