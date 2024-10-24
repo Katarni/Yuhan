@@ -10,14 +10,15 @@
 class Token : public std::exception {
  public:
     enum class Type {
-        ReservedWord, Identifier,
-        Operator, Dot,
-        Comma, Literal, Semicolon,
+        ReservedWord, Identifier, Operator,
+        Dot, Comma, Literal, Semicolon,
         OpenParenthesis, CloseParenthesis,
         OpenCurlyBrace, CloseCurlyBrace,
         OpenSquareBracket, CloseSquareBracket,
-        Another
+        Another, Ampersand, Asterisk
     };
+
+    Token() : std::exception(), line_(0), column_(0), type_(Type::Another) {}
 
     Token(const std::string &content, size_t line, size_t col, Type type) : std::exception(),
                                                                             line_(line), column_(col),
@@ -39,6 +40,25 @@ class Token : public std::exception {
 
     friend bool operator==(const Token& lhs, const Token& rhs) {
         return lhs.content_ == rhs.content_;
+    }
+
+    void setContent(const std::string& content) {
+        content_ = content;
+        generateWhat();
+    }
+
+    void setLine(size_t line) {
+        line_ = line;
+        generateWhat();
+    }
+
+    void setCol(size_t col) {
+        column_ = col;
+        generateWhat();
+    }
+
+    void setType(Type type) {
+        type_ = type;
     }
 
  private:
@@ -91,6 +111,12 @@ class Token : public std::exception {
                 break;
             case Type::Another:
                 what_ += "symbol: \"" + content_ + "\"";
+                break;
+            case Type::Ampersand:
+                what_ += "ampersand mark";
+                break;
+            case Type::Asterisk:
+                what_ += "asterisk";
                 break;
         }
     }
