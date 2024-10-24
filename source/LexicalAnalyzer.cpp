@@ -223,7 +223,7 @@ Token LexicalAnalyzer::getToken() {
 
         if (*cur_symbol_ == '<' || *cur_symbol_ == '>') {
             if (cur_content.empty()) {
-                cur_type = Token::Type::LvalueBinaryOperator;
+                cur_type = Token::Type::RvalueBinaryOperator;
                 cur_content += *cur_symbol_;
                 continue;
             } else {
