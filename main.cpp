@@ -1,4 +1,4 @@
-#include "Trie.h"
+#include "include/Trie.h"
 
 int main() {
     std::ifstream fin("../service-words.txt");
