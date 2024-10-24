@@ -68,7 +68,8 @@ int main() {
             {Token::Type::EndOfFile, "endl of file"},
             {Token::Type::Another, "another"},
             {Token::Type::ExponentialLiteral, "exponential literal"},
-            {Token::Type::PlusOrMinusOperator, "plus or minus operator"}
+            {Token::Type::PlusOrMinusOperator, "plus or minus operator"},
+            {Token::Type::FloatLiteral, "float literal"}
     };
 
     std::ofstream tokens_fos("../tokens-file.txt");

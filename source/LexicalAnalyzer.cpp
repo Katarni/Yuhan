@@ -138,9 +138,16 @@ Token LexicalAnalyzer::getToken() {
                 cur_content += *cur_symbol_;
                 ++cur_symbol_;
                 cur_type = Token::Type::Dot;
+                break;
+            } else {
+                if (cur_type == Token::Type::NumericLiteral) {
+                    cur_type = Token::Type::FloatLiteral;
+                    cur_content += *cur_symbol_;
+                    continue;
+                } else {
+                    break;
+                }
             }
-
-            break;
         }
 
         if (*cur_symbol_ == ',') {
@@ -259,7 +266,8 @@ Token LexicalAnalyzer::getToken() {
                 continue;
             } else {
                 if (cur_type == Token::Type::NumericLiteral || letter_first ||
-                    cur_type == Token::Type::ExponentialLiteral) {
+                    cur_type == Token::Type::ExponentialLiteral ||
+                    cur_type == Token::Type::FloatLiteral) {
                     cur_content += *cur_symbol_;
                     continue;
                 } else {
@@ -277,6 +285,10 @@ Token LexicalAnalyzer::getToken() {
     }
 
     if (cur_type == Token::Type::ExponentialLiteral && cur_content.back() == 'e') {
+        cur_type = Token::Type::Another;
+    }
+
+    if (cur_type == Token::Type::FloatLiteral && cur_content.back() == '.') {
         cur_type = Token::Type::Another;
     }
 

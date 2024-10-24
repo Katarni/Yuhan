@@ -1,7 +1,7 @@
 for
 while
 int
-double
+float
 bool
 char
 or
@@ -9,3 +9,4 @@ and
 else
 if
 string
+switch
