@@ -33,7 +33,7 @@ int main() {
     std::string file_path;
     std::cin >> file_path;
 
-    std::ifstream file_fin("file_path.y");
+    std::ifstream file_fin(file_path);
     file_fin.seekg(0, std::ios::end);
     std::streamsize file_size = file_fin.tellg();
     file_fin.seekg(0, std::ios::beg);
@@ -42,4 +42,13 @@ int main() {
     file_fin.read(file_text, file_size);
 
     LexicalAnalyzer lexical_analyzer(reserved_words_trie, file_text, file_size);
+
+    Token cur_token;
+    Token eof;
+    eof.setType(Token::Type::EndOfFile);
+    while (cur_token = lexical_analyzer.getToken(), cur_token != eof) {
+        std::cout << cur_token.what() << std::endl;
+    }
+
+    return 0;
 }
