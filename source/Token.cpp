@@ -58,6 +58,9 @@ void Token::generateWhat() {
         case Type::LvalueUnaryOperator:
             what_ += "unary operation";
             break;
+        case Type::PlusOrMinusOperator:
+            what_ += "plus or minus operator";
+            break;
     }
 }
 

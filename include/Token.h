@@ -17,7 +17,8 @@ class Token : public std::exception {
         OpenCurlyBrace, CloseCurlyBrace,
         OpenSquareBracket, CloseSquareBracket,
         LvalueUnaryOperator, RvalueUnaryOperator,
-        StringLiteral, EndOfFile, Another, ExponentialLiteral
+        StringLiteral, EndOfFile, Another, ExponentialLiteral,
+        PlusOrMinusOperator
     };
 
     Token() : std::exception(), line_(0), column_(0), type_(Type::Another) {}
@@ -34,12 +35,16 @@ class Token : public std::exception {
     void setType(Type type);
     void setContent(const std::string &content);
 
+    [[nodiscard]]
     const std::string &getContent() const;
 
+    [[nodiscard]]
     size_t getLine() const;
 
+    [[nodiscard]]
     size_t getColumn() const;
 
+    [[nodiscard]]
     Type getType() const;
 
  private:

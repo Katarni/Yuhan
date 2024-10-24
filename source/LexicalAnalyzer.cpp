@@ -172,7 +172,7 @@ Token LexicalAnalyzer::getToken() {
         if (*cur_symbol_ == '+' || *cur_symbol_ == '-') {
             if (cur_content.empty()) {
                 cur_content += *cur_symbol_;
-                cur_type = Token::Type::RvalueBinaryOperator;
+                cur_type = Token::Type::PlusOrMinusOperator;
                 continue;
             } else if (cur_content[0] == *cur_symbol_ && cur_content.size() == 1) {
                 cur_content += *cur_symbol_;
@@ -192,14 +192,15 @@ Token LexicalAnalyzer::getToken() {
             } else {
                 if (cur_content.size() == 1 &&
                     (cur_content[0] == '+' || cur_content[0] == '-' || cur_content[0] == '%' ||
-                    cur_content[0] == '*' || cur_content[0] == '/' || cur_content[0] == '<' ||
-                    cur_content[0] == '>' || cur_content[0] == '|' ||
+                    cur_content[0] == '*' || cur_content[0] == '/' || cur_content[0] == '|' ||
                     cur_content[0] == '!' || cur_content[0] == '&')) {
 
                     cur_content += *cur_symbol_;
                     ++cur_symbol_;
                     cur_type = Token::Type::LvalueBinaryOperator;
-                } else if (cur_content.size() == 1 && cur_content[0] == '=') {
+                } else if (cur_content.size() == 1 &&
+                            (cur_content[0] == '=' || cur_content[0] == '<' ||
+                            cur_content[0] == '>')) {
                     cur_content += *cur_symbol_;
                     cur_type = Token::Type::RvalueBinaryOperator;
                     ++cur_symbol_;
