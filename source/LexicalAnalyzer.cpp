@@ -60,11 +60,6 @@ Token LexicalAnalyzer::getToken() {
             }
         }
 
-        if (cur_type == Token::Type::Another) {
-            cur_content += *cur_symbol_;
-            continue;
-        }
-
         if (!pos_set) {
             pos_set = true;
             cur_token.setLine(cur_line_);
@@ -192,15 +187,15 @@ Token LexicalAnalyzer::getToken() {
             } else {
                 if (cur_content.size() == 1 &&
                     (cur_content[0] == '+' || cur_content[0] == '-' || cur_content[0] == '%' ||
-                    cur_content[0] == '*' || cur_content[0] == '/' || cur_content[0] == '|' ||
-                    cur_content[0] == '!' || cur_content[0] == '&')) {
+                    cur_content[0] == '*' || cur_content[0] == '/' ||
+                    cur_content[0] == '|' || cur_content[0] == '&')) {
 
                     cur_content += *cur_symbol_;
                     ++cur_symbol_;
                     cur_type = Token::Type::LvalueBinaryOperator;
                 } else if (cur_content.size() == 1 &&
                             (cur_content[0] == '=' || cur_content[0] == '<' ||
-                            cur_content[0] == '>')) {
+                            cur_content[0] == '>' || cur_content[0] == '!')) {
                     cur_content += *cur_symbol_;
                     cur_type = Token::Type::RvalueBinaryOperator;
                     ++cur_symbol_;
@@ -245,6 +240,7 @@ Token LexicalAnalyzer::getToken() {
                         letter_first = false;
                     } else {
                         cur_type = Token::Type::Another;
+                        break;
                     }
                     continue;
                 } else if (letter_first) {
@@ -273,10 +269,15 @@ Token LexicalAnalyzer::getToken() {
         }
 
         cur_type = Token::Type::Another;
+        break;
     }
 
     if (cur_content.empty()) {
         cur_type = Token::Type::EndOfFile;
+    }
+
+    if (cur_type == Token::Type::ExponentialLiteral && cur_content.back() == 'e') {
+        cur_type = Token::Type::Another;
     }
 
     if (letter_first) {
