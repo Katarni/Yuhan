@@ -19,6 +19,8 @@ Token LexicalAnalyzer::getToken() {
     bool string_literal = false, pos_set = false, letter_first = false;
 
     for (; cur_symbol_ < text_size_ + text_; ++cur_symbol_) {
+        ++cur_col_;
+
         if (*cur_symbol_ == '\"') {
             if (!string_literal) {
                 if (cur_content.empty()) {
@@ -49,8 +51,13 @@ Token LexicalAnalyzer::getToken() {
         }
 
         if (*cur_symbol_ == '\n') {
-            ++cur_line_;
-            continue;
+            cur_col_ = 0;
+            if (cur_content.empty()) {
+                ++cur_line_;
+                continue;
+            } else {
+                break;
+            }
         }
 
         if (cur_type == Token::Type::Another) {
@@ -61,7 +68,7 @@ Token LexicalAnalyzer::getToken() {
         if (!pos_set) {
             pos_set = true;
             cur_token.setLine(cur_line_);
-            cur_token.setColumn(cur_symbol_ - text_);
+            cur_token.setColumn(cur_col_);
         }
 
         if (*cur_symbol_ == ';') {

@@ -46,9 +46,39 @@ int main() {
     Token cur_token;
     Token eof;
     eof.setType(Token::Type::EndOfFile);
+
+    std::map < Token::Type, std::string > descriptions = {
+            {Token::Type::ReservedWord, "reserved word"},
+            {Token::Type::Identifier, "identifier"},
+            {Token::Type::LvalueBinaryOperator, "lvalue binary operator"},
+            {Token::Type::RvalueBinaryOperator, "rvalue binary operator"},
+            {Token::Type::Dot, "dot"},
+            {Token::Type::Comma, "comma"},
+            {Token::Type::NumericLiteral, "numeric literal"},
+            {Token::Type::Semicolon, "semicolon"},
+            {Token::Type::OpenParenthesis, "open parenthesis"},
+            {Token::Type::CloseParenthesis, "close parenthesis"},
+            {Token::Type::OpenCurlyBrace, "open curly brace"},
+            {Token::Type::CloseCurlyBrace, "close curly brace"},
+            {Token::Type::OpenSquareBracket, "open square bracket"},
+            {Token::Type::CloseSquareBracket, "close square bracket"},
+            {Token::Type::LvalueUnaryOperator, "lvalue unary operator"},
+            {Token::Type::RvalueUnaryOperator, "rvalue unary operator"},
+            {Token::Type::StringLiteral, "string literal"},
+            {Token::Type::EndOfFile, "endl of file"},
+            {Token::Type::Another, "another"},
+            {Token::Type::ExponentialLiteral, "exponential literal"}
+    };
+
+    std::ofstream tokens_fos("../tokens-file.txt");
+
     while (cur_token = lexical_analyzer.getToken(), cur_token != eof) {
-        std::cout << cur_token.what() << std::endl;
+        tokens_fos << "content: \"" << cur_token.getContent();
+        tokens_fos << "\" type: \"" << descriptions[cur_token.getType()] << "\" in pos ";
+        tokens_fos << cur_token.getLine() << ":" << cur_token.getColumn() << std::endl;
     }
+
+    tokens_fos.close();
 
     return 0;
 }
