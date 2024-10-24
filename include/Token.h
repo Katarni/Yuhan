@@ -12,8 +12,11 @@ class Token : public std::exception {
     enum class Type {
         ReservedWord, Identifier,
         Operator, Dot,
-        Comma, Punctuation,
-        Literal
+        Comma, Literal, Semicolon,
+        OpenParenthesis, CloseParenthesis,
+        OpenCurlyBrace, CloseCurlyBrace,
+        OpenSquareBracket, CloseSquareBracket,
+        Another
     };
 
     Token(const std::string &content, size_t line, size_t col, Type type) : std::exception(),
@@ -45,16 +48,16 @@ class Token : public std::exception {
 
     void generateWhat() {
         what_ = "in " + std::to_string(line_) + ":" + std::to_string(column_);
-        what_ += " error: unexpected token: \"" + content_ + "\" with type: ";
+        what_ += " error: unexpected ";
         switch (type_) {
             case Type::ReservedWord:
-                what_ += "reserved word";
+                what_ += "reserved word: \"" + content_ + "\n";
                 break;
             case Type::Identifier:
-                what_ += "identifier";
+                what_ += "identifier: \"" + content_ + "\n";
                 break;
             case Type::Operator:
-                what_ += "operator";
+                what_ += "operator: \"" + content_ + "\n";
                 break;
             case Type::Dot:
                 what_ += "dot";
@@ -62,11 +65,33 @@ class Token : public std::exception {
             case Type::Comma:
                 what_ += "comma";
                 break;
-            case Type::Punctuation:
-                what_ += "bracket";
-                break;
             case Type::Literal:
-                what_ += "literal";
+                what_ += "literal: \"" + content_ + "\n";
+                break;
+            case Type::Semicolon:
+                what_ += "semicolon";
+                break;
+            case Type::OpenParenthesis:
+                what_ += "opening parenthesis";
+                break;
+            case Type::CloseParenthesis:
+                what_ += "closing parenthesis";
+                break;
+            case Type::OpenCurlyBrace:
+                what_ += "opening curly brace";
+                break;
+            case Type::CloseCurlyBrace:
+                what_ += "closing curly brace";
+                break;
+            case Type::OpenSquareBracket:
+                what_ += "opening square bracket";
+                break;
+            case Type::CloseSquareBracket:
+                what_ += "closing square bracket";
+                break;
+            case Type::Another:
+                what_ += "symbol: \"" + content_ + "\"";
+                break;
         }
     }
 };
