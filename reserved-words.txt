@@ -6,7 +6,6 @@ bool
 char
 or
 and
-not
 else
 if
 string
