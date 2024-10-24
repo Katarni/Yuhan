@@ -1,12 +1,12 @@
 for
 while
 int
-double
+float
 bool
 char
 or
 and
-not
 else
 if
 string
+switch

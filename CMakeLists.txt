@@ -3,5 +3,11 @@ project(Yuhan)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(Yuhan main.cpp source/Trie.cpp include/Trie.h include/includes.h
-        include/Token.h)
+add_executable(Yuhan main.cpp
+        source/Trie.cpp
+        include/Trie.h
+        include/includes.h
+        include/Token.h
+        source/LexicalAnalyzer.cpp
+        include/LexicalAnalyzer.h
+        source/Token.cpp)
