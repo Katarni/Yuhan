@@ -15,7 +15,7 @@ class Token : public std::exception {
         OpenParenthesis, CloseParenthesis,
         OpenCurlyBrace, CloseCurlyBrace,
         OpenSquareBracket, CloseSquareBracket,
-        Another, Ampersand, Asterisk
+        Another, UnaryOperation
     };
 
     Token() : std::exception(), line_(0), column_(0), type_(Type::Another) {}
@@ -112,11 +112,8 @@ class Token : public std::exception {
             case Type::Another:
                 what_ += "symbol: \"" + content_ + "\"";
                 break;
-            case Type::Ampersand:
-                what_ += "ampersand mark";
-                break;
-            case Type::Asterisk:
-                what_ += "asterisk";
+            case Type::UnaryOperation:
+                what_ += "unary operation";
                 break;
         }
     }

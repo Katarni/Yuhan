@@ -30,5 +30,16 @@ int main() {
 
     delete[] reserved_words_text;
 
-    LexicalAnalyzer lexical_analyzer(reserved_words_trie);
+    std::string file_path;
+    std::cin >> file_path;
+
+    std::ifstream file_fin("file_path.y");
+    file_fin.seekg(0, std::ios::end);
+    std::streamsize file_size = file_fin.tellg();
+    file_fin.seekg(0, std::ios::beg);
+
+    auto file_text = new char[file_size];
+    file_fin.read(file_text, file_size);
+
+    LexicalAnalyzer lexical_analyzer(reserved_words_trie, file_text, file_size);
 }

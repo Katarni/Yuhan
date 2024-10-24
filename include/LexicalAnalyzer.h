@@ -10,8 +10,22 @@
 
 class LexicalAnalyzer {
  public:
-    explicit LexicalAnalyzer(Trie* reserved_words_trie) : reserved_words_(reserved_words_trie) {}
+    explicit LexicalAnalyzer(Trie *reserved_words_trie,
+                             char *text, size_t text_size) : reserved_words_(reserved_words_trie),
+                                                            text_(text), cur_symbol_(text),
+                                                            text_size_(text_size), cur_line_(0) {}
+
+    ~LexicalAnalyzer();
+
+    [[nodiscard]]
+    Token getToken();
 
  private:
-    Trie* reserved_words_;
+    enum class State {
+        Any
+    };
+
+    Trie *reserved_words_;
+    char *text_, *cur_symbol_;
+    size_t text_size_, cur_line_;
 };
