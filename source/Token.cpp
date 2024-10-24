@@ -9,14 +9,14 @@ void Token::generateWhat() {
     what_ += " error: unexpected ";
     switch (type_) {
         case Type::ReservedWord:
-            what_ += "reserved word: \"" + content_ + "\n";
+            what_ += "reserved word: \"" + content_ + "\"";
             break;
         case Type::Identifier:
-            what_ += "identifier: \"" + content_ + "\n";
+            what_ += "identifier: \"" + content_ + "\"";
             break;
         case Type::RvalueBinaryOperator:
         case Type::LvalueBinaryOperator:
-            what_ += "binary operator: \"" + content_ + "\n";
+            what_ += "binary operator: \"" + content_ + "\"";
             break;
         case Type::Dot:
             what_ += "dot";
@@ -27,7 +27,7 @@ void Token::generateWhat() {
         case Type::StringLiteral:
         case Type::ExponentialLiteral:
         case Type::NumericLiteral:
-            what_ += "literal: \"" + content_ + "\n";
+            what_ += "literal: \"" + content_ + "\"";
             break;
         case Type::Semicolon:
             what_ += "semicolon";

@@ -5,9 +5,7 @@
 #include "../include/LexicalAnalyzer.h"
 
 LexicalAnalyzer::~LexicalAnalyzer() {
-    for (auto it = text_; it < text_ + text_size_; ++it) {
-        delete it;
-    }
+    delete[] text_;
 }
 
 Token LexicalAnalyzer::getToken() {
