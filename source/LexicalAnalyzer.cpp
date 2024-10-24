@@ -290,6 +290,7 @@ Token LexicalAnalyzer::getToken() {
             }
         }
 
+        cur_content += *cur_symbol_;
         cur_type = Token::Type::Another;
     }
 
