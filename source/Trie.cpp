@@ -26,23 +26,8 @@ Trie::Node::~Node() {
 
 Trie::Node::Node() : terminal_(false) {}
 
-void Trie::goNext(char let) {
-    if (cur_ptr_ == nullptr) return;
-    cur_ptr_ = cur_ptr_->next(let);
-}
-
-bool Trie::isTerminal() {
-    if (cur_ptr_ == nullptr) return false;
-    return cur_ptr_->isTerminal();
-}
-
-void Trie::goToRoot() {
-    cur_ptr_ = root_;
-}
-
 Trie::Trie() {
     root_ = new Node();
-    cur_ptr_ = root_;
 }
 
 Trie::~Trie() {

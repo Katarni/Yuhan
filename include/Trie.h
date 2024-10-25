@@ -12,12 +12,6 @@ public:
 
     bool isInTrie(std::string& word);
 
-    void goNext(char let);
-
-    bool isTerminal();
-
-    void goToRoot();
-
 private:
     class Node {
     public:
@@ -25,6 +19,7 @@ private:
 
         ~Node();
 
+        [[nodiscard]]
         bool isTerminal() const;
 
         Node* next(char let);
@@ -38,5 +33,5 @@ private:
         bool terminal_;
     };
 
-    Node *root_, *cur_ptr_;
+    Node *root_;
 };

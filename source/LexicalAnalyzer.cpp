@@ -264,6 +264,7 @@ Token LexicalAnalyzer::getToken() {
                         cur_type = Token::Type::ExponentialLiteral;
                         letter_first = false;
                     } else {
+                        cur_content += *cur_symbol_;
                         cur_type = Token::Type::Another;
                     }
                     continue;
@@ -295,6 +296,7 @@ Token LexicalAnalyzer::getToken() {
 
         cur_content += *cur_symbol_;
         cur_type = Token::Type::Another;
+        letter_first = false;
     }
 
     if (cur_content.empty()) {
