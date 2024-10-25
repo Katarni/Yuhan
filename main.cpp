@@ -79,6 +79,9 @@ int main() {
         tokens_fos << "\" type: \"" << descriptions[cur_token.getType()] << "\" in pos ";
         tokens_fos << cur_token.getLine() << ":" << cur_token.getColumn() << std::endl;
     }
+    tokens_fos << "content: \"" << cur_token.getContent();
+    tokens_fos << "\" type: \"" << descriptions[cur_token.getType()] << "\" in pos ";
+    tokens_fos << cur_token.getLine() << ":" << cur_token.getColumn() << std::endl;
 
     tokens_fos.close();
 

@@ -19,6 +19,9 @@ Token LexicalAnalyzer::getToken() {
     bool string_literal = false, pos_set = false, letter_first = false;
 
     for (; cur_symbol_ < text_size_ + text_; ++cur_symbol_, ++cur_col_) {
+        if (*cur_symbol_ == '\0' || *cur_symbol_ == '\r') {
+            continue;
+        }
 
         if (*cur_symbol_ == '\"') {
             if (!string_literal) {
