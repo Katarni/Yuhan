@@ -24,6 +24,7 @@ void Token::generateWhat() {
         case Type::Comma:
             what_ += "comma";
             break;
+        case Type::FloatLiteral:
         case Type::StringLiteral:
         case Type::ExponentialLiteral:
         case Type::NumericLiteral:
