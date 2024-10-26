@@ -4,6 +4,38 @@
 
 #include "../include/LexicalAnalyzer.h"
 
+LexicalAnalyzer::LexicalAnalyzer(char *text, size_t text_size) : text_(text), cur_symbol_(text), text_size_(text_size),
+                                                                 cur_line_(0), cur_col_(0) {
+    std::ifstream reserved_words_fin("../reserved-words.txt");
+    reserved_words_fin.seekg(0, std::ios::end);
+    std::streamsize reserved_words_file_size = reserved_words_fin.tellg();
+    reserved_words_fin.seekg(0, std::ios::beg);
+
+    auto reserved_words_text = new char[reserved_words_file_size];
+    reserved_words_fin.read(reserved_words_text, reserved_words_file_size);
+
+    std::vector<std::pair<char *, size_t>> words_ptrs;
+    words_ptrs.emplace_back(reserved_words_text, 0);
+    for (int i = 0; i < reserved_words_file_size; ++i) {
+        if (*(reserved_words_text + i) == '\n') {
+            words_ptrs.back().second = reserved_words_text + i - words_ptrs.back().first;
+
+            if (i != reserved_words_file_size - 1) {
+                words_ptrs.emplace_back((reserved_words_text + i + 1), 0);
+            }
+        }
+    }
+
+    reserved_words_ = new Trie;
+    for (auto [start, length]: words_ptrs) {
+        if (length == 0) continue;
+
+        reserved_words_->insert(start, length);
+    }
+
+    delete[] reserved_words_text;
+}
+
 LexicalAnalyzer::~LexicalAnalyzer() {
     delete[] text_;
 }
