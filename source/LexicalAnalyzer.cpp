@@ -47,10 +47,42 @@ Token LexicalAnalyzer::getToken() {
     Token::Type cur_type = Token::Type::CloseParenthesis;
 
     bool string_literal = false, pos_set = false, letter_first = false;
-    bool comment = false, char_literal = false;
+    bool comment = false, char_literal = false, ignore_next = false;
 
     for (; cur_symbol_ < text_size_ + text_; ++cur_symbol_, ++cur_col_) {
         if (*cur_symbol_ == '\0' || *cur_symbol_ == '\r') {
+            continue;
+        }
+
+        if (ignore_next) {
+            switch (*cur_symbol_) {
+                case 'n':
+                    cur_content += '\n';
+                    break;
+                case '\'':
+                    cur_content += '\'';
+                    break;
+                case '\"':
+                    cur_content += '\"';
+                    break;
+                case '\0':
+                    cur_content += '\0';
+                    break;
+                case '\r':
+                    cur_content += '\r';
+                    break;
+                case '\\':
+                    cur_content += '\\';
+                    break;
+                default:
+                    cur_type = Token::Type::Another;
+            }
+            ignore_next = false;
+            continue;
+        }
+
+        if (*cur_symbol_ == '\\'  && (string_literal || char_literal)) {
+            ignore_next = true;
             continue;
         }
 
@@ -68,6 +100,7 @@ Token LexicalAnalyzer::getToken() {
                 }
             } else {
                 ++cur_symbol_;
+                string_literal = false;
                 break;
             }
         }
@@ -86,6 +119,7 @@ Token LexicalAnalyzer::getToken() {
                 }
             } else {
                 ++cur_symbol_;
+                char_literal = false;
                 break;
             }
         }
@@ -321,7 +355,9 @@ Token LexicalAnalyzer::getToken() {
 
     if (cur_type == Token::Type::ExponentialLiteral && cur_content.back() == 'e' || 
         cur_type == Token::Type::FloatLiteral && cur_content.back() == '.' ||
-        cur_type == Token::Type::CharLiteral && cur_content.size() != 1) {
+        cur_type == Token::Type::CharLiteral && cur_content.size() != 1 ||
+        cur_type == Token::Type::StringLiteral && string_literal || 
+        cur_type == Token::Type::CharLiteral && char_literal) {
         cur_type = Token::Type::Another;
     }
 
