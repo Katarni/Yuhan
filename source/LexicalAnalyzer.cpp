@@ -114,8 +114,6 @@ Token LexicalAnalyzer::getToken() {
             *cur_symbol_ == '}' || *cur_symbol_ == ',') {
             if (cur_content.empty()) {
                 cur_content += *cur_symbol_;
-                ++cur_symbol_;
-                ++cur_col_;
                 if (*cur_symbol_ == ';') {
                     cur_type = Token::Type::Semicolon;
                 } else if (*cur_symbol_ == '(') {
@@ -133,6 +131,8 @@ Token LexicalAnalyzer::getToken() {
                 } else if (*cur_symbol_ == ',') {
                     cur_type = Token::Type::Comma;
                 }
+                ++cur_symbol_;
+                ++cur_col_;
             }
 
             break;
