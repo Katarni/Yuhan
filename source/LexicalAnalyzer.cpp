@@ -47,18 +47,21 @@ Token LexicalAnalyzer::getToken() {
     Token::Type cur_type = Token::Type::CloseParenthesis;
 
     bool string_literal = false, pos_set = false, letter_first = false;
-    bool comment_ = false;
+    bool comment = false, char_literal = false;
 
     for (; cur_symbol_ < text_size_ + text_; ++cur_symbol_, ++cur_col_) {
         if (*cur_symbol_ == '\0' || *cur_symbol_ == '\r') {
             continue;
         }
 
-        if (*cur_symbol_ == '\"') {
+        if (*cur_symbol_ == '\"' && !char_literal) {
             if (!string_literal) {
                 if (cur_content.empty()) {
                     string_literal = true;
                     cur_type = Token::Type::StringLiteral;
+                    pos_set = true;
+                    cur_token.setLine(cur_line_);
+                    cur_token.setColumn(cur_col_);
                     continue;
                 } else {
                     break;
@@ -69,14 +72,32 @@ Token LexicalAnalyzer::getToken() {
             }
         }
 
-        if (string_literal) {
+        if (*cur_symbol_ == '\'' && !string_literal) {
+            if (!char_literal) {
+                if (cur_content.empty()) {
+                    char_literal = true;
+                    cur_type = Token::Type::CharLiteral;
+                    pos_set = true;
+                    cur_token.setLine(cur_line_);
+                    cur_token.setColumn(cur_col_);
+                    continue;
+                } else {
+                    break;
+                }
+            } else {
+                ++cur_symbol_;
+                break;
+            }
+        }
+
+        if (string_literal || char_literal) {
             cur_content += *cur_symbol_;
             continue;
         }
 
-        if (comment_) {
+        if (comment) {
             if (*cur_symbol_ == '\n') {
-                comment_ = false;
+                comment = false;
                 ++cur_line_;
                 cur_col_ = -1;
             }
@@ -163,7 +184,7 @@ Token LexicalAnalyzer::getToken() {
                 cur_type = Token::Type::RvalueBinaryOperator;
                 continue;
             } else if (cur_content.size() == 1 && *cur_symbol_ == '/' && cur_content[0] == '/') {
-                comment_ = true;
+                comment = true;
                 cur_content.clear();
                 cur_type = Token::Type::CloseParenthesis;
                 pos_set = false;
@@ -299,7 +320,8 @@ Token LexicalAnalyzer::getToken() {
     }
 
     if (cur_type == Token::Type::ExponentialLiteral && cur_content.back() == 'e' || 
-        cur_type == Token::Type::FloatLiteral && cur_content.back() == '.') {
+        cur_type == Token::Type::FloatLiteral && cur_content.back() == '.' ||
+        cur_type == Token::Type::CharLiteral && cur_content.size() != 1) {
         cur_type = Token::Type::Another;
     }
 

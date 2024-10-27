@@ -18,7 +18,7 @@ class Token : public std::exception {
         OpenSquareBracket, CloseSquareBracket,
         LvalueUnaryOperator, RvalueUnaryOperator,
         StringLiteral, EndOfFile, Another, ExponentialLiteral,
-        PlusOrMinusOperator, FloatLiteral
+        PlusOrMinusOperator, FloatLiteral, CharLiteral
     };
 
     Token() : std::exception(), line_(0), column_(0), type_(Type::Another) {}

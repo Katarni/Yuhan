@@ -28,6 +28,7 @@ void Token::generateWhat() {
         case Type::StringLiteral:
         case Type::ExponentialLiteral:
         case Type::NumericLiteral:
+        case Type::CharLiteral:
             what_ += "literal: \"" + content_ + "\"";
             break;
         case Type::Semicolon:
