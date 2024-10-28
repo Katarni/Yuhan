@@ -20,7 +20,7 @@
 \<op3> ::= `*` | `/` | `%`  
 \<exp2> ::= \<op2> \<exp1> | \<exp1>  
 \<op2> ::= `++` | `--` | `!` | `+` | `-`  
-\<exp1> ::= `(`\<exp14>`)` | `[`\<exp14>`]`  | \<exp0> 
+\<exp1> ::= `(`\<exp14>`)` | `[`\<exp14>`]`  | \<exp0>   
 \<exp0> ::= \<identifier> | \<numeric literal> | \<string literal> | \<exponential literal> | \<float literal>  
 
 
