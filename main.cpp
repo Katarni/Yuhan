@@ -12,7 +12,7 @@ int main() {
     auto file_text = new char[file_size];
     file_fin.read(file_text, file_size);
 
-    Starter starter(file_text, file_size);
+    Starter starter(file_text, file_size, "../reserved-words.txt");
 
     return 0;
 }

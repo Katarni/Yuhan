@@ -4,9 +4,9 @@
 
 #include "../include/LexicalAnalyzer.h"
 
-LexicalAnalyzer::LexicalAnalyzer(char *text, size_t text_size) : text_(text), cur_symbol_(text), text_size_(text_size),
+LexicalAnalyzer::LexicalAnalyzer(char *text, size_t text_size, const std::string& reserved_words_file) : text_(text), cur_symbol_(text), text_size_(text_size),
                                                                  cur_line_(0), cur_col_(0) {
-    std::ifstream reserved_words_fin("../reserved-words.txt");
+    std::ifstream reserved_words_fin(reserved_words_file);
     reserved_words_fin.seekg(0, std::ios::end);
     std::streamsize reserved_words_file_size = reserved_words_fin.tellg();
     reserved_words_fin.seekg(0, std::ios::beg);

@@ -4,8 +4,8 @@
 
 #include "../include/Starter.h"
 
-Starter::Starter(char* file_text, size_t text_size) : file_text_(file_text), text_size_(text_size) {
-    lexer_ = new LexicalAnalyzer(file_text, text_size);
+Starter::Starter(char* file_text, size_t text_size, const std::string& reserved_words_file) : file_text_(file_text), text_size_(text_size) {
+    lexer_ = new LexicalAnalyzer(file_text, text_size, reserved_words_file);
 }
 
 Starter::~Starter() {

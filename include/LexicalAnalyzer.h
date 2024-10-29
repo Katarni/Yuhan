@@ -10,7 +10,7 @@
 
 class LexicalAnalyzer {
  public:
-    explicit LexicalAnalyzer(char *text, size_t text_size);
+    explicit LexicalAnalyzer(char *text, size_t text_size, const std::string& reserved_words_file);
 
     ~LexicalAnalyzer();
 

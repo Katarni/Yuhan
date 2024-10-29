@@ -9,7 +9,7 @@
 
 class Starter {
  public:
-    explicit Starter(char* file_text, size_t text_size);
+    explicit Starter(char* file_text, size_t text_size, const std::string& reserved_words_file);
     ~Starter();
 
     std::vector<Token> getAllTokens();
