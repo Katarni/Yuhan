@@ -14,5 +14,7 @@ int main() {
 
     Starter starter(file_text, file_size, "../reserved-words.txt");
 
+    auto v = starter.getAllTokens();
+
     return 0;
 }

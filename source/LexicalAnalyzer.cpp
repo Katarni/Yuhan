@@ -324,6 +324,10 @@ Token LexicalAnalyzer::getToken() {
                 } else if (letter_first) {
                     cur_content += *cur_symbol_;
                     continue;
+                } else if (cur_type == Token::Type::ExponentialLiteral) {
+                    cur_content += *cur_symbol_;
+                    cur_type = Token::Type::Another;
+                    continue;
                 } else {
                     break;
                 }

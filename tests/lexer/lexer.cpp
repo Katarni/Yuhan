@@ -38,7 +38,8 @@ int main() {
             {Token::Type::Another, "another"},
             {Token::Type::ExponentialLiteral, "exponential literal"},
             {Token::Type::PlusOrMinusOperator, "plus or minus operator"},
-            {Token::Type::FloatLiteral, "float literal"}
+            {Token::Type::FloatLiteral, "float literal"},
+            {Token::Type::CharLiteral, "char literal"}
     };
 
     for (auto& token : tokens) {
