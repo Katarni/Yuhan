@@ -12,7 +12,7 @@ int main() {
     auto file_text = new char[file_size];
     file_fin.read(file_text, file_size);
 
-    Starter starter(file_text, file_size, "../../../reserved-words.txt");
+    Starter starter(file_text, file_size, "../../reserved-words.txt");
 
     auto tokens = starter.getAllTokens();
 
@@ -42,7 +42,9 @@ int main() {
     };
 
     for (auto& token : tokens) {
-        std::cout << descriptions[token.getType()] << ' ' << token.getContent() << ' ' << token.getLine() << ':' << token.getColumn() << std::endl;
+        std::cout << descriptions[token.getType()] << ' ';
+        std::cout << token.getContent() << ' ';
+        std::cout << token.getLine() << ':' << token.getColumn() << std::endl;
     }
 
     return 0;
