@@ -14,8 +14,10 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: "3.13"
-      - name: install dependencies
-        run: pip install -r tests/test-requirements.txt
+      - name: install pytest
+        run: pip install pytest
+      - name: install cmake
+        run: apt-get install cmake
       - name: Move to dir
         run: mkdir tests/lexer/build && cd tests/lexer/build
       - name: Build lexer
