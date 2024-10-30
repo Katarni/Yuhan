@@ -17,10 +17,19 @@ jobs:
       - name: install pytest
         run: pip install pytest
       - name: install cmake
-        run: apt-get install cmake
+        run: |
+          apt-get install -y gpg wget
+          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | tee /etc/apt/trusted.gpg.d/kitware.gpg >/dev/null
+          apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 6AF7F09730B3F0A4
+          apt-add-repository "deb https://apt.kitware.com/ubuntu/ bionic main"
+          apt-get update
+          apt-get install -y cmake
       - name: Move to dir
         run: mkdir tests/lexer/build && cd tests/lexer/build
       - name: Build lexer
-        run: cmake .. && make && cd ..
+        run: |
+          cmake ..
+          make
+          cd ..
       - name: Run test
         run: pytest .
