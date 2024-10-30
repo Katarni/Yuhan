@@ -15,7 +15,7 @@ jobs:
         with:
           python-version: "3.13"
       - name: install dependencies
-        run: pip install -r test/requirements.txt
+        run: pip install -r tests/test-requirements.txt
       - name: Move to dir
         run: cd tests/lexer
       - name: Run test
