@@ -17,6 +17,8 @@ jobs:
       - name: install dependencies
         run: pip install -r tests/test-requirements.txt
       - name: Move to dir
-        run: cd tests/lexer
+        run: mkdir tests/lexer/build && cd tests/lexer/build
+      - name: Build lexer
+        run: cmake .. && make && cd ..
       - name: Run test
         run: pytest .
