@@ -3,8 +3,7 @@ from subprocess import run
 
 
 def get_program_output():
-    output = run("build/Yuhan-lexer-tests", encoding="utf-8", capture_output=True, input="lexer-test.txt").stdout
-    return output
+    return run("build/Yuhan-lexer-tests", encoding="utf-8", capture_output=True, input="lexer-test.txt").stdout
 
 
 def write_file(input_text):
@@ -12,11 +11,13 @@ def write_file(input_text):
     file.write(input_text)
     file.close()
 
+
 def read_file(input_file):
     file = open(input_file, "r")
     text = file.read()
     file.close()
     return text
+
 
 def test_simple_program():
     input_text = read_file("inputs/simple-program.txt")

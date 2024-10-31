@@ -1,0 +1,57 @@
+name: Tests
+
+on:
+  push
+
+  pull-request:
+    branches: ["main"]
+
+jobs:
+  trie-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+      - name: install pytest
+        run: pip install pytest
+      - name: Build trie 
+        run: |
+          mkdir tests/trie/build
+          cd tests/trie/build
+          cmake ..
+          make
+          cd ..
+      - name: Run test
+        run: |
+          cd tests/trie
+          pytest .
+
+  lexer-test:
+    needs: trie-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.13"
+      - name: install pytest
+        run: pip install pytest
+      - name: Build lexer
+        run: |
+          mkdir tests/lexer/build
+          cd tests/lexer/build
+          cmake ..
+          make
+          cd ..
+      - name: Run test
+        run: |
+          cd tests/lexer
+          pytest .

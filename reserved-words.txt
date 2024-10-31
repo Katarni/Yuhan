@@ -10,3 +10,4 @@ else
 if
 string
 switch
+return
