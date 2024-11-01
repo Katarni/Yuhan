@@ -65,10 +65,10 @@ void Token::generateWhat() {
             break;
         case Type::LessThan:
             what_ += "less than symbol";
-            break
+            break;
         case Type::GreaterThan:
             what_ += "greater than symbol";
-            break
+            break;
     }
 }
 
