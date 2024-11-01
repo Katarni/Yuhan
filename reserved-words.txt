@@ -11,3 +11,6 @@ if
 string
 switch
 return
+array
+case
+default
