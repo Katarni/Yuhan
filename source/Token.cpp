@@ -63,6 +63,12 @@ void Token::generateWhat() {
         case Type::PlusOrMinusOperator:
             what_ += "plus or minus operator";
             break;
+        case Type::LessThan:
+            what_ += "less than symbol";
+            break
+        case Type::GreaterThan:
+            what_ += "greater than symbol";
+            break
     }
 }
 

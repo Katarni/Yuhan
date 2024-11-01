@@ -274,12 +274,17 @@ Token LexicalAnalyzer::getToken() {
 
         if (*cur_symbol_ == '<' || *cur_symbol_ == '>') {
             if (cur_content.empty()) {
-                cur_type = Token::Type::RvalueBinaryOperator;
+                if (*cur_symbol_ == '<') {
+                    cur_type = Token::Type::LessThan;
+                } else {
+                    cur_type = Token::type::GreaterThan;
+                }
                 cur_content += *cur_symbol_;
                 continue;
             } else {
                 if (cur_content.size() == 1 && cur_content[0] == *cur_symbol_) {
                     cur_content += *cur_symbol_;
+                    cur_type = Token::Type::RvalueBinaryOperator;
                     continue;
                 } else {
                     break;
