@@ -47,3 +47,14 @@ def test_literals():
     expected = read_file("expected/literals.txt")
 
     assert expected == get_program_output()
+
+
+def test_some_interesting_symbols():
+    input_text = read_file("inputs/some-interesting-symbols.txt") 
+
+    write_file(input_text)
+
+    expected = read_file("expected/some-interesting-symbols.txt")
+
+    assert expected == get_program_output()
+
