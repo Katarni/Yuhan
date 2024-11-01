@@ -277,7 +277,7 @@ Token LexicalAnalyzer::getToken() {
                 if (*cur_symbol_ == '<') {
                     cur_type = Token::Type::LessThan;
                 } else {
-                    cur_type = Token::type::GreaterThan;
+                    cur_type = Token::Type::GreaterThan;
                 }
                 cur_content += *cur_symbol_;
                 continue;
