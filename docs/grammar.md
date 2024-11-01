@@ -1,7 +1,7 @@
 
 \<program> ::= \<includes> \<namespaces> \<programBody>  
 \<includes> ::= {`#include` \<literalString>}  
-\<namespaces> ::= {`using` \<namespace> `;`}
+\<namespaces> ::= {`using` \<namespace> `;`}  
 \<namespace> ::= \<identifier> {`.` \<identifier>}  
 \<programBody> ::= {(\<function> | \<varDefinition>) | \<struct>)}  
 \<struct> ::= `struct` \<identifier> `{` \<programBody> `}` `;`  
