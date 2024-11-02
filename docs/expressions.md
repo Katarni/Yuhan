@@ -20,7 +20,5 @@
 \<op3> ::= `*` | `/` | `%`  
 \<exp2> ::= {\<op2>} \<exp1>  
 \<op2> ::= `++` | `--` | `!` | `+` | `-`  
-\<exp1> ::= `(`\<exp14>`)` | \<exp1>`.`\<identifier> | \<exp1>`[`\<exp14>`]` | \<exp0> | \<expNamespace>  
-\<expNamespace> ::= \<identifier> {`::`\<identifier>}  
-\<exp0> ::= \<identifier> | \<literal>  
-
+\<exp1> ::= \<A>{(`.`\<identifier> | `[` \<exp14>`]`)} | \<identifier>{`::`\<identifier>}   {(`.`\<identifier> | `[` \<exp14>`]`)}  
+\<A> ::= `(`\<exp14>`)` | \<literal>  
