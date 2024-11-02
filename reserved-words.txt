@@ -16,3 +16,5 @@ false
 array
 case
 default
+break
+continue
