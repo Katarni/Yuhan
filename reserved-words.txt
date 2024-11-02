@@ -13,3 +13,6 @@ switch
 return
 true
 false
+array
+case
+default
