@@ -11,3 +11,5 @@ if
 string
 switch
 return
+true
+false

@@ -378,6 +378,12 @@ Token LexicalAnalyzer::getToken() {
             cur_type = Token::Type::ReservedWord;
             if (cur_content == "and" || cur_content == "or") {
                 cur_type = Token::Type::RvalueBinaryOperator;
+            } else if (cur_content == "false") {
+                cur_type = Token::Type::NumericLiteral;
+                cur_content = "0";
+            } else if (cur_content == "true") {
+                cur_type = Token::Type::NumericLiteral;
+                cur_content = "1";
             }
         } else {
             cur_type = Token::Type::Identifier;

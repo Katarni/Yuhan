@@ -58,3 +58,12 @@ def test_some_interesting_symbols():
 
     assert expected == get_program_output()
 
+
+def test_reserved_words():
+    input_text = read_file("inputs/reserved-words.txt") 
+
+    write_file(input_text)
+
+    expected = read_file("expected/reserved-words.txt")
+
+    assert expected == get_program_output()
