@@ -57,6 +57,16 @@ Token LexicalAnalyzer::getToken() {
             continue;
         }
 
+        if (comment) {
+            if (*cur_symbol_ == '\n') {
+                comment = false;
+                ++cur_line_;
+                cur_col_ = -1;
+            }
+            continue;
+        }
+
+
         if (ignore_next) {
             switch (*cur_symbol_) {
                 case 'n':
@@ -68,10 +78,10 @@ Token LexicalAnalyzer::getToken() {
                 case '\"':
                     cur_content += '\"';
                     break;
-                case '\0':
+                case '0':
                     cur_content += '\0';
                     break;
-                case '\r':
+                case 'r':
                     cur_content += '\r';
                     break;
                 case '\\':
@@ -129,15 +139,6 @@ Token LexicalAnalyzer::getToken() {
 
         if (string_literal || char_literal) {
             cur_content += *cur_symbol_;
-            continue;
-        }
-
-        if (comment) {
-            if (*cur_symbol_ == '\n') {
-                comment = false;
-                ++cur_line_;
-                cur_col_ = -1;
-            }
             continue;
         }
 
@@ -329,7 +330,7 @@ Token LexicalAnalyzer::getToken() {
                 } else if (letter_first) {
                     cur_content += *cur_symbol_;
                     continue;
-                } else if (cur_type == Token::Type::ExponentialLiteral) {
+                } else if (cur_type == Token::Type::ExponentialLiteral || cur_type == Token::Type::FloatLiteral) {
                     cur_content += *cur_symbol_;
                     cur_type = Token::Type::Another;
                     continue;
