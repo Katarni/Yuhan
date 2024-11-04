@@ -1,0 +1,9 @@
+identifier a 0:0
+lvalue binary operator = 0:2
+numeric literal 0 0:4
+identifier a 1:0
+rvalue binary operator and 1:2
+identifier f 1:6
+reserved word int 2:0
+reserved word for 2:4
+identifier forrr 3:0

@@ -1,0 +1,16 @@
+identifier a 0:0
+less than < 0:2
+identifier b 0:4
+identifier a 1:0
+plus or minus operator + 1:2
+identifier b 1:4
+identifier a 2:0
+greater than > 2:2
+identifier b 2:4
+identifier a 3:0
+plus or minus operator - 3:2
+identifier b 3:4
+identifier a 4:0
+dot . 4:1
+identifier b 4:2
+semicolon ; 4:3

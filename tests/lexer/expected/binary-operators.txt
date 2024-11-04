@@ -1,0 +1,27 @@
+identifier a 0:0
+lvalue binary operator += 0:2
+identifier b 0:5
+semicolon ; 0:6
+identifier c 1:0
+rvalue binary operator <= 1:2
+string literal fsdf 1:5
+identifier f 2:0
+rvalue binary operator != 2:2
+identifier f 2:5
+identifier j 3:0
+lvalue binary operator += 3:2
+numeric literal 8 3:5
+identifier d 4:0
+rvalue binary operator * 4:1
+lvalue binary operator = 4:3
+numeric literal 4 4:5
+identifier d 5:0
+rvalue binary operator & 5:2
+numeric literal 0 5:3
+numeric literal 4 5:5
+identifier g 6:0
+lvalue binary operator /= 6:2
+identifier f 6:5
+identifier d 7:0
+lvalue binary operator <<= 7:2
+char literal d 7:6

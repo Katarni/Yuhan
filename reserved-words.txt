@@ -10,3 +10,11 @@ else
 if
 string
 switch
+return
+true
+false
+array
+case
+default
+break
+continue
