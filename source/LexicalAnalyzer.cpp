@@ -277,10 +277,12 @@ Token LexicalAnalyzer::getToken() {
             if (cur_content.empty()) {
                 cur_content += *cur_symbol_;
                 cur_type = Token::Type::Colon;
+                continue;
             } else {
                 if (cur_content == ":") {
                     cur_content += *cur_symbol_;
                     cur_type = Token::Type::DoubleColon;
+                    continue;
                 } else {
                     break;
                 }
