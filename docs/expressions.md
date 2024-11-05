@@ -20,5 +20,6 @@
 \<op3> ::= `*` | `/` | `%`  
 \<exp2> ::= {\<op2>} \<exp1>  
 \<op2> ::= `++` | `--` | `!` | `+` | `-`  
-\<exp1> ::= \<A>{(`.`\<identifier> | `[` \<exp14>`]`)} | \<identifier>{`::`\<identifier>}   {(`.`\<identifier> | `[` \<exp14>`]`)}  
+\<vars> ::= \<exp13> {`,` \<exp13>}  
+\<exp1> ::= \<A>{(`.`\<identifier> | `[` \<exp14>`]`)} | \<identifier>{`::`\<identifier>}   \{(`.`\<identifier> | `[` \<exp14>`]`)} \[\[`.` \<identifier>] `(`\<vars>`)`]  
 \<A> ::= `(`\<exp14>`)` | \<literal>  

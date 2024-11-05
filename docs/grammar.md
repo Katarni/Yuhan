@@ -14,7 +14,7 @@
 \<statement> ::= \<if> | \<while> | \<for> | \<switch> | `break` `;` | `continue` `;` | \<varDefenition> | \<return> | \<block> | `;` | \<exp14>  
 \<if> ::= `if` `(` \<exp14> `)` \<statement> \[`else` \<statement>]  
 \<while> ::= `while` `(` \<exp14> `)` \<statement>  
-\<for> ::= `for` `(` \[\<exp14>] `;` \[\<exp14>] `;` \[\<exp14>] `)` \<statement>  
+\<for> ::= `for` `(` \[(\<exp14> | \<varDefinition>)] `;` \[\<exp14>] `;` \[\<exp14>] `)` \<statement>  
 \<switchItem> ::= `case` \<literal> `:` \<statement>  
 \<switch> ::= `switch` `(` \<exp14> `)` `{` {\<switchItem>} \[`default` `:` \<statement>] `}`  
 \<return> ::= `return` \[\<exp14>] `;`  
