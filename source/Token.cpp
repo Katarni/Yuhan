@@ -69,6 +69,11 @@ void Token::generateWhat() {
         case Type::GreaterThan:
             what_ += "greater than symbol";
             break;
+        case Type::DoubleColon:
+            what_ += "double ";
+        case Type::Colon:
+            what_ += "colon";
+            break;
     }
 }
 

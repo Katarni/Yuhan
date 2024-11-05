@@ -273,6 +273,20 @@ Token LexicalAnalyzer::getToken() {
             }
         }
 
+        if (*cur_symbol_ == ':') {
+            if (cur_content.empty()) {
+                cur_content += *cur_symbol_;
+                cur_type = Token::Type::Colon;
+            } else {
+                if (cur_content == ":") {
+                    cur_content += *cur_symbol_;
+                    cur_type = Token::Type::DoubleColon;
+                } else {
+                    break;
+                }
+            }
+        }
+
         if (*cur_symbol_ == '<' || *cur_symbol_ == '>') {
             if (cur_content.empty()) {
                 if (*cur_symbol_ == '<') {
