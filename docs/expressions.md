@@ -21,6 +21,5 @@
 \<exp2> ::= {\<op2>} \<exp1>  
 \<op2> ::= `++` | `--` | `!` | `+` | `-`  
 \<vars> ::= \<exp13> {`,` \<exp13>}  
-\<exp1> ::= \<A> \<B> | \<identifier>{`::`\<identifier>}  \[`(`\[\<vars>] `)`]  \<B>  
-\<A> ::= `(`\<exp14>`)` | \<literal>  
+\<exp1> ::= \<literal> | `(` \<exp14>`)` \<B> | \<identifier>{`::`\<identifier>}  \[`(`\[\<vars>] `)`]  \<B>  
 \<B> ::= {(`.` \<identifier> \[`(`\[\<vars>]`)`] | `[` \<exp14>`]` )}
