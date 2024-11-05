@@ -19,7 +19,9 @@ private:
 
     void literal();
 
-    void A();
+    void B();
+
+    void vars();
 
     void exp1();
 
