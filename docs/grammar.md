@@ -9,7 +9,7 @@
 \<varDefinition> ::= \<type> \<var> {`,`  \<var>}`;`  
 \<var> ::= \<identifier> | \<identifier> `=` \<exp12>  
 \<funcVarDefinition> ::= \<type> \<identifier> {`,` \<type> \<identifier>} {`,` \<type> \<identifier> `=` \<exp12>} | \[\<type> \<identifier> `=` \<exp12> {`,` \<type> \<identifier> `=` \<exp12>}]  
-\<function> ::= \<type> \<identifier> `(` \<funcVarDefinition> `)` \<block>  
+\<function> ::= `func` \<type> \<identifier> `(` \<funcVarDefinition> `)` \<block>  
 \<block> ::= `{`{\<statement>}`}`  
 \<statement> ::= \<if> | \<while> | \<for> | \<switch> | `break` `;` | `continue` `;` | \<varDefenition> | \<return> | \<block> | `;`  
 \<if> ::= `if` `(` \<exp14> `)` \<statement> \[`else` \<statement>]  
