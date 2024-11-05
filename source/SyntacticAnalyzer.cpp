@@ -102,8 +102,8 @@ bool SyntacticAnalyzer::isOp2() {
 void SyntacticAnalyzer::exp2() {
     while (isOp2()) {
         getLex();
-        exp1();
     }
+    exp1();
 }
 
 bool SyntacticAnalyzer::isOp3() {
@@ -276,15 +276,24 @@ void SyntacticAnalyzer::forStatement() {
         throw lex_;
     }
     getLex();
-    for (int i = 0; i < 2; ++i) {
-        if (lex_.getType() != Token::Type::Semicolon) {
+    if (lex_.getType() != Token::Type::Semicolon) {
+        if (isType()) {
+            varDefinition();
+        } else {
             exp14();
+            if (lex_.getType() != Token::Type::Semicolon) {
+                throw lex_;
+            }
+            getLex();
         }
-        if (lex_.getType() != Token::Type::Semicolon) {
-            throw lex_;
-        }
-        getLex();
     }
+    if (lex_.getType() != Token::Type::Semicolon) {
+        exp14();
+    }
+    if (lex_.getType() != Token::Type::Semicolon) {
+        throw lex_;
+    }
+    getLex();
     if (lex_.getType() != Token::Type::Semicolon) {
         exp14();
     }
@@ -362,10 +371,10 @@ void SyntacticAnalyzer::block() {
         throw lex_;
     }
     getLex();
-    statement();
-    if (lex_.getType() != Token::Type::CloseCurlyBrace) {
-        throw lex_;
+    while (lex_.getType() != Token::Type::CloseCurlyBrace) {
+        statement();
     }
+    getLex();
 }
 
 void SyntacticAnalyzer::varDefinition() {
@@ -423,6 +432,10 @@ void SyntacticAnalyzer::statement() {
         return;
     }
     exp14();
+    if (lex_.getType() != Token::Type::Semicolon) {
+        throw lex_;
+    }
+    getLex();
 }
 
 void SyntacticAnalyzer::type() {
@@ -442,6 +455,14 @@ void SyntacticAnalyzer::type() {
         throw lex_;
     }
     getLex();
+    if (lex_.getContent() == "int" ||
+        lex_.getContent() == "float" ||
+        lex_.getContent() == "bool" ||
+        lex_.getContent() == "char" ||
+        lex_.getContent() == "string") {
+        getLex();
+        return;
+    }
     if (lex_.getContent() == "array") {
         array();
         return;
@@ -472,7 +493,7 @@ void SyntacticAnalyzer::var() {
 }
 
 void SyntacticAnalyzer::function() {
-    if (lex_.getContent() == "func") {
+    if (lex_.getContent() != "func") {
         throw lex_;
     }
     getLex();
@@ -560,7 +581,7 @@ void SyntacticAnalyzer::program() {
 void SyntacticAnalyzer::includes() {
     while (lex_.getContent() == "#include") {
         getLex();
-        if (lex_.getType() != Token::Type::Identifier) {
+        if (lex_.getType() != Token::Type::StringLiteral) {
             throw lex_;
         }
         getLex();
@@ -568,6 +589,7 @@ void SyntacticAnalyzer::includes() {
 }
 
 void SyntacticAnalyzer::namespaces() {
+    if (lex_.getContent() != "using") return;
     while (lex_.getContent() == "using") {
         getLex();
         identifierNamespace();
