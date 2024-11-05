@@ -418,7 +418,11 @@ void SyntacticAnalyzer::statement() {
         block();
         return;
     }
-    varDefinition();
+    if (isType()) {
+        varDefinition();
+        return;
+    }
+    exp14();
 }
 
 void SyntacticAnalyzer::type() {
@@ -430,27 +434,29 @@ void SyntacticAnalyzer::type() {
         getLex();
         return;
     }
-    if (lex_.getContent() != "array") {
+    if (lex_.getContent() == "array") {
+        array();
+        return;
+    }
+    if (lex_.getContent() != "typename") {
         throw lex_;
     }
     getLex();
-    if (lex_.getContent() != "<") {
+    if (lex_.getContent() == "array") {
+        array();
+        return;
+    }
+    if (lex_.getType() != Token::Type::Identifier) {
         throw lex_;
     }
     getLex();
-    type();
-    if (lex_.getType() != Token::Type::Comma) {
-        throw lex_;
+    while (lex_.getContent() == "::") {
+        getLex();
+        if (lex_.getType() != Token::Type::Identifier) {
+            throw lex_;
+        }
+        getLex();
     }
-    getLex();
-    if (lex_.getType() != Token::Type::NumericLiteral) {
-        throw lex_;
-    }
-    getLex();
-    if (lex_.getContent() != ">") {
-        throw lex_;
-    }
-    getLex();
 }
 
 void SyntacticAnalyzer::var() {
@@ -589,6 +595,43 @@ void SyntacticAnalyzer::identifierNamespace() {
 void SyntacticAnalyzer::startAnalysis() {
     getLex();
     program();
+}
+
+void SyntacticAnalyzer::array() {
+    if (lex_.getContent() != "array") {
+        throw lex_;
+    }
+    getLex();
+    if (lex_.getContent() != "<") {
+        throw lex_;
+    }
+    getLex();
+    type();
+    if (lex_.getType() != Token::Type::Comma) {
+        throw lex_;
+    }
+    getLex();
+    if (lex_.getType() != Token::Type::NumericLiteral) {
+        throw lex_;
+    }
+    getLex();
+    if (lex_.getContent() != ">") {
+        throw lex_;
+    }
+    getLex();
+}
+
+bool SyntacticAnalyzer::isType() {
+    if (lex_.getContent() == "int" ||
+        lex_.getContent() == "float" ||
+        lex_.getContent() == "bool" ||
+        lex_.getContent() == "char" ||
+        lex_.getContent() == "string" ||
+        lex_.getContent() == "array" ||
+        lex_.getContent() == "typename") {
+        return true;
+    }
+    return false;
 }
 
 

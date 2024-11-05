@@ -94,4 +94,8 @@ private:
     void namespaces();
 
     void identifierNamespace();
+
+    void array();
+
+    bool isType();
 };
