@@ -465,4 +465,47 @@ void SyntacticAnalyzer::var() {
     exp12();
 }
 
+void SyntacticAnalyzer::function() {
+    if (lex_.getContent() == "func") {
+        throw lex_;
+    }
+    getLex();
+    type();
+    if (lex_.getType() != Token::Type::Identifier) {
+        throw lex_;
+    }
+    getLex();
+    if (lex_.getType() != Token::Type::OpenParenthesis) {
+        throw lex_;
+    }
+    getLex();
+    if (lex_.getType() == Token::Type::CloseParenthesis) {
+        getLex();
+        block();
+        return;
+    }
+    funcVarDefinition();
+    if (lex_.getType() != Token::Type::CloseParenthesis) {
+        throw lex_;
+    }
+    getLex();
+    block();
+}
+
+void SyntacticAnalyzer::funcVarDefinition() {
+    type();
+    if (lex_.getType() != Token::Type::Identifier) {
+        throw lex_;
+    }
+    getLex();
+    while (lex_.getType() == Token::Type::Comma) {
+        getLex();
+        type();
+        if (lex_.getType() != Token::Type::Identifier) {
+            throw lex_;
+        }
+        getLex();
+    }
+}
+
 

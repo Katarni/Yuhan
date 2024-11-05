@@ -76,4 +76,8 @@ private:
     void varDefinition();
 
     void statement();
+
+    void function();
+
+    void funcVarDefinition();
 };
