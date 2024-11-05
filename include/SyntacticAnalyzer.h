@@ -7,6 +7,8 @@ class SyntacticAnalyzer {
 public:
     SyntacticAnalyzer(LexicalAnalyzer* lexer);
 
+    void startAnalysis();
+
 private:
     LexicalAnalyzer *lexer_;
     Token lex_;
@@ -80,4 +82,16 @@ private:
     void function();
 
     void funcVarDefinition();
+
+    void structure();
+
+    void programBody();
+
+    void program();
+
+    void includes();
+
+    void namespaces();
+
+    void identifierNamespace();
 };

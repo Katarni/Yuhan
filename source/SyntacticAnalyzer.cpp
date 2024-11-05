@@ -508,4 +508,87 @@ void SyntacticAnalyzer::funcVarDefinition() {
     }
 }
 
+void SyntacticAnalyzer::structure() {
+    if (lex_.getContent() != "struct") {
+        throw lex_;
+    }
+    getLex();
+    if (lex_.getType() != Token::Type::Identifier) {
+        throw lex_;
+    }
+    getLex();
+    if (lex_.getType() != Token::Type::OpenCurlyBrace) {
+        throw lex_;
+    }
+    getLex();
+    while (lex_.getType() != Token::Type::CloseCurlyBrace) {
+        programBody();
+    }
+    getLex();
+    if (lex_.getType() != Token::Type::Semicolon) {
+        throw lex_;
+    }
+    getLex();
+}
+
+void SyntacticAnalyzer::programBody() {
+    if (lex_.getContent() == "func") {
+        function();
+        return;
+    }
+    if (lex_.getContent() == "struct") {
+        structure();
+        return;
+    }
+    varDefinition();
+}
+
+void SyntacticAnalyzer::program() {
+    includes();
+    namespaces();
+    while (lex_.getType() != Token::Type::EndOfFile) {
+        programBody();
+    }
+}
+
+void SyntacticAnalyzer::includes() {
+    while (lex_.getContent() == "#include") {
+        getLex();
+        if (lex_.getType() != Token::Type::Identifier) {
+            throw lex_;
+        }
+        getLex();
+    }
+}
+
+void SyntacticAnalyzer::namespaces() {
+    while (lex_.getContent() == "using") {
+        getLex();
+        identifierNamespace();
+    }
+    if (lex_.getType() != Token::Type::Semicolon) {
+        throw lex_;
+    }
+    getLex();
+}
+
+void SyntacticAnalyzer::identifierNamespace() {
+    if (lex_.getType() != Token::Type::Identifier) {
+        throw lex_;
+    }
+    getLex();
+    while (lex_.getType() == Token::Type::Dot) {
+        getLex();
+        if (lex_.getType() != Token::Type::Identifier) {
+            throw lex_;
+        }
+        getLex();
+    }
+}
+
+void SyntacticAnalyzer::startAnalysis() {
+    getLex();
+    program();
+}
+
 
