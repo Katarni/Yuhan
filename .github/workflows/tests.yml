@@ -52,3 +52,28 @@ jobs:
         run: |
           cd tests/lexer
           pytest .
+
+  sintex-test:
+    needs: lexer-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: install pytest
+        run: pip install pytest
+      - name: Build sintex
+        run: |
+          mkdir tests/sintex/build
+          cd tests/sintex/build
+          cmake ..
+          make
+          cd ..
+      - name: Run test
+        run: |
+          cd tests/sintex
+          pytest .
