@@ -7,4 +7,4 @@ string literal eee 6:1
 another 5. 7:1
 char literal g 8:1
 another h"ddd 9:1
-string literal 10:1
+string literal  10:1
