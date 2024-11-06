@@ -19,8 +19,15 @@ def read_file(input_file):
     return text
 
 
-def test_correct_program_1():
-    file = read_file("inputs/correct-program-1.txt")
+def test_structs():
+    file = read_file("inputs/structs.txt")
+    write_file(file)
+
+    assert get_program_output() == "OK"
+
+
+def test_literals():
+    file = read_file("inputs/literals.txt")
     write_file(file)
 
     assert get_program_output() == "OK"
