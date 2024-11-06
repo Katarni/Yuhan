@@ -46,3 +46,10 @@ def test_if_else():
 
     assert get_program_output() == "OK"
 
+
+def test_namespaces():
+    file = read_file("inputs/namespaces.txt")
+    write_file(file)
+
+    assert get_program_output() == "OK"
+
