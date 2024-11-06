@@ -93,7 +93,7 @@ private:
 
     void includes();
 
-    void namespaces();
+    void structBody();
 
     void identifierNamespace();
 

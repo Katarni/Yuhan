@@ -547,7 +547,7 @@ void SyntacticAnalyzer::structure() {
     }
     getLex();
     while (lex_.getType() != Token::Type::CloseCurlyBrace) {
-        programBody();
+        structBody();
     }
     getLex();
     if (lex_.getType() != Token::Type::Semicolon) {
@@ -557,20 +557,14 @@ void SyntacticAnalyzer::structure() {
 }
 
 void SyntacticAnalyzer::programBody() {
-    if (lex_.getContent() == "func") {
-        function();
-        return;
+    if (lex_.getContent() == "namespace") {
+        identifierNamespace();
     }
-    if (lex_.getContent() == "struct") {
-        structure();
-        return;
-    }
-    varDefinition();
+    structBody();
 }
 
 void SyntacticAnalyzer::program() {
     includes();
-    namespaces();
     while (lex_.getType() != Token::Type::EndOfFile) {
         programBody();
     }
@@ -586,34 +580,26 @@ void SyntacticAnalyzer::includes() {
     }
 }
 
-void SyntacticAnalyzer::namespaces() {
-    if (lex_.getContent() != "using") return;
-    while (lex_.getContent() == "using") {
-        getLex();
-        if (lex_.getContent() != "namespace") {
-            throw lex_;
-        }
-        getLex();
-        identifierNamespace();
-    }
-    if (lex_.getType() != Token::Type::Semicolon) {
+void SyntacticAnalyzer::identifierNamespace() {
+    if (lex_.getContent() != "namespace") {
         throw lex_;
     }
     getLex();
-}
-
-void SyntacticAnalyzer::identifierNamespace() {
     if (lex_.getType() != Token::Type::Identifier) {
         throw lex_;
     }
     getLex();
-    while (lex_.getType() == Token::Type::Dot) {
-        getLex();
-        if (lex_.getType() != Token::Type::Identifier) {
-            throw lex_;
-        }
-        getLex();
+    if (lex_.getType() != Token::Type::OpenCurlyBrace) {
+        throw lex_;
     }
+    getLex();
+    while (lex_.getType() != Token::Type::CloseCurlyBrace) {
+        programBody();
+    }
+    if (lex_.getType() != Token::Type::CloseCurlyBrace) {
+        throw lex_;
+    }
+    getLex();
 }
 
 void SyntacticAnalyzer::startAnalysis() {
@@ -664,6 +650,18 @@ void SyntacticAnalyzer::vars() {
         getLex();
         exp13();
     }
+}
+
+void SyntacticAnalyzer::structBody() {
+    if (lex_.getContent() == "func") {
+        function();
+        return;
+    }
+    if (lex_.getContent() == "struct") {
+        structure();
+        return;
+    }
+    varDefinition();
 }
 
 
