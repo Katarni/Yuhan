@@ -1,10 +1,10 @@
 
-\<program> ::= \<includes> \<namespaces> {\<programBody>} \<endOfFile>  
+\<program> ::= \<includes> {\<programBody>} \<endOfFile>  
 \<includes> ::= {`#include` \<literalString>}  
-\<namespaces> ::= {`using` \<namespace> `;`}  
-\<namespace> ::= \<identifier> {`.` \<identifier>}  
-\<programBody> ::= (\<function> | \<varDefinition>) | \<struct>)  
-\<struct> ::= `struct` \<identifier> `{` {\<programBody>} `}` `;`  
+\<namespace> ::= `namespace` \<identifier> `{` {\<programBody>}`}`  
+\<structBody> ::= \<function> | \<varDefinition>) | \<struct>  
+\<programBody> ::= \<namespace> | \<structBody>  
+\<struct> ::= `struct` \<identifier> `{` {\<structBody>} `}` `;`  
 \<type> ::= `int` | `float` | `bool` | `char` | `string` | \[`typename`] `array` `<` \<type>`,` \<literalInt> `>` | `typename` \<identifier> {`::` \<identifier>}  
 \<varDefinition> ::= \<type> \<var> {`,`  \<var>}`;`  
 \<var> ::= \<identifier> | \<identifier> `=` \<exp12>  
