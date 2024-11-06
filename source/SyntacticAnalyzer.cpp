@@ -72,8 +72,7 @@ void SyntacticAnalyzer::exp1() {
         getLex();
         while (lex_.getType() == Token::Type::DoubleColon) {
             getLex();
-            if (lex_.getType() != Token::Type::Identifier &&
-                lex_.getType() != Token::Type::ReservedWord) {
+            if (lex_.getType() != Token::Type::Identifier) {
                 throw lex_;
             }
             getLex();
@@ -290,6 +289,8 @@ void SyntacticAnalyzer::forStatement() {
             }
             getLex();
         }
+    } else {
+        getLex();
     }
     if (lex_.getType() != Token::Type::Semicolon) {
         exp14();
@@ -314,11 +315,7 @@ void SyntacticAnalyzer::switchItem() {
     }
     getLex();
     literal();
-    if (lex_.getContent() != ":") {
-        throw lex_;
-    }
-    getLex();
-    statement();
+    block();
 }
 
 void SyntacticAnalyzer::switchStatement() {
@@ -345,11 +342,7 @@ void SyntacticAnalyzer::switchStatement() {
     }
     if (lex_.getContent() == "default") {
         getLex();
-        if (lex_.getContent() != ":") {
-            throw lex_;
-        }
-        getLex();
-        statement();
+        block();
     }
     if (lex_.getType() != Token::Type::CloseCurlyBrace) {
         throw lex_;
@@ -478,8 +471,7 @@ void SyntacticAnalyzer::type() {
     getLex();
     while (lex_.getContent() == "::") {
         getLex();
-        if (lex_.getType() != Token::Type::Identifier &&
-            lex_.getType() != Token::Type::ReservedWord) {
+        if (lex_.getType() != Token::Type::Identifier) {
             throw lex_;
         }
         getLex();
