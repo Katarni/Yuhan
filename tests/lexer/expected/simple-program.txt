@@ -1,11 +1,11 @@
-reserved word int 0:0
-identifier main 0:4
-open parenthesis ( 0:8
-close parenthesis ) 0:9
-open curly brace { 0:11
-reserved word int 1:4
-identifier a 1:8
-lvalue binary operator = 1:10
-numeric literal 0 1:12
-semicolon ; 1:13
-close curly brace } 2:0
+reserved word int 1:1
+identifier main 1:5
+open parenthesis ( 1:9
+close parenthesis ) 1:10
+open curly brace { 1:12
+reserved word int 2:5
+identifier a 2:9
+lvalue binary operator = 2:11
+numeric literal 0 2:13
+semicolon ; 2:14
+close curly brace } 3:1
