@@ -17,7 +17,12 @@ int main() {
 
     SyntacticAnalyzer sintex(lexer);
 
-    sintex.startAnalysis();
+    try {
+        sintex.startAnalysis();
+    } catch (const Token& e) {
+        std::cout << e.what();
+        return 0;
+    }
     std::cout << "OK";
     return 0;
 }
