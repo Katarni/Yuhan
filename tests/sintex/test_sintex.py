@@ -32,3 +32,17 @@ def test_literals():
 
     assert get_program_output() == "OK"
 
+
+def test_cycles():
+    file = read_file("inputs/cycles.txt")
+    write_file(file)
+
+    assert get_program_output() == "OK"
+    
+
+def test_if_else():
+    file = read_file("inputs/if-else.txt")
+    write_file(file)
+
+    assert get_program_output() == "OK"
+
