@@ -1,0 +1,29 @@
+struct a {
+    int s;
+
+    func int f() {
+        a + f;
+    }
+
+    struct c {
+        string s = "";
+    };
+
+    array<int, 400> a;
+};
+
+func int main() {
+    int something_strange = 0;
+    typename a f = l;
+}
+
+struct ___ffasFFSDJ432434 {
+    // some stl thing
+
+    int ____sdfgklnKKKKKK____cnt = 0;
+
+    func int size(int g) {
+        return 0;
+    }
+};
+

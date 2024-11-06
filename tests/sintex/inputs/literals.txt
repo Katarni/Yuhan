@@ -1,0 +1,10 @@
+func int main() {
+    string s = "ff";
+    float s = 4e5;
+    int s = 3;
+    float s = 4.6;
+
+    f("ss");
+    4e5 + 4.5;
+}
+

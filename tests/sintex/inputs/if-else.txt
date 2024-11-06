@@ -1,0 +1,22 @@
+func int main() {
+    if (s == 0) break;
+    else if (f == 0) {
+        jjj;
+    } else if (h) continue;
+    else {
+        kkk;
+    }
+
+    switch (x) {
+        case "f" {
+            ddl;
+            break;
+            4;
+        } case 5 {
+            ddd;
+        } case 5 {break;}
+        default {
+            f += 4;
+        }
+    }
+}
