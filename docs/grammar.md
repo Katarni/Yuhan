@@ -2,10 +2,10 @@
 \<program> ::= \<includes> {\<programBody>} \<endOfFile>  
 \<includes> ::= {`#include` \<literalString>}  
 \<namespace> ::= `namespace` \<identifier> `{` {\<programBody>}`}`  
-\<structBody> ::= \<function> | \<varDefinition>) | \<struct>  
-\<programBody> ::= \<namespace> | \<structBody>  
+\<structBody> ::= \<varDefinition>   
+\<programBody> ::= \<namespace> | \<struct> | \<function> | \<structBody>  
 \<struct> ::= `struct` \<identifier> `{` {\<structBody>} `}` `;`  
-\<type> ::= `int` | `float` | `bool` | `char` | `string` | \[`typename`] `array` `<` \<type>`,` \<literalInt> `>` | `typename` \<identifier> {`::` \<identifier>}  
+\<type> ::= \[`typename`] `int` | \[`typename`] `float` | \[`typename`] `bool` | \[`typename`] `char` | \[`typename`] `string` | \[`typename`] `array` `<` \<type>`,` \<literalInt> `>` | `typename` \<identifier> {`::` \<identifier>}  
 \<varDefinition> ::= \<type> \<var> {`,`  \<var>}`;`  
 \<var> ::= \<identifier> | \<identifier> `=` \<exp12>  
 \<funcVarDefinition> ::= \<type> \<identifier> {`,` \<type> \<identifier>}  

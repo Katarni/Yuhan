@@ -27,33 +27,13 @@ void SyntacticAnalyzer::literal() {
 }
 
 void SyntacticAnalyzer::B() {
-    for (;;) {
-        if (lex_.getType() == Token::Type::Dot) {
-            getLex();
-            if (lex_.getType() != Token::Type::Identifier) {
-                throw lex_;
-            }
-            getLex();
-            if (lex_.getType() == Token::Type::OpenParenthesis) {
-                getLex();
-                if (lex_.getType() != Token::Type::CloseParenthesis) {
-                    vars();
-                }
-                if (lex_.getType() != Token::Type::CloseParenthesis) {
-                    throw lex_;
-                }
-                getLex();
-            }
-        } else if (lex_.getType() == Token::Type::OpenSquareBracket) {
-            getLex();
-            exp14();
-            if (lex_.getType() != Token::Type::CloseSquareBracket) {
-                throw lex_;
-            }
-            getLex();
-        } else {
-            break;
+    while (lex_.getType() == Token::Type::OpenSquareBracket) {
+        getLex();
+        exp14();
+        if (lex_.getType() != Token::Type::CloseSquareBracket) {
+            throw lex_;
         }
+        getLex();
     }
 }
 
@@ -559,6 +539,15 @@ void SyntacticAnalyzer::structure() {
 void SyntacticAnalyzer::programBody() {
     if (lex_.getContent() == "namespace") {
         identifierNamespace();
+        return;
+    }
+    if (lex_.getContent() == "func") {
+        function();
+        return;
+    }
+    if (lex_.getContent() == "struct") {
+        structure();
+        return;
     }
     structBody();
 }
@@ -653,14 +642,6 @@ void SyntacticAnalyzer::vars() {
 }
 
 void SyntacticAnalyzer::structBody() {
-    if (lex_.getContent() == "func") {
-        function();
-        return;
-    }
-    if (lex_.getContent() == "struct") {
-        structure();
-        return;
-    }
     varDefinition();
 }
 

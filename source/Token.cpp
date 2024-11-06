@@ -78,12 +78,12 @@ void Token::generateWhat() {
 }
 
 void Token::setLine(size_t line) {
-    line_ = line;
+    line_ = line + 1;
     generateWhat();
 }
 
 void Token::setColumn(size_t column) {
-    column_ = column;
+    column_ = column + 1;
     generateWhat();
 }
 
