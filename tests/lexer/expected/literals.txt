@@ -7,3 +7,4 @@ string literal eee 5:0
 another 5. 6:0
 char literal g 7:0
 another h"ddd 8:0
+string literal  9:0

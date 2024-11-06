@@ -378,7 +378,7 @@ Token LexicalAnalyzer::getToken() {
         letter_first = false;
     }
 
-    if (cur_content.empty()) {
+    if (cur_content.empty() && cur_type == Token::Type::CloseParenthesis) {
         cur_type = Token::Type::EndOfFile;
     }
 
