@@ -26,50 +26,7 @@ void SyntacticAnalyzer::literal() {
     getLex();
 }
 
-void SyntacticAnalyzer::A() {
-    if (lex_.getType() == Token::Type::OpenParenthesis) {
-        getLex();
-        exp14();
-        if (lex_.getType() != Token::Type::CloseParenthesis) {
-            throw lex_;
-        }
-        getLex();
-        return;
-    }
-    literal();
-}
-
-void SyntacticAnalyzer::exp1() {
-    if (lex_.getType() == Token::Type::Identifier) {
-        getLex();
-        while (lex_.getContent() == "::") {
-            getLex();
-            if (lex_.getType() != Token::Type::Identifier) {
-                throw lex_;
-            }
-            getLex();
-        }
-        for (;;) {
-            if (lex_.getType() == Token::Type::Dot) {
-                getLex();
-                if (lex_.getType() != Token::Type::Identifier) {
-                    throw lex_;
-                }
-                getLex();
-            } else if (lex_.getType() == Token::Type::OpenSquareBracket) {
-                getLex();
-                exp14();
-                if (lex_.getType() == Token::Type::CloseSquareBracket) {
-                    throw lex_;
-                }
-                getLex();
-            } else {
-                break;
-            }
-        }
-        return;
-    }
-    A();
+void SyntacticAnalyzer::B() {
     for (;;) {
         if (lex_.getType() == Token::Type::Dot) {
             getLex();
@@ -77,10 +34,20 @@ void SyntacticAnalyzer::exp1() {
                 throw lex_;
             }
             getLex();
+            if (lex_.getType() == Token::Type::OpenParenthesis) {
+                getLex();
+                if (lex_.getType() != Token::Type::CloseParenthesis) {
+                    vars();
+                }
+                if (lex_.getType() != Token::Type::CloseParenthesis) {
+                    throw lex_;
+                }
+                getLex();
+            }
         } else if (lex_.getType() == Token::Type::OpenSquareBracket) {
             getLex();
             exp14();
-            if (lex_.getType() == Token::Type::CloseSquareBracket) {
+            if (lex_.getType() != Token::Type::CloseSquareBracket) {
                 throw lex_;
             }
             getLex();
@@ -88,6 +55,43 @@ void SyntacticAnalyzer::exp1() {
             break;
         }
     }
+}
+
+void SyntacticAnalyzer::exp1() {
+    if (lex_.getType() == Token::Type::OpenParenthesis) {
+        getLex();
+        exp14();
+        if (lex_.getType() != Token::Type::CloseParenthesis) {
+            throw lex_;
+        }
+        getLex();
+        B();
+        return;
+    }
+    if (lex_.getType() == Token::Type::Identifier) {
+        getLex();
+        while (lex_.getType() == Token::Type::DoubleColon) {
+            getLex();
+            if (lex_.getType() != Token::Type::Identifier &&
+                lex_.getType() != Token::Type::ReservedWord) {
+                throw lex_;
+            }
+            getLex();
+        }
+        if (lex_.getType() == Token::Type::OpenParenthesis) {
+            getLex();
+            if (lex_.getType() != Token::Type::CloseParenthesis) {
+                vars();
+            }
+            if (lex_.getType() != Token::Type::CloseParenthesis) {
+                throw lex_;
+            }
+            getLex();
+        }
+        B();
+        return;
+    }
+    literal();
 }
 
 bool SyntacticAnalyzer::isOp2() {
@@ -294,7 +298,7 @@ void SyntacticAnalyzer::forStatement() {
         throw lex_;
     }
     getLex();
-    if (lex_.getType() != Token::Type::Semicolon) {
+    if (lex_.getType() != Token::Type::CloseParenthesis) {
         exp14();
     }
     if (lex_.getType() != Token::Type::CloseParenthesis) {
@@ -350,6 +354,7 @@ void SyntacticAnalyzer::switchStatement() {
     if (lex_.getType() != Token::Type::CloseCurlyBrace) {
         throw lex_;
     }
+    getLex();
 }
 
 void SyntacticAnalyzer::returnStatement() {
@@ -473,7 +478,8 @@ void SyntacticAnalyzer::type() {
     getLex();
     while (lex_.getContent() == "::") {
         getLex();
-        if (lex_.getType() != Token::Type::Identifier) {
+        if (lex_.getType() != Token::Type::Identifier &&
+            lex_.getType() != Token::Type::ReservedWord) {
             throw lex_;
         }
         getLex();
@@ -592,6 +598,10 @@ void SyntacticAnalyzer::namespaces() {
     if (lex_.getContent() != "using") return;
     while (lex_.getContent() == "using") {
         getLex();
+        if (lex_.getContent() != "namespace") {
+            throw lex_;
+        }
+        getLex();
         identifierNamespace();
     }
     if (lex_.getType() != Token::Type::Semicolon) {
@@ -654,6 +664,14 @@ bool SyntacticAnalyzer::isType() {
         return true;
     }
     return false;
+}
+
+void SyntacticAnalyzer::vars() {
+    exp13();
+    while (lex_.getType() == Token::Type::Comma) {
+        getLex();
+        exp13();
+    }
 }
 
 
