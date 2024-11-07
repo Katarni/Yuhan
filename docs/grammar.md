@@ -2,8 +2,8 @@
 \<program> ::= \<includes> {\<programBody>} \<endOfFile>  
 \<includes> ::= {`#include` \<literalString>}  
 \<namespace> ::= `namespace` \<identifier> `{` {\<programBody>}`}`  
-\<structBody> ::= \<varDefinition>   
-\<programBody> ::= \<namespace> | \<struct> | \<function> | \<structBody>  
+\<structBody> ::= \<varDefinition> | \<struct>  
+\<programBody> ::= \<namespace> | \<function> | \<structBody>  
 \<struct> ::= `struct` \<identifier> `{` {\<structBody>} `}` `;`  
 \<type> ::= \[`typename`] `int` | \[`typename`] `float` | \[`typename`] `bool` | \[`typename`] `char` | \[`typename`] `string` | \[`typename`] `array` `<` \<type>`,` \<literalInt> `>` | `typename` \<identifier> {`::` \<identifier>}  
 \<varDefinition> ::= \<type> \<var> {`,`  \<var>}`;`  

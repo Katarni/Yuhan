@@ -545,10 +545,6 @@ void SyntacticAnalyzer::programBody() {
         function();
         return;
     }
-    if (lex_.getContent() == "struct") {
-        structure();
-        return;
-    }
     structBody();
 }
 
@@ -642,6 +638,10 @@ void SyntacticAnalyzer::vars() {
 }
 
 void SyntacticAnalyzer::structBody() {
+    if (lex_.getContent() == "struct") {
+        structure();
+        return;
+    }
     varDefinition();
 }
 
