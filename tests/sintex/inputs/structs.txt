@@ -11,6 +11,10 @@ struct a {
 func int main() {
     int something_strange = 0;
     typename a f = l;
+
+    a.s += f;
+    a.s.d = 0;
+    a().f = 0;
 }
 
 struct ___ffasFFSDJ432434 {
