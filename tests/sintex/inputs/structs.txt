@@ -2,6 +2,10 @@ struct a {
     int s;
 
     array<int, 400> a;
+
+    struct s {
+        int fff;
+    };
 };
 
 func int main() {
@@ -13,5 +17,11 @@ struct ___ffasFFSDJ432434 {
     // some stl thing
 
     int ____sdfgklnKKKKKK____cnt = 0;
+
+    struct d {
+        struct r {
+            int g = 0;
+        };
+    };
 };
 
