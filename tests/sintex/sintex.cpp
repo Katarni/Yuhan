@@ -1,5 +1,4 @@
-#include "include/Starter.h"
-#include "include/SyntacticAnalyzer.h"
+#include "../../include/SyntacticAnalyzer.h"
 
 int main() {
     std::string file_path;
@@ -13,14 +12,17 @@ int main() {
     auto file_text = new char[file_size];
     file_fin.read(file_text, file_size);
 
-//    Starter starter(file_text, file_size, "../reserved-words.txt");
-
     LexicalAnalyzer *lexer;
-    lexer = new LexicalAnalyzer(file_text, file_size, "../reserved-words.txt");
+    lexer = new LexicalAnalyzer(file_text, file_size, "../../reserved-words.txt");
 
     SyntacticAnalyzer sintex(lexer);
 
-    sintex.startAnalysis();
+    try {
+        sintex.startAnalysis();
+    } catch (const Token& e) {
+        std::cout << e.what();
+        return 0;
+    }
     std::cout << "OK";
     return 0;
 }

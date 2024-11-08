@@ -13,5 +13,7 @@ add_executable(Yuhan main.cpp
         source/Token.cpp
         source/Starter.cpp
         include/Starter.h
+        include/SyntacticAnalyzer.h
+        source/SyntacticAnalyzer.cpp
 )
 

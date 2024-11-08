@@ -1,9 +1,10 @@
-float literal 6.6 0:0
-float literal 7.0 1:0
-exponential literal 4e3 2:0
-another 4er 3:0
-another 4e 4:0
-string literal eee 5:0
-another 5. 6:0
-char literal g 7:0
-another h"ddd 8:0
+float literal 6.6 1:1
+float literal 7.0 2:1
+exponential literal 4e3 3:1
+another 4er 4:1
+another 4e 5:1
+string literal eee 6:1
+another 5. 7:1
+char literal g 8:1
+another h"ddd 9:1
+string literal  10:1

@@ -1,0 +1,18 @@
+namespace std {
+    string s;
+    int g;
+
+    func int g(int i) {
+        pupupu;
+    }
+
+    struct f {
+        int j;
+    };
+}
+
+func int main() {
+    std::s;
+    typename std::f g;
+}
+

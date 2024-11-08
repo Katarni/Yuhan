@@ -273,6 +273,22 @@ Token LexicalAnalyzer::getToken() {
             }
         }
 
+        if (*cur_symbol_ == ':') {
+            if (cur_content.empty()) {
+                cur_content += *cur_symbol_;
+                cur_type = Token::Type::Colon;
+                continue;
+            } else {
+                if (cur_content == ":") {
+                    cur_content += *cur_symbol_;
+                    cur_type = Token::Type::DoubleColon;
+                    continue;
+                } else {
+                    break;
+                }
+            }
+        }
+
         if (*cur_symbol_ == '<' || *cur_symbol_ == '>') {
             if (cur_content.empty()) {
                 if (*cur_symbol_ == '<') {
@@ -362,7 +378,7 @@ Token LexicalAnalyzer::getToken() {
         letter_first = false;
     }
 
-    if (cur_content.empty()) {
+    if (cur_content.empty() && cur_type == Token::Type::CloseParenthesis) {
         cur_type = Token::Type::EndOfFile;
     }
 
