@@ -74,6 +74,9 @@ void Token::generateWhat() {
         case Type::Colon:
             what_ += "colon";
             break;
+        case Type::Ampersand:
+            what_ += "ampersand";
+            break;
     }
 }
 

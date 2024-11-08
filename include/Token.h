@@ -19,7 +19,7 @@ class Token : public std::exception {
         LvalueUnaryOperator, RvalueUnaryOperator,
         StringLiteral, EndOfFile, Another, ExponentialLiteral,
         PlusOrMinusOperator, FloatLiteral, CharLiteral, 
-        LessThan, GreaterThan, Colon, DoubleColon
+        LessThan, GreaterThan, Colon, DoubleColon, Ampersand
     };
 
     Token() : std::exception(), line_(0), column_(0), type_(Type::Another) {}

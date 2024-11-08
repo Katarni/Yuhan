@@ -219,7 +219,11 @@ Token LexicalAnalyzer::getToken() {
             *cur_symbol_ == '&' || *cur_symbol_ == '*' || *cur_symbol_ == '^') {
             if (cur_content.empty()) {
                 cur_content += *cur_symbol_;
-                cur_type = Token::Type::RvalueBinaryOperator;
+                if (*cur_symbol_ == '&') {
+                    cur_type = Token::Type::Ampersand;
+                } else {
+                    cur_type = Token::Type::RvalueBinaryOperator;
+                }
                 continue;
             } else if (cur_content.size() == 1 && *cur_symbol_ == '/' && cur_content[0] == '/') {
                 comment = true;
@@ -276,13 +280,18 @@ Token LexicalAnalyzer::getToken() {
         if (*cur_symbol_ == ':') {
             if (cur_content.empty()) {
                 cur_content += *cur_symbol_;
-                cur_type = Token::Type::Colon;
+                cur_type = Toke::Type::Another;
                 continue;
             } else {
-                if (cur_content == ":") {
-                    cur_content += *cur_symbol_;
-                    cur_type = Token::Type::DoubleColon;
-                    continue;
+                if (letter_first) {
+                    if (cur_content.size() >= 2 && cur_content[cur_content.size() - 2] != ":") {
+                        cur_content += *cur_symbol_;
+                        continue;
+                    } else {
+                        cur_type = Token::Type::Another;
+                        letter_first = false;
+                        continue;
+                    }
                 } else {
                     break;
                 }
