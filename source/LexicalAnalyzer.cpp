@@ -280,11 +280,12 @@ Token LexicalAnalyzer::getToken() {
         if (*cur_symbol_ == ':') {
             if (cur_content.empty()) {
                 cur_content += *cur_symbol_;
-                cur_type = Toke::Type::Another;
+                cur_type = Token::Type::Another;
                 continue;
             } else {
                 if (letter_first) {
-                    if (cur_content.size() >= 2 && cur_content[cur_content.size() - 2] != ":") {
+                    if (cur_content.size() >= 2 && cur_content[cur_content.size() - 1] == ':' && cur_content[cur_content.size() - 2] != ':'
+                         || cur_content.size() < 2 || cur_content.size() >= 1 && cur_content[cur_content.size() - 1] != ':') {
                         cur_content += *cur_symbol_;
                         continue;
                     } else {

@@ -16,7 +16,7 @@ rvalue binary operator * 5:2
 lvalue binary operator = 5:4
 numeric literal 4 5:6
 identifier d 6:1
-rvalue binary operator & 6:3
+ampersand & 6:3
 numeric literal 0 6:4
 numeric literal 4 6:6
 identifier g 7:1

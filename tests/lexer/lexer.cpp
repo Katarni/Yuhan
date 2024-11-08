@@ -41,7 +41,8 @@ int main() {
             {Token::Type::FloatLiteral, "float literal"},
             {Token::Type::CharLiteral, "char literal"},
             {Token::Type::LessThan, "less than"},
-            {Token::Type::GreaterThan, "greater than"}
+            {Token::Type::GreaterThan, "greater than"},
+            {Token::Type::Ampersand, "ampersand"}
     };
 
     for (auto& token : tokens) {
