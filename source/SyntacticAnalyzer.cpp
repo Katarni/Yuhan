@@ -27,13 +27,23 @@ void SyntacticAnalyzer::literal() {
 }
 
 void SyntacticAnalyzer::B() {
-    while (lex_.getType() == Token::Type::OpenSquareBracket) {
-        getLex();
-        exp14();
-        if (lex_.getType() != Token::Type::CloseSquareBracket) {
-            throw lex_;
+    for (;;) {
+        if (lex_.getType() == Token::Type::OpenSquareBracket) {
+            getLex();
+            exp14();
+            if (lex_.getType() != Token::Type::CloseSquareBracket) {
+                throw lex_;
+            }
+            getLex();
+        } else if (lex_.getType() == Token::Type::Dot) {
+            getLex();
+            if (lex_.getType() != Token::Type::Identifier) {
+                throw lex_;
+            }
+            getLex();
+        } else {
+            break;
         }
-        getLex();
     }
 }
 
