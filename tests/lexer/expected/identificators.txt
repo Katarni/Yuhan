@@ -8,3 +8,5 @@ identifier a 2:3
 lvalue binary operator = 2:5
 numeric literal 0 2:7
 semicolon ; 2:8
+another a:a 3:1
+another a::a: 4:1

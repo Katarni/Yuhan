@@ -354,8 +354,17 @@ Token LexicalAnalyzer::getToken() {
                     }
                     continue;
                 } else if (letter_first) {
-                    cur_content += *cur_symbol_;
-                    continue;
+                    if (cur_content.size() >= 2 && cur_content[cur_content.size() - 1] == ':' && cur_content[cur_content.size() - 2] == ':' ||
+                        cur_content.size() >= 2 && cur_content[cur_content.size() - 1] != ':' && cur_content[cur_content.size() - 2] != ':' ||
+                        cur_content.size() < 2) {
+                        cur_content += *cur_symbol_;
+                        continue;
+                    } else {
+                        cur_type = Token::Type::Another;
+                        letter_first = false;
+                        cur_content += *cur_symbol_;
+                        continue;
+                    }
                 } else if (cur_type == Token::Type::ExponentialLiteral || cur_type == Token::Type::FloatLiteral) {
                     cur_content += *cur_symbol_;
                     cur_type = Token::Type::Another;
@@ -401,7 +410,9 @@ Token LexicalAnalyzer::getToken() {
     }
 
     if (letter_first) {
-        if (reserved_words_->isInTrie(cur_content)) {
+        if (cur_content.back() == ':') {
+            cur_type = Token::Type::Another;
+        } else if (reserved_words_->isInTrie(cur_content)) {
             cur_type = Token::Type::ReservedWord;
             if (cur_content == "and" || cur_content == "or") {
                 cur_type = Token::Type::RvalueBinaryOperator;
