@@ -29,7 +29,7 @@ LexicalAnalyzer::LexicalAnalyzer(char *text, size_t text_size,
         }
     }
 
-    reserved_words_ = new Trie;
+    reserved_words_ = new Trie<Node>;
     for (auto [start, length]: words_ptrs) {
         if (length == 0) continue;
 
