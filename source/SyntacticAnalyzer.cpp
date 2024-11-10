@@ -58,7 +58,8 @@ void SyntacticAnalyzer::exp1() {
         B();
         return;
     }
-    if (lex_.getType() == Token::Type::Identifier) {
+    if (lex_.getType() == Token::Type::Identifier ||
+        lex_.getType() == Token::Type::NamespaceIdentifier) {
         getLex();
         while (lex_.getType() == Token::Type::DoubleColon) {
             getLex();
@@ -455,7 +456,8 @@ void SyntacticAnalyzer::type() {
         array();
         return;
     }
-    if (lex_.getType() != Token::Type::Identifier) {
+    if (lex_.getType() != Token::Type::Identifier &&
+        lex_.getType() != Token::Type::NamespaceIdentifier) {
         throw lex_;
     }
     getLex();
@@ -509,6 +511,9 @@ void SyntacticAnalyzer::function() {
 
 void SyntacticAnalyzer::funcVarDefinition() {
     type();
+    if (lex_.getType() == Token::Type::Ampersand) {
+        getLex();
+    }
     if (lex_.getType() != Token::Type::Identifier) {
         throw lex_;
     }
@@ -516,6 +521,9 @@ void SyntacticAnalyzer::funcVarDefinition() {
     while (lex_.getType() == Token::Type::Comma) {
         getLex();
         type();
+        if (lex_.getType() == Token::Type::Ampersand) {
+            getLex();
+        }
         if (lex_.getType() != Token::Type::Identifier) {
             throw lex_;
         }
