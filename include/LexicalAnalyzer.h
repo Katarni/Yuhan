@@ -18,7 +18,7 @@ class LexicalAnalyzer {
     Token getToken();
 
  private:
-    Trie *reserved_words_;
+    Trie<Node> *reserved_words_;
     char *text_, *cur_symbol_;
     size_t text_size_, cur_line_, cur_col_;
 };
