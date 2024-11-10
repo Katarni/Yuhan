@@ -21,7 +21,7 @@ int main() {
         }
     }
 
-    auto reserved_words_ = new Trie;
+    auto reserved_words_ = new Trie<Node>;
     for (auto [start, length]: words_ptrs) {
         if (length == 0) continue;
 
