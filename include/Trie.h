@@ -31,6 +31,8 @@ public:
 
 private:
     std::string name_;
+    size_t size_array_;
+    Type* array_type_;
     bool is_lvalue_;
 };
 
@@ -73,7 +75,7 @@ public:
         for (int i = 0; i < length; ++i) {
             char let = word[i];
             ptr->addChild(let);
-            ptr = static_cast<T *>(static_cast<T *>(static_cast<T *>(ptr->next(let))));
+            ptr = static_cast<T *>(ptr->next(let));
         }
         ptr->setTerminal();
         return ptr;
@@ -165,5 +167,5 @@ class TIDFunction : public Trie<FunctionNode> {
 public:
     Type checkID(std::string& name, std::vector<Variable>& args);
 
-    void pushID(std::string& name, Type type_, std::vector<Variable>& args);
+    void pushID(std::string& name, Type& type, std::vector<Variable>& args);
 };

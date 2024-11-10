@@ -109,9 +109,25 @@ void FunctionNode::checkArgs(std::vector<Variable> &args) {
 }
 
 bool Type::operator==(const Type &other) const {
-    return name_ == other.name_ && is_lvalue_ == other.is_lvalue_;
+    if (is_lvalue_ != other.is_lvalue_) return false;
+    if (name_ != other.name_) return false;
+    if (name_ != "array") return true;
+    if (size_array_ != other.size_array_) return false;
+    return *array_type_ == *other.array_type_;
 }
 
 bool Type::operator!=(const Type &other) const {
     return !(operator==(other));
+}
+
+Type TIDFunction::checkID(std::string &name, std::vector<Variable> &args) {
+    auto ptr = getNode(name);
+    ptr->checkArgs(args);
+    return ptr->getType();
+}
+
+void TIDFunction::pushID(std::string &name, Type& type, std::vector<Variable> &args) {
+    auto ptr = insert(name);
+    ptr->setType(type);
+    ptr->setArgs(args);
 }
