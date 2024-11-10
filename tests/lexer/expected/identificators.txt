@@ -1,4 +1,4 @@
-identifier a::a::a 1:1
+namespace identifier a::a::a 1:1
 identifier a 1:9
 lvalue binary operator = 1:11
 numeric literal 0 1:13

@@ -42,7 +42,8 @@ int main() {
             {Token::Type::CharLiteral, "char literal"},
             {Token::Type::LessThan, "less than"},
             {Token::Type::GreaterThan, "greater than"},
-            {Token::Type::Ampersand, "ampersand"}
+            {Token::Type::Ampersand, "ampersand"},
+            {Token::Type::NamespaceIdentifier, "namespace identifier"}
     };
 
     for (auto& token : tokens) {

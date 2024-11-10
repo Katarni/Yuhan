@@ -11,6 +11,7 @@ void Token::generateWhat() {
         case Type::ReservedWord:
             what_ += "reserved word: \"" + content_ + "\"";
             break;
+        case Type::NamespaceIdentifier:
         case Type::Identifier:
             what_ += "identifier: \"" + content_ + "\"";
             break;

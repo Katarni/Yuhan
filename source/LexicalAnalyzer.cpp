@@ -66,7 +66,6 @@ Token LexicalAnalyzer::getToken() {
             continue;
         }
 
-
         if (ignore_next) {
             switch (*cur_symbol_) {
                 case 'n':
@@ -423,6 +422,8 @@ Token LexicalAnalyzer::getToken() {
                 cur_type = Token::Type::NumericLiteral;
                 cur_content = "1";
             }
+        } else if (cur_content.find(":") != std::string::npos) {
+            cur_type = Token::Type::NamespaceIdentifier; 
         } else {
             cur_type = Token::Type::Identifier;
         }
