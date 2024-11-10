@@ -66,7 +66,6 @@ Token LexicalAnalyzer::getToken() {
             continue;
         }
 
-
         if (ignore_next) {
             switch (*cur_symbol_) {
                 case 'n':
@@ -219,7 +218,11 @@ Token LexicalAnalyzer::getToken() {
             *cur_symbol_ == '&' || *cur_symbol_ == '*' || *cur_symbol_ == '^') {
             if (cur_content.empty()) {
                 cur_content += *cur_symbol_;
-                cur_type = Token::Type::RvalueBinaryOperator;
+                if (*cur_symbol_ == '&') {
+                    cur_type = Token::Type::Ampersand;
+                } else {
+                    cur_type = Token::Type::RvalueBinaryOperator;
+                }
                 continue;
             } else if (cur_content.size() == 1 && *cur_symbol_ == '/' && cur_content[0] == '/') {
                 comment = true;
@@ -276,13 +279,19 @@ Token LexicalAnalyzer::getToken() {
         if (*cur_symbol_ == ':') {
             if (cur_content.empty()) {
                 cur_content += *cur_symbol_;
-                cur_type = Token::Type::Colon;
+                cur_type = Token::Type::Another;
                 continue;
             } else {
-                if (cur_content == ":") {
-                    cur_content += *cur_symbol_;
-                    cur_type = Token::Type::DoubleColon;
-                    continue;
+                if (letter_first) {
+                    if (cur_content.size() >= 2 && cur_content[cur_content.size() - 1] == ':' && cur_content[cur_content.size() - 2] != ':'
+                         || cur_content.size() < 2 || cur_content.size() >= 1 && cur_content[cur_content.size() - 1] != ':') {
+                        cur_content += *cur_symbol_;
+                        continue;
+                    } else {
+                        cur_type = Token::Type::Another;
+                        letter_first = false;
+                        continue;
+                    }
                 } else {
                     break;
                 }
@@ -344,8 +353,17 @@ Token LexicalAnalyzer::getToken() {
                     }
                     continue;
                 } else if (letter_first) {
-                    cur_content += *cur_symbol_;
-                    continue;
+                    if (cur_content.size() >= 2 && cur_content[cur_content.size() - 1] == ':' && cur_content[cur_content.size() - 2] == ':' ||
+                        cur_content.size() >= 2 && cur_content[cur_content.size() - 1] != ':' && cur_content[cur_content.size() - 2] != ':' ||
+                        cur_content.size() < 2) {
+                        cur_content += *cur_symbol_;
+                        continue;
+                    } else {
+                        cur_type = Token::Type::Another;
+                        letter_first = false;
+                        cur_content += *cur_symbol_;
+                        continue;
+                    }
                 } else if (cur_type == Token::Type::ExponentialLiteral || cur_type == Token::Type::FloatLiteral) {
                     cur_content += *cur_symbol_;
                     cur_type = Token::Type::Another;
@@ -391,7 +409,9 @@ Token LexicalAnalyzer::getToken() {
     }
 
     if (letter_first) {
-        if (reserved_words_->isInTrie(cur_content)) {
+        if (cur_content.back() == ':') {
+            cur_type = Token::Type::Another;
+        } else if (reserved_words_->isInTrie(cur_content)) {
             cur_type = Token::Type::ReservedWord;
             if (cur_content == "and" || cur_content == "or") {
                 cur_type = Token::Type::RvalueBinaryOperator;
@@ -402,6 +422,8 @@ Token LexicalAnalyzer::getToken() {
                 cur_type = Token::Type::NumericLiteral;
                 cur_content = "1";
             }
+        } else if (cur_content.find(":") != std::string::npos) {
+            cur_type = Token::Type::NamespaceIdentifier; 
         } else {
             cur_type = Token::Type::Identifier;
         }
