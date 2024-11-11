@@ -13,7 +13,7 @@ public:
 
     Node* next(char let);
 
-    void addChild(char let);
+    virtual void addChild(char let);
 
     void setTerminal();
 
@@ -25,13 +25,29 @@ protected:
 
 class Type {
 public:
+    Type() = default;
+
+    explicit Type(std::string name, bool lvalue);
+
+    Type(const Type &other);
+
+    ~Type();
+
+    Type operator=(const Type &other);
+
     bool operator==(const Type& other) const;
     bool operator!=(const Type& other) const;
 
     bool isLvalue() const;
+
     const std::string& getName() const;
 
+    void setArraySize(int array_size);
+
+    void setArrayType(Type *type);
+
     void setLvalue(bool is_lvalue);
+
     void setName(const std::string& name);
 
 private:
@@ -47,6 +63,8 @@ public:
     Type getType() const;
 
     void setType(Type& type);
+
+    void addChild(char let);
 
 private:
     std::string name_;
@@ -99,7 +117,7 @@ public:
         T *ptr = root_;
         for (auto& let : word) {
             ptr = static_cast<T*>(ptr->next(let));
-            if (ptr == nullptr) throw std::runtime_error("Нет имени в боре");
+            if (ptr == nullptr) throw std::runtime_error("Identifier not found");
         }
         return ptr;
     }
@@ -121,6 +139,8 @@ public:
     Type checkIDField(std::string& name);
 
     void pushIDField(std::string& name, Type& type);
+
+    void addChild(char let);
 
 private:
     TIDVariable fields_;
@@ -162,6 +182,8 @@ public:
     void setArgs(std::vector<Variable>& args);
 
     void checkArgs(std::vector<Variable>& args);
+
+    void addChild(char let);
 
 private:
     Type type_;

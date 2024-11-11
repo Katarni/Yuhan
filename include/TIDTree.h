@@ -4,6 +4,10 @@
 
 class TIDTree {
 public:
+    TIDTree();
+
+    ~TIDTree();
+
     void closeScope();
 
     void createScope(bool is_struct = false, bool is_namespace = false, std::string namespace_ = "");
@@ -16,6 +20,10 @@ public:
 
     void pushStruct(std::string& name);
 
+    Type checkField(std::string& name, std::string& name_field);
+
+    void pushField(std::string& name, std::string& name_field, Type &type);
+
     Type checkFunction(std::string& name, std::vector<Variable>& args);
 
     void pushFunction(std::string& name, Type& type, std::vector<Variable>& args);
@@ -24,6 +32,8 @@ private:
     class NodeTID {
     public:
         NodeTID(bool is_struct, bool is_namespace, std::string& namespace_, NodeTID *parent);
+
+        ~NodeTID();
 
         Type checkID(std::string &name);
 
@@ -51,6 +61,8 @@ private:
 
         std::string getNamespace() const;
 
+        void addChild(NodeTID *child);
+
     private:
         bool is_struct_, is_namespace_;
         std::string namespace_;
@@ -58,6 +70,7 @@ private:
         TIDFunction functions_;
         TIDStructure structs_;
         NodeTID *parent_;
+        std::vector<NodeTID*> children_;
     };
     NodeTID *current_scope_;
 
@@ -74,4 +87,6 @@ private:
     void pushStruct(NodeTID *ptr, std::string& name);
 
     void pushFunction(NodeTID *ptr, std::string& name, Type& type, std::vector<Variable>& args);
+
+    Type checkField(NodeTID *ptr, std::string& name, std::string& name_field);
 };

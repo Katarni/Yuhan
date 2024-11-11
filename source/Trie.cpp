@@ -1,3 +1,5 @@
+#include <utility>
+
 #include "../include/Trie.h"
 
 bool Node::isTerminal() const {
@@ -31,7 +33,7 @@ Type TIDVariable::checkID(std::string &name) {
 }
 
 void TIDVariable::pushID(std::string &name, Type& type) {
-    if (isInTrie(name)) throw std::runtime_error("Переменная с таким именем есть");
+    if (isInTrie(name)) throw std::runtime_error("Variable with this name has already been created");
     auto ptr = insert(name);
     ptr->setType(type);
 }
@@ -42,6 +44,11 @@ void VariableNode::setType(Type &type) {
 
 Type VariableNode::getType() const {
     return type_;
+}
+
+void VariableNode::addChild(char let) {
+    if (go_[let] != nullptr) return;
+    go_[let] = new VariableNode();
 }
 
 bool TIDStructure::checkId(std::string &name) {
@@ -57,7 +64,7 @@ void TIDStructure::pushField(std::string &name, std::string &name_field, Type &t
 }
 
 void TIDStructure::pushID(std::string &name) {
-    if (isInTrie(name)) throw std::runtime_error("Такая структура уже есть");
+    if (isInTrie(name)) throw std::runtime_error("Struct with this name has already been created");
     insert(name);
 }
 
@@ -67,6 +74,11 @@ Type StructureNode::checkIDField(std::string &name) {
 
 void StructureNode::pushIDField(std::string &name, Type& type) {
     fields_.pushID(name, type);
+}
+
+void StructureNode::addChild(char let) {
+    if (go_[let] != nullptr) return;
+    go_[let] = new StructureNode();
 }
 
 void Variable::setName(std::string& name) {
@@ -99,13 +111,18 @@ void FunctionNode::setArgs(std::vector<Variable> &args) {
 
 void FunctionNode::checkArgs(std::vector<Variable> &args) {
     if (args.size() != args_.size()) {
-        throw std::runtime_error("Неправильное количество аргументов");
+        throw std::runtime_error("Incorrect number of arguments");
     }
     for (int i = 0; i < args_.size(); ++i) {
         if (args[i].getType() != args_[i].getType()) {
-            throw std::runtime_error("Неправильный тип аргумента");
+            throw std::runtime_error("Incorrect argument type");
         }
     }
+}
+
+void FunctionNode::addChild(char let) {
+    if (go_[let] != nullptr) return;
+    go_[let] = new FunctionNode();
 }
 
 bool Type::operator==(const Type &other) const {
@@ -146,5 +163,42 @@ void Type::setLvalue(bool is_lvalue) {
 
 void Type::setName(const std::string& name) {
     name_ = name;
+}
+
+Type::Type(std::string name, bool lvalue) : name_(std::move(name)), size_array_(0), array_type_(nullptr), is_lvalue_(lvalue) {}
+
+Type::Type(const Type &other) {
+    name_ = other.name_;
+    size_array_ = other.size_array_;
+    if (other.array_type_ != nullptr) {
+        array_type_ = new Type(*other.array_type_);
+    } else {
+        array_type_ = nullptr;
+    }
+    is_lvalue_ = other.is_lvalue_;
+}
+
+Type Type::operator=(const Type &other) {
+    name_ = other.name_;
+    size_array_ = other.size_array_;
+    if (other.array_type_ != nullptr) {
+        array_type_ = new Type(*other.array_type_);
+    } else {
+        array_type_ = nullptr;
+    }
+    is_lvalue_ = other.is_lvalue_;
+    return *this;
+}
+
+void Type::setArrayType(Type *type) {
+    array_type_ = type;
+}
+
+void Type::setArraySize(int array_size) {
+    array_size = array_size;
+}
+
+Type::~Type() {
+    delete array_type_;
 }
 

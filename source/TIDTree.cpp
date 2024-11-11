@@ -54,12 +54,25 @@ std::string TIDTree::NodeTID::getNamespace() const {
     return namespace_;
 }
 
+void TIDTree::NodeTID::addChild(TIDTree::NodeTID *child) {
+    children_.push_back(child);
+}
+
+TIDTree::NodeTID::~NodeTID() {
+    for (auto child : children_) {
+        delete child;
+    }
+}
+
 void TIDTree::closeScope() {
     current_scope_ = current_scope_->getParent();
 }
 
 void TIDTree::createScope(bool is_struct, bool is_namespace, std::string namespace_) {
     current_scope_ = new NodeTID(is_struct, is_namespace, namespace_, current_scope_);
+    if (current_scope_->getParent() != nullptr) {
+        current_scope_->getParent()->addChild(current_scope_);
+    }
 }
 
 Type TIDTree::checkVariable(std::string &name) {
@@ -67,7 +80,7 @@ Type TIDTree::checkVariable(std::string &name) {
 }
 
 Type TIDTree::checkVariable(TIDTree::NodeTID *ptr, std::string &name) {
-    if (ptr == nullptr) throw std::runtime_error("Нет имени в боре");
+    if (ptr == nullptr) throw std::runtime_error("Identifier not found");
     try {
         return ptr->checkID(name);
     } catch (std::runtime_error &error) {
@@ -84,16 +97,9 @@ bool TIDTree::checkStruct(std::string &name) {
 }
 
 bool TIDTree::checkStruct(TIDTree::NodeTID *ptr, std::string &name) {
-    if (ptr == nullptr) throw std::runtime_error("Нет имени в боре");
-    try {
-        return ptr->checkStruct(name);
-    } catch (std::runtime_error &error) {
-        std::string new_name = name;
-        if (ptr->isNamespace() || ptr->isStruct()) {
-            new_name = ptr->getNamespace() + "::" + name;
-        }
-        return checkStruct(ptr->getParent(), new_name);
-    }
+    if (ptr == nullptr) throw std::runtime_error("Identifier not found");
+    if (ptr->checkStruct(name)) return true;
+    return checkStruct(ptr->getParent(), name);
 }
 
 Type TIDTree::checkFunction(std::string &name, std::vector<Variable> &args) {
@@ -101,7 +107,7 @@ Type TIDTree::checkFunction(std::string &name, std::vector<Variable> &args) {
 }
 
 Type TIDTree::checkFunction(TIDTree::NodeTID *ptr, std::string &name, std::vector<Variable> &args) {
-    if (ptr == nullptr) throw std::runtime_error("Нет имени в боре");
+    if (ptr == nullptr) throw std::runtime_error("Identifier not found");
     try {
         return ptr->checkFunction(name, args);
     } catch (std::runtime_error &error) {
@@ -167,3 +173,32 @@ void TIDTree::pushFunction(TIDTree::NodeTID *ptr, std::string &name, Type &type,
         return;
     }
 }
+
+TIDTree::TIDTree() {
+    current_scope_ = nullptr;
+    createScope();
+}
+
+TIDTree::~TIDTree() {
+    while (current_scope_->getParent() != nullptr) {
+        current_scope_ = current_scope_->getParent();
+    }
+    delete current_scope_;
+}
+
+Type TIDTree::checkField(std::string &name, std::string &name_field) {
+    return checkField(current_scope_, name, name_field);
+}
+
+Type TIDTree::checkField(TIDTree::NodeTID *ptr, std::string &name, std::string &name_field) {
+    if (ptr == nullptr) throw std::runtime_error("Struct not found");
+    if (ptr->checkStruct(name)) {
+        return ptr->checkFieldOfStruct(name, name_field);
+    }
+    auto new_name = name;
+    if (ptr->isNamespace() || ptr->isStruct()) {
+        new_name = ptr->getNamespace() + "::" + name;
+    }
+    return checkField(ptr->getParent(), new_name, name_field);
+}
+
