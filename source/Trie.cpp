@@ -131,3 +131,20 @@ void TIDFunction::pushID(std::string &name, Type& type, std::vector<Variable> &a
     ptr->setType(type);
     ptr->setArgs(args);
 }
+
+bool Type::isLvalue() const {
+    return is_lvalue_;
+}
+
+const std::string& Type::getName() const {
+    return name_;
+}
+
+void Type::setLvalue(bool is_lvalue) {
+    is_lvalue_ = is_lvalue;
+}
+
+void Type::setName(const std::string& name) {
+    name_ = name;
+}
+

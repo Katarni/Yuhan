@@ -26,8 +26,13 @@ protected:
 class Type {
 public:
     bool operator==(const Type& other) const;
-
     bool operator!=(const Type& other) const;
+
+    bool isLvalue() const;
+    const std::string& getName() const;
+
+    void setLvalue(bool is_lvalue);
+    void setName(const std::string& name);
 
 private:
     std::string name_;
