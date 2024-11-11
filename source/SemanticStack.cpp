@@ -34,7 +34,7 @@ Type SemanticStack::getOperand() {
     return std::get<Type>(sem_stack_.top());
 }
 
-bool SemanticStack::checkUno() {
+void SemanticStack::checkUno() {
     auto operand = popOperand();
     auto operation = popOperation();
 
@@ -72,7 +72,39 @@ bool SemanticStack::checkUno() {
         default:
             throw std::runtime_error("incorrect operator, expected unary operator");
     }
+}
 
-    return 0;
+void SemanticStack::checkBool() {
+    auto operand = popOperand();
+    if (operand.getName() != "int" && operand.getName() != "float" &&
+        operand.getName() != "char" && operand.getName() != "bool") {
+        throw std::runtime_error("can't cast operator to bool");
+    }
+}
+
+void SemanticStack::checkBinary() {
+    auto rhs = popOperand();
+    auto operation = popOperation();
+    auto lhs = popOperand();
+
+    Type result_type;
+    
+    if (operation.getContent() == "&" || operation.getContent() == "|" || operation.getContent() == "and" || operation.getContent() == "or" ||
+        operation.getContent() == "*" || operation.getContent() == "/" || operation.getContent() == "-" || operation.getContent() == "<<" ||
+        operation.getContent() == "^" || operation.getContent() == ">>") {
+        // check any number
+    } else if (operation.getContent() == "+") {
+        // check any number and sometimes string
+    } else if (operation.getContent() == ".") {
+        // check structure
+    } else if (operation.getContent() == "+=") {
+        // check any number and sometimes string, lhs is lvalue
+    } else if (operation.getContent() == "&" || operation.getContent() == "|" || operation.getContent() == "and" || operation.getContent() == "or" ||
+                operation.getContent() == "*" || operation.getContent() == "/" || operation.getContent() == "-" || operation.getContent() == "<<" ||
+                operation.getContent() == "^" || operation.getContent() == ">>") {
+        // check any number, lhs is lvalue
+    } else {
+        throw std::runtime_error("operation is incorrect");
+    }
 }
 
