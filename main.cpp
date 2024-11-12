@@ -29,7 +29,7 @@ int main() {
     std::vector<std::pair<std::string, Type>> variables;
     variables = {{"a", Type("int", true)}, {"aa", Type("float", true)}, {"str", Type("string", true)}, {"arr", Type("array", true)}};
     variables[3].second.setArraySize(5);
-    variables[3].second.setArrayType(new Type("string", true));
+    variables[3].second.setArrayType(Type("string", true));
     for (auto & variable : variables) {
         tree.pushVariable(variable.first, variable.second);
     }

@@ -87,22 +87,71 @@ void SemanticStack::checkBinary() {
     auto operation = popOperation();
     auto lhs = popOperand();
 
+    if (rhs.getName() != "int" && rhs.getName() != "float" && rhs.getName() != "char" && rhs.getName() != "bool" &&
+        rhs.getName() != "stirng" && rhs.getName() != "array") {
+        throw std::runtime_error("u can't do any operations with structs");
+    }
+
+    if (lhs.getName() != "int" && lhs.getName() != "float" && lhs.getName() != "char" && lhs.getName() != "bool" &&
+        lhs.getName() != "stirng" && lhs.getName() != "array") {
+        throw std::runtime_error("u can't do any operations with structs");
+    }
+
     Type result_type;
     
-    if (operation.getContent() == "&" || operation.getContent() == "|" || operation.getContent() == "and" || operation.getContent() == "or" ||
-        operation.getContent() == "*" || operation.getContent() == "/" || operation.getContent() == "-" || operation.getContent() == "<<" ||
-        operation.getContent() == "^" || operation.getContent() == ">>") {
-        // check any number
+    if (operation.getContent() == "and" || operation.getContent() == "or" ||
+        operation.getContent() == "*" || operation.getContent() == "/" || operation.getContent() == "-") {
+        if (lhs.getName() == "array" || rhs.getName() == "array") {
+           throw std::runtime_error("u can't do it with arrays");
+        }
+
+        if (rhs.getName() == "string" || lhs.getName() == "string") {
+            throw std::runtime_error("u can't do it with strings");
+        }
+
+        if (operation.getContent() == "and" || operation.getContent() == "or") {
+            result_type.setName("bool");
+            goto final_push;
+        } 
+
+        if (rhs.getName() == "float" || lhs.getName() == "float") {
+            result_type.setName("float");
+        } else if (rhs.getName() == "int" || lhs.getName() == "int") {
+            result_type.setName("int");
+        } else if (rhs.getName() == "char" || lhs.getName() == "char") {
+            result_type.setName("char");
+        } else {
+            result_type.setName("bool");
+        }
     } else if (operation.getContent() == "+") {
         // check any number and sometimes string
     } else if (operation.getContent() == ".") {
         // check structure
     } else if (operation.getContent() == "+=") {
         // check any number and sometimes string, lhs is lvalue
-    } else if (operation.getContent() == "&" || operation.getContent() == "|" || operation.getContent() == "and" || operation.getContent() == "or" ||
-                operation.getContent() == "*" || operation.getContent() == "/" || operation.getContent() == "-" || operation.getContent() == "<<" ||
-                operation.getContent() == "^" || operation.getContent() == ">>") {
-        // check any number, lhs is lvalue
+    } else if (operation.getContent() == "*=" || operation.getContent() == "/=" || operation.getContent() == "-=") {
+        if (lhs.getName() == "array" || rhs.getName() == "array") {
+           throw std::runtime_error("u can't do it with arrays");
+        }
+
+        if (rhs.getName() == "string" || lhs.getName() == "string") {
+            throw std::runtime_error("u can't do it with strings");
+        }
+
+        if (rhs.getName() == "float" || lhs.getName() == "float") {
+            result_type.setName("float");
+        } else if (rhs.getName() == "int" || lhs.getName() == "int") {
+            result_type.setName("int");
+        } else if (rhs.getName() == "char" || lhs.getName() == "char") {
+            result_type.setName("char");
+        } else {
+            result_type.setName("bool");
+        }
+
+        if (!lhs.isLvalue()) {
+            throw std::runtime_error("u need lvalue");
+        }
+        result_type.setLvalue(true);
     } else if (operation.getContent() == "==" || operation.getContent() == "!=") {
         result_type.setName("bool");
         if (rhs.getName() == lhs.getName()) {
@@ -116,9 +165,83 @@ void SemanticStack::checkBinary() {
             if (lhs.getName() != "int" && lhs.getName() != "float" && lhs.getName() != "char" && lhs.getName() != "bool") {
                 throw std::runtime_error("incorrect type");
             }
+            goto final_push;
         }
-    } else if (operation.getContent() == "<" || operation.getContent() == ">" || operation.getContent() == ">=" || operation.getContent() == "<=") {
 
+        throw std::runtime_error("incorrect types");
+    } else if (operation.getContent() == "<" || operation.getContent() == ">" || operation.getContent() == ">=" || operation.getContent() == "<=") {
+        if (rhs.getName() == "array" || lhs.getName() == "array") {
+            throw std::runtime_error("incorrect type");
+        }
+
+        if ((rhs.getName() == "string" || lhs.getName() == "string") && lhs.getName() != rhs.getName()) {
+            throw std::runtime_error("incorrect type");
+        }
+
+        result_type.setName("bool");
+    } else if (operation.getContent() == "&" || operation.getContent() == "|" || operation.getContent() == "<<" || 
+                operation.getContent() == "^" || operation.getContent() == ">>" || operation.getContent() == "%") {
+        if (lhs.getName() == "array" || rhs.getName() == "array") {
+           throw std::runtime_error("u can't do it with arrays");
+        }
+
+        if (rhs.getName() == "string" || lhs.getName() == "string") {
+            throw std::runtime_error("u can't do it with strings");
+        }
+
+        if (rhs.getName() == "float" || lhs.getName() == "float") {
+            throw std::runtime_error("u can't do it with float");
+        }
+
+        if (rhs.getName() == "int" || lhs.getName() == "int") {
+            result_type.setName("int");
+        } else if (rhs.getName() == "char" || lhs.getName() == "char") {
+            result_type.setName("char");
+        } else {
+            result_type.setName("bool");
+        }
+    } else if (operation.getContent() == "&=" || operation.getContent() == "|=" || operation.getContent() == "<<=" || 
+                operation.getContent() == "^=" || operation.getContent() == ">>=" || operation.getContent() == "%=") {
+        if (lhs.getName() == "array" || rhs.getName() == "array") {
+           throw std::runtime_error("u can't do it with arrays");
+        }
+
+        if (rhs.getName() == "string" || lhs.getName() == "string") {
+            throw std::runtime_error("u can't do it with strings");
+        }
+
+        if (rhs.getName() == "float" || lhs.getName() == "float") {
+            throw std::runtime_error("u can't do it with float");
+        }
+
+        if (rhs.getName() == "int" || lhs.getName() == "int") {
+            result_type.setName("int");
+        } else if (rhs.getName() == "char" || lhs.getName() == "char") {
+            result_type.setName("char");
+        } else {
+            result_type.setName("bool");
+        }
+
+        if (!lhs.isLvalue()) {
+            throw std::runtime_error("u need lvalue");
+        }
+        result_type.setLvalue(true);
+    } else if (operation.getContent() == "[") {
+        if (rhs.getName() != "array" && rhs.getName() == "string") {
+            throw std::runtime_error("u can't get val by idx from not array type");
+        }
+
+        if (lhs.getName() != "int" && lhs.getName() != "char" && lhs.getName() != "bool") {
+            throw std::runtime_error("need cast idx type to \"int\"");
+        }
+
+        if (rhs.getName() == "string") {
+            result_type.setName("char");
+        } else {
+            result_type = rhs.getArrayType();
+        }
+
+        result_type.setLvalue(true);
     } else {
         throw std::runtime_error("operation is incorrect");
     }
