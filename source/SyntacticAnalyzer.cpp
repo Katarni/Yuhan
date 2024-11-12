@@ -367,11 +367,11 @@ void SyntacticAnalyzer::block() {
 }
 
 void SyntacticAnalyzer::varDefinition() {
-    type();
-    var();
+    Type type_var = type();
+    var(type_var);
     while (lex_.getType() == Token::Type::Comma) {
         getLex();
-        var();
+        var(type_var);
     }
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
@@ -469,16 +469,22 @@ Type SyntacticAnalyzer::type() {
     return type;
 }
 
-void SyntacticAnalyzer::var() {
+void SyntacticAnalyzer::var(Type type_var) {
     if (lex_.getType() != Token::Type::Identifier) {
         throw lex_;
     }
+    Variable vari(lex_.getContent(), type_var);
     getLex();
     if (lex_.getContent() != "=") {
+        tid_tree_.pushVariable(vari.getName(), type_var);
         return;
     }
     getLex();
     exp12();
+    type_var.setLvalue(false);
+    sem_stack_.checkType(type_var);
+    tid_tree_.pushVariable(vari.getName(), type_var);
+    return;
 }
 
 void SyntacticAnalyzer::function() {
@@ -666,7 +672,7 @@ bool SyntacticAnalyzer::isType() {
     return false;
 }
 
-void SyntacticAnalyzer::vars() {
+void SyntacticAnalyzer::vars(std::vector<Type>& args) {
     exp13();
     while (lex_.getType() == Token::Type::Comma) {
         getLex();

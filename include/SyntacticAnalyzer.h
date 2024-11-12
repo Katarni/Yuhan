@@ -2,6 +2,7 @@
 
 #include "LexicalAnalyzer.h"
 #include "TIDTree.h"
+#include "SemanticStack.h"
 
 
 class SyntacticAnalyzer {
@@ -14,6 +15,7 @@ private:
     LexicalAnalyzer *lexer_;
     Token lex_;
     TIDTree tid_tree_;
+    SemanticStack sem_stack_;
 
     void getLex();
 
@@ -23,7 +25,7 @@ private:
 
     void B();
 
-    void vars();
+    void vars(std::vector<Type>& args);
 
     void exp1();
 
@@ -77,7 +79,7 @@ private:
 
     Type type();
 
-    void var();
+    void var(Type type_var);
 
     void varDefinition();
 

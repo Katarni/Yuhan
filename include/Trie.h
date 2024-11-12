@@ -184,7 +184,7 @@ public:
 
     void setArgs(std::vector<Variable>& args);
 
-    void checkArgs(std::vector<Variable>& args);
+    void checkArgs(std::vector<Type>& args);
 
     void addChild(char let);
 
@@ -195,7 +195,7 @@ private:
 
 class TIDFunction : public Trie<FunctionNode> {
 public:
-    Type checkID(std::string& name, std::vector<Variable>& args);
+    Type checkID(std::string& name, std::vector<Type>& args);
 
     void pushID(std::string& name, Type& type, std::vector<Variable>& args);
 };

@@ -22,7 +22,7 @@ public:
 
     Type checkField(std::string name, std::string name_field);
 
-    Type checkFunction(std::string name, std::vector<Variable>& args);
+    Type checkFunction(std::string name, std::vector<Type>& args);
 
     void pushFunction(std::string& name, Type& type, std::vector<Variable>& args);
 
@@ -45,7 +45,7 @@ private:
 
         void pushFieldOfStruct(std::string& name, std::string& name_field, Type& type_field);
 
-        Type checkFunction(std::string& name, std::vector<Variable>& args);
+        Type checkFunction(std::string& name, std::vector<Type>& args);
 
         void pushFunction(std::string& name, Type& type, std::vector<Variable>& args);
 
@@ -76,7 +76,7 @@ private:
 
     bool checkStruct(NodeTID *ptr, std::string& name);
 
-    Type checkFunction(NodeTID *ptr, std::string& name, std::vector<Variable>& args);
+    Type checkFunction(NodeTID *ptr, std::string& name, std::vector<Type>& args);
 
     void pushField(TIDTree::NodeTID *ptr, std::string& name, std::string &name_field, Type& type_field);
 

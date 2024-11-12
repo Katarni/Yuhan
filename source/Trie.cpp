@@ -111,12 +111,12 @@ void FunctionNode::setArgs(std::vector<Variable> &args) {
     args_ = args;
 }
 
-void FunctionNode::checkArgs(std::vector<Variable> &args) {
+void FunctionNode::checkArgs(std::vector<Type> &args) {
     if (args.size() != args_.size()) {
         throw std::runtime_error("Incorrect number of arguments");
     }
     for (int i = 0; i < args_.size(); ++i) {
-        if (args[i].getType() != args_[i].getType()) {
+        if (args[i] != args_[i].getType()) {
             throw std::runtime_error("Incorrect argument type");
         }
     }
@@ -139,7 +139,7 @@ bool Type::operator!=(const Type &other) const {
     return !(operator==(other));
 }
 
-Type TIDFunction::checkID(std::string &name, std::vector<Variable> &args) {
+Type TIDFunction::checkID(std::string &name, std::vector<Type> &args) {
     auto ptr = getNode(name);
     ptr->checkArgs(args);
     return ptr->getType();

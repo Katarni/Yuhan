@@ -16,7 +16,7 @@ bool TIDTree::NodeTID::checkStruct(std::string &name) {
     return structs_.checkId(name);
 }
 
-Type TIDTree::NodeTID::checkFunction(std::string &name, std::vector<Variable> &args) {
+Type TIDTree::NodeTID::checkFunction(std::string &name, std::vector<Type> &args) {
     return functions_.checkID(name, args);
 }
 
@@ -102,11 +102,11 @@ bool TIDTree::checkStruct(TIDTree::NodeTID *ptr, std::string &name) {
     return checkStruct(ptr->getParent(), name);
 }
 
-Type TIDTree::checkFunction(std::string name, std::vector<Variable> &args) {
+Type TIDTree::checkFunction(std::string name, std::vector<Type> &args) {
     return checkFunction(current_scope_, name, args);
 }
 
-Type TIDTree::checkFunction(TIDTree::NodeTID *ptr, std::string &name, std::vector<Variable> &args) {
+Type TIDTree::checkFunction(TIDTree::NodeTID *ptr, std::string &name, std::vector<Type> &args) {
     if (ptr == nullptr) throw std::runtime_error("Identifier not found");
     try {
         return ptr->checkFunction(name, args);
