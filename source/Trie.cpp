@@ -135,6 +135,13 @@ bool Type::operator==(const Type &other) const {
     return *array_type_ == *other.array_type_;
 }
 
+bool Type::compareNoLvalue(const Type &other) const {
+    if (name_ != other.name_) return false;
+    if (name_ != "array") return true;
+    if (size_array_ != other.size_array_) return false;
+    return *array_type_ == *other.array_type_;
+}
+
 bool Type::operator!=(const Type &other) const {
     return !(operator==(other));
 }

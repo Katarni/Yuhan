@@ -19,9 +19,11 @@ class SemanticStack {
     Token popOperation();
 
     void checkUno();
-    void checkBool();
     void checkBinary();
+    void checkBool();
     void checkType(Type type);
+
+    void clear();
 
  private:
     std::stack<std::variant<Type, Token>> sem_stack_;

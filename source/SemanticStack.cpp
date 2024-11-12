@@ -74,14 +74,6 @@ void SemanticStack::checkUno() {
     }
 }
 
-void SemanticStack::checkBool() {
-    auto operand = popOperand();
-    if (operand.getName() != "int" && operand.getName() != "float" &&
-        operand.getName() != "char" && operand.getName() != "bool") {
-        throw std::runtime_error("can't cast operator to bool");
-    }
-}
-
 void SemanticStack::checkBinary() {
     auto rhs = popOperand();
     auto operation = popOperation();
@@ -298,3 +290,28 @@ void SemanticStack::checkBinary() {
     push(result_type);
 }
 
+void SemanticStack::clear() {
+    sem_stack_.clear();
+}
+
+void SemanticStack::checkType(Type type) {
+    auto operand = popOperand();
+
+    if (type.getName() == "int" || type.getName() == "char" || type.getName() == "bool" || type.getName() == "float") {
+        if (operand.getName() != "int" && operand.getName() != "char" && operand.getName() != "bool" && operand.getName() != "float") {
+            throw std::runtime_error("can't cast");
+        }
+    } else {
+        if (!type.compareNoLvalue(operand)) {
+            throw std::runtime_error("can't cast");
+        }
+    }
+}
+
+void SemanticStack::checkBool() {
+    auto operand = popOperand();
+    if (operand.getName() != "int" && operand.getName() != "float" &&
+        operand.getName() != "char" && operand.getName() != "bool") {
+        throw std::runtime_error("can't cast operator to bool");
+    }
+}

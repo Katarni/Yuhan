@@ -38,6 +38,8 @@ public:
     bool operator==(const Type& other) const;
     bool operator!=(const Type& other) const;
 
+    bool compareNoLvalue(const Type& other) const;
+
     bool isLvalue() const;
 
     const std::string& getName() const;
