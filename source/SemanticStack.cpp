@@ -124,11 +124,59 @@ void SemanticStack::checkBinary() {
             result_type.setName("bool");
         }
     } else if (operation.getContent() == "+") {
-        // check any number and sometimes string
+        if (lhs.getName() == "array" || rhs.getName() == "array") {
+            throw std::runtime_error("u can't do it with arrays");
+        }
+
+        if (lhs.getName() == "string" || rhs.getName() == "string") {
+            if (lhs.getName() != "char" && rhs.getName() != "char") {
+                throw std::runtime_error("incorrect type");
+            }
+
+            result_type.setName("string");
+            goto final_push;
+        }
+
+        if (rhs.getName() == "float" || lhs.getName() == "float") {
+            result_type.setName("float");
+        } else if (rhs.getName() == "int" || lhs.getName() == "int") {
+            result_type.setName("int");
+        } else if (rhs.getName() == "char" || lhs.getName() == "char") {
+            result_type.setName("char");
+        } else {
+            result_type.setName("bool");
+        }
     } else if (operation.getContent() == ".") {
         // check structure
     } else if (operation.getContent() == "+=") {
-        // check any number and sometimes string, lhs is lvalue
+        if (lhs.getName() == "array" || rhs.getName() == "array") {
+            throw std::runtime_error("u can't do it with arrays");
+        }
+
+        if (!lhs.isLvalue()) {
+            throw std::runtime_error("needs lvalue");
+        }
+
+        result_type.setLvalue(true);
+
+        if (lhs.getName() == "string" || rhs.getName() == "string") {
+            if (lhs.getName() != "char" && rhs.getName() != "char") {
+                throw std::runtime_error("incorrect type");
+            }
+
+            result_type.setName("string");
+            goto final_push;
+        }
+
+        if (rhs.getName() == "float" || lhs.getName() == "float") {
+            result_type.setName("float");
+        } else if (rhs.getName() == "int" || lhs.getName() == "int") {
+            result_type.setName("int");
+        } else if (rhs.getName() == "char" || lhs.getName() == "char") {
+            result_type.setName("char");
+        } else {
+            result_type.setName("bool");
+        }
     } else if (operation.getContent() == "*=" || operation.getContent() == "/=" || operation.getContent() == "-=") {
         if (lhs.getName() == "array" || rhs.getName() == "array") {
            throw std::runtime_error("u can't do it with arrays");
