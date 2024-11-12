@@ -12,19 +12,17 @@ public:
 
     void createScope(bool is_struct = false, bool is_namespace = false, std::string namespace_ = "");
 
-    Type checkVariable(std::string& name);
+    Type checkVariable(std::string name);
 
-    void pushVariable(std::string& name, Type& type);
+    void pushVariable(std::string name, Type type);
 
-    bool checkStruct(std::string& name);
+    bool checkStruct(std::string name);
 
-    void pushStruct(std::string& name);
+    void pushStruct(std::string name);
 
-    Type checkField(std::string& name, std::string& name_field);
+    Type checkField(std::string name, std::string name_field);
 
-    void pushField(std::string& name, std::string& name_field, Type &type);
-
-    Type checkFunction(std::string& name, std::vector<Variable>& args);
+    Type checkFunction(std::string name, std::vector<Variable>& args);
 
     void pushFunction(std::string& name, Type& type, std::vector<Variable>& args);
 

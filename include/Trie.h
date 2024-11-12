@@ -25,7 +25,7 @@ protected:
 
 class Type {
 public:
-    Type() = default;
+    Type();
 
     explicit Type(std::string name, bool lvalue);
 
@@ -44,9 +44,9 @@ public:
 
     Type getArrayType() const;
 
-    void setArraySize(int array_size);
+    void setArraySize(size_t array_size);
 
-    void setArrayType(Type *type);
+    void setArrayType(Type type);
 
     void setLvalue(bool is_lvalue);
 
@@ -69,7 +69,6 @@ public:
     void addChild(char let);
 
 private:
-    std::string name_;
     Type type_;
 };
 

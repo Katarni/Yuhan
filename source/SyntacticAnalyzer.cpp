@@ -1,6 +1,6 @@
 #include "../include/SyntacticAnalyzer.h"
 
-SyntacticAnalyzer::SyntacticAnalyzer(LexicalAnalyzer *lexer) : lexer_(lexer) {}
+SyntacticAnalyzer::SyntacticAnalyzer(LexicalAnalyzer *lexer) : lexer_(lexer), tid_tree_() {}
 
 
 void SyntacticAnalyzer::getLex() {
@@ -427,18 +427,19 @@ void SyntacticAnalyzer::statement() {
     getLex();
 }
 
-void SyntacticAnalyzer::type() {
+Type SyntacticAnalyzer::type() {
+    Type type;
     if (lex_.getContent() == "int" ||
         lex_.getContent() == "float" ||
         lex_.getContent() == "bool" ||
         lex_.getContent() == "char" ||
         lex_.getContent() == "string") {
+        type.setName(lex_.getContent());
         getLex();
-        return;
+        return type;
     }
     if (lex_.getContent() == "array") {
-        array();
-        return;
+        return array();
     }
     if (lex_.getContent() != "typename") {
         throw lex_;
@@ -449,25 +450,23 @@ void SyntacticAnalyzer::type() {
         lex_.getContent() == "bool" ||
         lex_.getContent() == "char" ||
         lex_.getContent() == "string") {
+        type.setName(lex_.getContent());
         getLex();
-        return;
+        return type;
     }
     if (lex_.getContent() == "array") {
-        array();
-        return;
+        return array();
     }
     if (lex_.getType() != Token::Type::Identifier &&
         lex_.getType() != Token::Type::NamespaceIdentifier) {
         throw lex_;
     }
-    getLex();
-    while (lex_.getContent() == "::") {
-        getLex();
-        if (lex_.getType() != Token::Type::Identifier) {
-            throw lex_;
-        }
-        getLex();
+    if (!tid_tree_.checkStruct(lex_.getContent())) {
+        throw lex_;
     }
+    type.setName(lex_.getContent());
+    getLex();
+    return type;
 }
 
 void SyntacticAnalyzer::var() {
@@ -487,46 +486,57 @@ void SyntacticAnalyzer::function() {
         throw lex_;
     }
     getLex();
-    type();
+    Type type_func = type();
+    std::string name_func;
     if (lex_.getType() != Token::Type::Identifier) {
         throw lex_;
     }
+    name_func = lex_.getContent();
     getLex();
     if (lex_.getType() != Token::Type::OpenParenthesis) {
         throw lex_;
     }
     getLex();
-    if (lex_.getType() == Token::Type::CloseParenthesis) {
-        getLex();
-        block();
-        return;
+    std::vector<Variable> args;
+    if (lex_.getType() != Token::Type::CloseParenthesis) {
+        funcVarDefinition(args);
     }
-    funcVarDefinition();
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
     }
+    tid_tree_.pushFunction(name_func, type_func, args);
+    tid_tree_.createScope();
+    for (auto &arg : args) {
+        tid_tree_.pushVariable(arg.getName(), arg.getType());
+    }
     getLex();
     block();
+    tid_tree_.closeScope();
 }
 
-void SyntacticAnalyzer::funcVarDefinition() {
-    type();
+void SyntacticAnalyzer::funcVarDefinition(std::vector<Variable> &args) {
+    Type type_arg = type();
     if (lex_.getType() == Token::Type::Ampersand) {
+        type_arg.setLvalue(true);
         getLex();
     }
-    if (lex_.getType() != Token::Type::Identifier) {
+    if (lex_.getType() != Token::Type::Identifier &&
+        lex_.getType() != Token::Type::NamespaceIdentifier) {
         throw lex_;
     }
+    args.emplace_back(lex_.getContent(), type_arg);
     getLex();
     while (lex_.getType() == Token::Type::Comma) {
         getLex();
-        type();
+        type_arg = type();
         if (lex_.getType() == Token::Type::Ampersand) {
             getLex();
         }
-        if (lex_.getType() != Token::Type::Identifier) {
+        if (lex_.getType() != Token::Type::Identifier &&
+            lex_.getType() != Token::Type::NamespaceIdentifier) {
             throw lex_;
         }
+        args.emplace_back(lex_.getContent(), type_arg);
         getLex();
     }
 }
@@ -539,6 +549,8 @@ void SyntacticAnalyzer::structure() {
     if (lex_.getType() != Token::Type::Identifier) {
         throw lex_;
     }
+    tid_tree_.pushStruct(lex_.getContent());
+    tid_tree_.createScope(true, false, lex_.getContent());
     getLex();
     if (lex_.getType() != Token::Type::OpenCurlyBrace) {
         throw lex_;
@@ -552,6 +564,7 @@ void SyntacticAnalyzer::structure() {
         throw lex_;
     }
     getLex();
+    tid_tree_.closeScope();
 }
 
 void SyntacticAnalyzer::programBody() {
@@ -591,6 +604,7 @@ void SyntacticAnalyzer::identifierNamespace() {
     if (lex_.getType() != Token::Type::Identifier) {
         throw lex_;
     }
+    tid_tree_.createScope(false, true, lex_.getContent());
     getLex();
     if (lex_.getType() != Token::Type::OpenCurlyBrace) {
         throw lex_;
@@ -603,6 +617,7 @@ void SyntacticAnalyzer::identifierNamespace() {
         throw lex_;
     }
     getLex();
+    tid_tree_.closeScope();
 }
 
 void SyntacticAnalyzer::startAnalysis() {
@@ -610,7 +625,9 @@ void SyntacticAnalyzer::startAnalysis() {
     program();
 }
 
-void SyntacticAnalyzer::array() {
+Type SyntacticAnalyzer::array() {
+    Type type_arr;
+    type_arr.setName("array");
     if (lex_.getContent() != "array") {
         throw lex_;
     }
@@ -619,7 +636,7 @@ void SyntacticAnalyzer::array() {
         throw lex_;
     }
     getLex();
-    type();
+    type_arr.setArrayType(type());
     if (lex_.getType() != Token::Type::Comma) {
         throw lex_;
     }
@@ -627,11 +644,13 @@ void SyntacticAnalyzer::array() {
     if (lex_.getType() != Token::Type::NumericLiteral) {
         throw lex_;
     }
+    type_arr.setArraySize(stoi(lex_.getContent()));
     getLex();
     if (lex_.getContent() != ">") {
         throw lex_;
     }
     getLex();
+    return type_arr;
 }
 
 bool SyntacticAnalyzer::isType() {

@@ -75,7 +75,7 @@ void TIDTree::createScope(bool is_struct, bool is_namespace, std::string namespa
     }
 }
 
-Type TIDTree::checkVariable(std::string &name) {
+Type TIDTree::checkVariable(std::string name) {
     return checkVariable(current_scope_, name);
 }
 
@@ -92,7 +92,7 @@ Type TIDTree::checkVariable(TIDTree::NodeTID *ptr, std::string &name) {
     }
 }
 
-bool TIDTree::checkStruct(std::string &name) {
+bool TIDTree::checkStruct(std::string name) {
     return checkStruct(current_scope_, name);
 }
 
@@ -102,7 +102,7 @@ bool TIDTree::checkStruct(TIDTree::NodeTID *ptr, std::string &name) {
     return checkStruct(ptr->getParent(), name);
 }
 
-Type TIDTree::checkFunction(std::string &name, std::vector<Variable> &args) {
+Type TIDTree::checkFunction(std::string name, std::vector<Variable> &args) {
     return checkFunction(current_scope_, name, args);
 }
 
@@ -119,7 +119,7 @@ Type TIDTree::checkFunction(TIDTree::NodeTID *ptr, std::string &name, std::vecto
     }
 }
 
-void TIDTree::pushVariable(std::string &name, Type &type) {
+void TIDTree::pushVariable(std::string name, Type type) {
     pushVariable(current_scope_, name, type);
 }
 
@@ -147,7 +147,7 @@ void TIDTree::pushVariable(TIDTree::NodeTID *ptr, std::string &name, Type& type)
     }
 }
 
-void TIDTree::pushStruct(std::string &name) {
+void TIDTree::pushStruct(std::string name) {
     pushStruct(current_scope_, name);
 }
 
@@ -186,7 +186,7 @@ TIDTree::~TIDTree() {
     delete current_scope_;
 }
 
-Type TIDTree::checkField(std::string &name, std::string &name_field) {
+Type TIDTree::checkField(std::string name, std::string name_field) {
     return checkField(current_scope_, name, name_field);
 }
 

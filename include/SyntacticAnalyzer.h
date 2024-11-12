@@ -1,6 +1,7 @@
 #pragma once
 
 #include "LexicalAnalyzer.h"
+#include "TIDTree.h"
 
 
 class SyntacticAnalyzer {
@@ -12,6 +13,7 @@ public:
 private:
     LexicalAnalyzer *lexer_;
     Token lex_;
+    TIDTree tid_tree_;
 
     void getLex();
 
@@ -73,7 +75,7 @@ private:
 
     void block();
 
-    void type();
+    Type type();
 
     void var();
 
@@ -83,7 +85,7 @@ private:
 
     void function();
 
-    void funcVarDefinition();
+    void funcVarDefinition(std::vector<Variable>& args);
 
     void structure();
 
@@ -97,7 +99,7 @@ private:
 
     void identifierNamespace();
 
-    void array();
+    Type array();
 
     bool isType();
 };

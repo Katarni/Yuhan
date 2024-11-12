@@ -192,19 +192,22 @@ Type Type::operator=(const Type &other) {
     return *this;
 }
 
-void Type::setArrayType(Type *type) {
-    array_type_ = type;
+void Type::setArrayType(Type type) {
+    array_type_ = new Type(type);
 }
 
-void Type::setArraySize(int array_size) {
+void Type::setArraySize(size_t array_size) {
     array_size = array_size;
 }
 
 Type::~Type() {
+    if (array_type_ == nullptr) return;
     delete array_type_;
 }
 
-Type Type::getArrayType() {
+Type Type::getArrayType() const {
     return *array_type_;
 }
+
+Type::Type() : name_(""), size_array_(0), array_type_(nullptr), is_lvalue_(false) {}
 
