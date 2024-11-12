@@ -57,5 +57,13 @@ int main() {
     tree.closeScope();
     tree.closeScope();
     std::cout << "Field of " << name_struct << "." << variables[3].first << ": " << tree.checkField(name_struct, variables[3].first).getName() << "\n";
+    tree.createScope();
+    std::string name_func = "function";
+    Type type("int", false);
+    std::vector<Variable> vars_func = {Variable("x", Type("int", true))};
+    tree.pushFunction(name_func, type, vars_func);
+    tree.createScope();
+    tree.closeScope();
+    std::cout << name_func << ": " << tree.checkFunction(name_func, vars_func).getName() << "\n";
     return 0;
 }

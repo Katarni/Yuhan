@@ -162,6 +162,8 @@ public:
 
 class Variable {
 public:
+    Variable(std::string name, Type type);
+
     void setName(std::string& name);
 
     void setType(Type& type);

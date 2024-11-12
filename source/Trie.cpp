@@ -97,6 +97,8 @@ std::string Variable::getName() {
     return name_;
 }
 
+Variable::Variable(std::string name, Type type) : name_(std::move(name)), type_(type) {}
+
 Type FunctionNode::getType() {
     return type_;
 }
