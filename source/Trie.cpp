@@ -202,3 +202,7 @@ Type::~Type() {
     delete array_type_;
 }
 
+Type Type::getArrayType() {
+    return *array_type_;
+}
+

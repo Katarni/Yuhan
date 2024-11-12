@@ -103,8 +103,27 @@ void SemanticStack::checkBinary() {
                 operation.getContent() == "*" || operation.getContent() == "/" || operation.getContent() == "-" || operation.getContent() == "<<" ||
                 operation.getContent() == "^" || operation.getContent() == ">>") {
         // check any number, lhs is lvalue
+    } else if (operation.getContent() == "==" || operation.getContent() == "!=") {
+        result_type.setName("bool");
+        if (rhs.getName() == lhs.getName()) {
+            if (rhs.getName() == "array" && rhs.getArrayType() != lhs.getArrayType()) {
+                throw std::runtime_error("incorrect array types");
+            }
+            goto final_push;
+        }
+
+        if (rhs.getName() == "int" || rhs.getName() == "float" || rhs.getName() == "char" || rhs.getName() == "bool") {
+            if (lhs.getName() != "int" && lhs.getName() != "float" && lhs.getName() != "char" && lhs.getName() != "bool") {
+                throw std::runtime_error("incorrect type");
+            }
+        }
+    } else if (operation.getContent() == "<" || operation.getContent() == ">" || operation.getContent() == ">=" || operation.getContent() == "<=") {
+
     } else {
         throw std::runtime_error("operation is incorrect");
     }
+
+    final_push:
+    push(result_type);
 }
 
