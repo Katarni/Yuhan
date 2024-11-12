@@ -13,5 +13,9 @@ add_executable(Yuhan-sintex-tests sintex.cpp
         ../../source/Token.cpp
         ../../include/SyntacticAnalyzer.h
         ../../source/SyntacticAnalyzer.cpp
+        ../../include/TIDTree.h
+        ../../source/TIDTree.cpp
+        ../../include/SemanticStack.h
+        ../../source/SemanticStack.cpp
 )
 
