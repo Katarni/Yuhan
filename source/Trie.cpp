@@ -20,7 +20,7 @@ void Node::setTerminal() {
 }
 
 Node::~Node() {
-    for (auto& [let, to] : go_) {
+    for (auto &[let, to]: go_) {
         delete to;
         to = nullptr;
     }
@@ -32,14 +32,14 @@ Type TIDVariable::checkID(std::string &name) {
     return getNode(name)->getType();
 }
 
-void TIDVariable::pushID(std::string &name, Type& type) {
+void TIDVariable::pushID(std::string &name, Type &type) {
     if (isInTrie(name)) throw std::runtime_error("Variable with this name has already been created");
     auto ptr = insert(name);
     ptr->setType(type);
 }
 
 void VariableNode::setType(Type &type) {
-   type_ = type;
+    type_ = type;
 }
 
 Type VariableNode::getType() const {
@@ -55,7 +55,7 @@ bool TIDStructure::checkId(std::string &name) {
     return isInTrie(name);
 }
 
-Type TIDStructure::checkField(std::string& name, std::string& name_field) {
+Type TIDStructure::checkField(std::string &name, std::string &name_field) {
     return getNode(name)->checkIDField(name_field);
 }
 
@@ -72,7 +72,7 @@ Type StructureNode::checkIDField(std::string &name) {
     return fields_.checkID(name);
 }
 
-void StructureNode::pushIDField(std::string &name, Type& type) {
+void StructureNode::pushIDField(std::string &name, Type &type) {
     fields_.pushID(name, type);
 }
 
@@ -81,7 +81,7 @@ void StructureNode::addChild(char let) {
     go_[let] = new StructureNode();
 }
 
-void Variable::setName(std::string& name) {
+void Variable::setName(std::string &name) {
     name_ = name;
 }
 
@@ -152,17 +152,22 @@ Type TIDFunction::checkID(std::string &name, std::vector<Type> &args) {
     return ptr->getType();
 }
 
-void TIDFunction::pushID(std::string &name, Type& type, std::vector<Variable> &args) {
+void TIDFunction::pushID(std::string &name, Type &type, std::vector<Variable> &args) {
     auto ptr = insert(name);
     ptr->setType(type);
     ptr->setArgs(args);
+}
+
+Type TIDFunction::checkID(std::string &name) {
+    if (!isInTrie(name)) throw std::runtime_error("Identifier not found");
+    return getNode(name)->getType();
 }
 
 bool Type::isLvalue() const {
     return is_lvalue_;
 }
 
-const std::string& Type::getName() const {
+const std::string &Type::getName() const {
     return name_;
 }
 
@@ -170,11 +175,12 @@ void Type::setLvalue(bool is_lvalue) {
     is_lvalue_ = is_lvalue;
 }
 
-void Type::setName(const std::string& name) {
+void Type::setName(const std::string &name) {
     name_ = name;
 }
 
-Type::Type(std::string name, bool lvalue) : name_(std::move(name)), size_array_(0), array_type_(nullptr), is_lvalue_(lvalue) {}
+Type::Type(std::string name, bool lvalue) : name_(std::move(name)), size_array_(0), array_type_(nullptr),
+                                            is_lvalue_(lvalue) {}
 
 Type::Type(const Type &other) {
     name_ = other.name_;
@@ -217,4 +223,22 @@ Type Type::getArrayType() const {
 }
 
 Type::Type() : name_(""), size_array_(0), array_type_(nullptr), is_lvalue_(false) {}
+
+bool Type::compareWithCast(const Type &other) const {
+    if (name_ == "int" || name_ == "char" ||
+        name_ == "float" || name_ == "bool") {
+        if (other.name_ == "int" || other.name_ == "char" ||
+            other.name_ == "float" || other.name_ == "bool") {
+            return true;
+        }
+        return false;
+    }
+    if (name_ != "array" && other.name_ == name_) {
+        return true;
+    }
+    if (size_array_ != other.size_array_) {
+        return false;
+    }
+    return array_type_->compareWithCast(*other.array_type_);
+}
 

@@ -2,6 +2,11 @@
 
 #include "Trie.h"
 
+
+enum class TypeScope {
+    Namespace, Struct, Function, Loop, Switch, SwitchItem, Other
+};
+
 class TIDTree {
 public:
     TIDTree();
@@ -10,7 +15,7 @@ public:
 
     void closeScope();
 
-    void createScope(bool is_struct = false, bool is_namespace = false, std::string namespace_ = "");
+    void createScope(TypeScope type = TypeScope::Other, std::string namespace_ = "");
 
     Type checkVariable(std::string name);
 
@@ -26,10 +31,16 @@ public:
 
     void pushFunction(std::string& name, Type& type, std::vector<Variable>& args);
 
+    void checkReturn(Type type_return);
+
+    void checkBreak();
+
+    void checkContinue();
+
 private:
     class NodeTID {
     public:
-        NodeTID(bool is_struct, bool is_namespace, std::string& namespace_, NodeTID *parent);
+        NodeTID(TypeScope type, std::string& namespace_, NodeTID *parent);
 
         ~NodeTID();
 
@@ -47,6 +58,8 @@ private:
 
         Type checkFunction(std::string& name, std::vector<Type>& args);
 
+        Type checkFunction(std::string& name);
+
         void pushFunction(std::string& name, Type& type, std::vector<Variable>& args);
 
         NodeTID *getParent();
@@ -57,12 +70,14 @@ private:
         [[nodiscard]]
         bool isStruct() const;
 
-        std::string getNamespace() const;
+        const std::string& getNamespace() const;
 
         void addChild(NodeTID *child);
 
+        TypeScope getType() const;
+
     private:
-        bool is_struct_, is_namespace_;
+        TypeScope type_;
         std::string namespace_;
         TIDVariable variables_;
         TIDFunction functions_;
@@ -87,4 +102,10 @@ private:
     void pushFunction(NodeTID *ptr, std::string& name, Type& type, std::vector<Variable>& args);
 
     Type checkField(NodeTID *ptr, std::string& name, std::string& name_field);
+
+    void checkReturn(NodeTID *ptr, Type type_return);
+
+    void checkBreak(NodeTID *ptr);
+
+    void checkContinue(NodeTID *ptr);
 };

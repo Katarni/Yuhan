@@ -40,6 +40,8 @@ public:
 
     bool compareNoLvalue(const Type& other) const;
 
+    bool compareWithCast(const Type &other) const;
+
     bool isLvalue() const;
 
     const std::string& getName() const;
@@ -198,6 +200,8 @@ private:
 class TIDFunction : public Trie<FunctionNode> {
 public:
     Type checkID(std::string& name, std::vector<Type>& args);
+
+    Type checkID(std::string& name);
 
     void pushID(std::string& name, Type& type, std::vector<Variable>& args);
 };

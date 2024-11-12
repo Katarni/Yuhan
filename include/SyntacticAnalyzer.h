@@ -21,7 +21,7 @@ private:
 
     void exp14();
 
-    void literal();
+    Type literal();
 
     void B();
 
@@ -69,7 +69,7 @@ private:
 
     void forStatement();
 
-    void switchItem();
+    void switchItem(Type &type_exp);
 
     void switchStatement();
 

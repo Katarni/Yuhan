@@ -36,21 +36,20 @@ TIDTree::NodeTID *TIDTree::NodeTID::getParent() {
     return parent_;
 }
 
-TIDTree::NodeTID::NodeTID(bool is_struct, bool is_namespace, std::string& namespace_, TIDTree::NodeTID* parent) :
-        is_struct_(is_struct),
-        is_namespace_(is_namespace),
+TIDTree::NodeTID::NodeTID(TypeScope type, std::string &namespace_, TIDTree::NodeTID *parent) :
+        type_(type),
         namespace_(namespace_),
         parent_(parent) {}
 
 bool TIDTree::NodeTID::isNamespace() const {
-    return is_namespace_;
+    return type_ == TypeScope::Namespace;
 }
 
 bool TIDTree::NodeTID::isStruct() const {
-    return is_struct_;
+    return type_ == TypeScope::Struct;
 }
 
-std::string TIDTree::NodeTID::getNamespace() const {
+const std::string &TIDTree::NodeTID::getNamespace() const {
     return namespace_;
 }
 
@@ -59,17 +58,25 @@ void TIDTree::NodeTID::addChild(TIDTree::NodeTID *child) {
 }
 
 TIDTree::NodeTID::~NodeTID() {
-    for (auto child : children_) {
+    for (auto child: children_) {
         delete child;
     }
+}
+
+Type TIDTree::NodeTID::checkFunction(std::string &name) {
+    return functions_.checkID(name);
+}
+
+TypeScope TIDTree::NodeTID::getType() const {
+    return type_;
 }
 
 void TIDTree::closeScope() {
     current_scope_ = current_scope_->getParent();
 }
 
-void TIDTree::createScope(bool is_struct, bool is_namespace, std::string namespace_) {
-    current_scope_ = new NodeTID(is_struct, is_namespace, namespace_, current_scope_);
+void TIDTree::createScope(TypeScope type, std::string namespace_) {
+    current_scope_ = new NodeTID(type, namespace_, current_scope_);
     if (current_scope_->getParent() != nullptr) {
         current_scope_->getParent()->addChild(current_scope_);
     }
@@ -111,11 +118,7 @@ Type TIDTree::checkFunction(TIDTree::NodeTID *ptr, std::string &name, std::vecto
     try {
         return ptr->checkFunction(name, args);
     } catch (std::runtime_error &error) {
-        std::string new_name = name;
-        if (ptr->isNamespace()) {
-            new_name = ptr->getNamespace() + "::" + name;
-        }
-        return checkFunction(ptr->getParent(), new_name, args);
+        return checkFunction(ptr->getParent(), name, args);
     }
 }
 
@@ -123,7 +126,7 @@ void TIDTree::pushVariable(std::string name, Type type) {
     pushVariable(current_scope_, name, type);
 }
 
-void TIDTree::pushField(TIDTree::NodeTID *ptr, std::string& name, std::string &name_field, Type& type_field) {
+void TIDTree::pushField(TIDTree::NodeTID *ptr, std::string &name, std::string &name_field, Type &type_field) {
     if (ptr == nullptr) return;
     ptr->pushFieldOfStruct(name, name_field, type_field);
     if (ptr->isNamespace() || ptr->isStruct()) {
@@ -132,7 +135,7 @@ void TIDTree::pushField(TIDTree::NodeTID *ptr, std::string& name, std::string &n
     }
 }
 
-void TIDTree::pushVariable(TIDTree::NodeTID *ptr, std::string &name, Type& type) {
+void TIDTree::pushVariable(TIDTree::NodeTID *ptr, std::string &name, Type &type) {
     if (ptr == nullptr) return;
     if (ptr->isStruct()) {
         std::string name_of_struct = ptr->getNamespace();
@@ -195,10 +198,47 @@ Type TIDTree::checkField(TIDTree::NodeTID *ptr, std::string &name, std::string &
     if (ptr->checkStruct(name)) {
         return ptr->checkFieldOfStruct(name, name_field);
     }
-    auto new_name = name;
-    if (ptr->isNamespace() || ptr->isStruct()) {
-        new_name = ptr->getNamespace() + "::" + name;
+    return checkField(ptr->getParent(), name, name_field);
+}
+
+void TIDTree::checkReturn(Type type_return) {
+    checkReturn(current_scope_, type_return);
+}
+
+void TIDTree::checkReturn(TIDTree::NodeTID *ptr, Type type_return) {
+    if (ptr == nullptr) throw std::runtime_error("Unexpected return");
+    if (ptr->getType() != TypeScope::Function) {
+        checkReturn(ptr->getParent(), type_return);
+        return;
     }
-    return checkField(ptr->getParent(), new_name, name_field);
+    auto name_func = ptr->getNamespace();
+    if (!ptr->getParent()->checkFunction(name_func).compareWithCast(type_return)) {
+        throw std::runtime_error("Unexpected type of return value");
+    }
+}
+
+void TIDTree::checkBreak() {
+    checkBreak(current_scope_);
+}
+
+void TIDTree::checkBreak(TIDTree::NodeTID *ptr) {
+    if (ptr == nullptr) throw std::runtime_error("Unexpected break");
+    if (ptr->getType() == TypeScope::Loop ||
+        ptr->getType() == TypeScope::SwitchItem) {
+        return;
+    }
+    checkBreak(ptr->getParent());
+}
+
+void TIDTree::checkContinue() {
+    checkContinue(current_scope_);
+}
+
+void TIDTree::checkContinue(TIDTree::NodeTID *ptr) {
+    if (ptr == nullptr) throw std::runtime_error("Unexpected continue");
+    if (ptr->getType() == TypeScope::Loop) {
+        return;
+    }
+    checkContinue(ptr->getParent());
 }
 

@@ -291,7 +291,9 @@ void SemanticStack::checkBinary() {
 }
 
 void SemanticStack::clear() {
-    sem_stack_.clear();
+    while (!sem_stack_.empty()) {
+        sem_stack_.pop();
+    }
 }
 
 void SemanticStack::checkType(Type type) {
