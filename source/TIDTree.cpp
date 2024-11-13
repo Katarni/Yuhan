@@ -91,11 +91,7 @@ Type TIDTree::checkVariable(TIDTree::NodeTID *ptr, std::string &name) {
     try {
         return ptr->checkID(name);
     } catch (std::runtime_error &error) {
-        std::string new_name = name;
-        if (ptr->isNamespace()) {
-            new_name = ptr->getNamespace() + "::" + name;
-        }
-        return checkVariable(ptr->getParent(), new_name);
+        return checkVariable(ptr->getParent(), name);
     }
 }
 
