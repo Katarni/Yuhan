@@ -57,21 +57,23 @@ void SemanticStack::checkUno() {
                 break;
             }
 
-            throw std::runtime_error("incorrect operand type");
+            throw std::runtime_error("incorrect operand type in line: " +
+                                     std::to_string(operation.getLine()));
         case Token::Type::LvalueUnaryOperator:
             if (operand.getName() != "int" && operand.getName() != "char" && operand.getName() != "float") {
-                throw std::runtime_error("incorrect operand type");
+                throw std::runtime_error("incorrect operand type in line: " + std::to_string(operation.getLine()));
             }
 
             if (!operand.isLvalue()) {
-                throw std::runtime_error("expecting lvalue, got rvalue");
+                throw std::runtime_error("expecting lvalue, got rvalue in line: " + std::to_string(operation.getLine()));
             }
 
             push(result_operand);
 
             break;
         default:
-            throw std::runtime_error("incorrect operator, expected unary operator");
+            throw std::runtime_error("incorrect operator, expected unary operator in line: " +
+                                        std::to_string(operation.getLine()));
     }
 }
 
@@ -82,12 +84,14 @@ void SemanticStack::checkBinary() {
 
     if (rhs.getName() != "int" && rhs.getName() != "float" && rhs.getName() != "char" && rhs.getName() != "bool" &&
         rhs.getName() != "string" && rhs.getName() != "array") {
-        throw std::runtime_error("u can't do any operations with structs");
+        throw std::runtime_error("u can't do any operations with structs in line: " +
+                                std::to_string(operation.getLine()));
     }
 
     if (lhs.getName() != "int" && lhs.getName() != "float" && lhs.getName() != "char" && lhs.getName() != "bool" &&
         lhs.getName() != "string" && lhs.getName() != "array") {
-        throw std::runtime_error("u can't do any operations with structs");
+        throw std::runtime_error("u can't do any operations with structs in line: " +
+                                std::to_string(operation.getLine()));
     }
 
     Type result_type;
@@ -95,11 +99,13 @@ void SemanticStack::checkBinary() {
     if (operation.getContent() == "and" || operation.getContent() == "or" ||
         operation.getContent() == "*" || operation.getContent() == "/" || operation.getContent() == "-") {
         if (lhs.getName() == "array" || rhs.getName() == "array") {
-           throw std::runtime_error("u can't do it with arrays");
+           throw std::runtime_error("u can't do it with arrays in line: " +
+                                std::to_string(operation.getLine()));
         }
 
         if (rhs.getName() == "string" || lhs.getName() == "string") {
-            throw std::runtime_error("u can't do it with strings");
+            throw std::runtime_error("u can't do it with strings in line: " +
+                                     std::to_string(operation.getLine()));
         }
 
         if (operation.getContent() == "and" || operation.getContent() == "or") {
@@ -118,12 +124,14 @@ void SemanticStack::checkBinary() {
         }
     } else if (operation.getContent() == "+") {
         if (lhs.getName() == "array" || rhs.getName() == "array") {
-            throw std::runtime_error("u can't do it with arrays");
+            throw std::runtime_error("u can't do it with arrays in line: " +
+                                     std::to_string(operation.getLine()));
         }
 
         if (lhs.getName() == "string" || rhs.getName() == "string") {
             if (lhs.getName() != "char" && rhs.getName() != "char") {
-                throw std::runtime_error("incorrect type");
+                throw std::runtime_error("incorrect type in line: " +
+                                         std::to_string(operation.getLine()));
             }
 
             result_type.setName("string");
@@ -141,18 +149,21 @@ void SemanticStack::checkBinary() {
         }
     } else if (operation.getContent() == "+=") {
         if (lhs.getName() == "array" || rhs.getName() == "array") {
-            throw std::runtime_error("u can't do it with arrays");
+            throw std::runtime_error("u can't do it with arrays in line: " +
+                                     std::to_string(operation.getLine()));
         }
 
         if (!lhs.isLvalue()) {
-            throw std::runtime_error("needs lvalue");
+            throw std::runtime_error("needs lvalue in line: " +
+                                     std::to_string(operation.getLine()));
         }
 
         result_type.setLvalue(true);
 
         if (lhs.getName() == "string" || rhs.getName() == "string") {
             if (lhs.getName() != "char" && rhs.getName() != "char") {
-                throw std::runtime_error("incorrect type");
+                throw std::runtime_error("incorrect type in line: " +
+                                         std::to_string(operation.getLine()));
             }
 
             result_type.setName("string");
@@ -170,11 +181,13 @@ void SemanticStack::checkBinary() {
         }
     } else if (operation.getContent() == "*=" || operation.getContent() == "/=" || operation.getContent() == "-=") {
         if (lhs.getName() == "array" || rhs.getName() == "array") {
-           throw std::runtime_error("u can't do it with arrays");
+           throw std::runtime_error("u can't do it with arrays in line: " +
+                                    std::to_string(operation.getLine()));
         }
 
         if (rhs.getName() == "string" || lhs.getName() == "string") {
-            throw std::runtime_error("u can't do it with strings");
+            throw std::runtime_error("u can't do it with strings in line: " +
+                                     std::to_string(operation.getLine()));
         }
 
         if (rhs.getName() == "float" || lhs.getName() == "float") {
@@ -188,48 +201,59 @@ void SemanticStack::checkBinary() {
         }
 
         if (!lhs.isLvalue()) {
-            throw std::runtime_error("u need lvalue");
+            throw std::runtime_error("u need lvalue in line: " +
+                                     std::to_string(operation.getLine()));
         }
         result_type.setLvalue(true);
     } else if (operation.getContent() == "==" || operation.getContent() == "!=") {
         result_type.setName("bool");
         if (rhs.getName() == lhs.getName()) {
             if (rhs.getName() == "array" && rhs.getArrayType() != lhs.getArrayType()) {
-                throw std::runtime_error("incorrect array types");
+                throw std::runtime_error("incorrect array types in line: " +
+                                         std::to_string(operation.getLine()));
             }
             goto final_push;
         }
 
         if (rhs.getName() == "int" || rhs.getName() == "float" || rhs.getName() == "char" || rhs.getName() == "bool") {
-            if (lhs.getName() != "int" && lhs.getName() != "float" && lhs.getName() != "char" && lhs.getName() != "bool") {
-                throw std::runtime_error("incorrect type");
+            if (lhs.getName() != "int" && lhs.getName() != "float" &&
+                lhs.getName() != "char" && lhs.getName() != "bool") {
+                throw std::runtime_error("incorrect type in line: " +
+                                         std::to_string(operation.getLine()));
             }
             goto final_push;
         }
 
-        throw std::runtime_error("incorrect types");
-    } else if (operation.getContent() == "<" || operation.getContent() == ">" || operation.getContent() == ">=" || operation.getContent() == "<=") {
+        throw std::runtime_error("incorrect types in line: " +
+                                 std::to_string(operation.getLine()));
+    } else if (operation.getContent() == "<" || operation.getContent() == ">" ||
+                operation.getContent() == ">=" || operation.getContent() == "<=") {
         if (rhs.getName() == "array" || lhs.getName() == "array") {
-            throw std::runtime_error("incorrect type");
+            throw std::runtime_error("incorrect type in line: " +
+                                     std::to_string(operation.getLine()));
         }
 
         if ((rhs.getName() == "string" || lhs.getName() == "string") && lhs.getName() != rhs.getName()) {
-            throw std::runtime_error("incorrect type");
+            throw std::runtime_error("incorrect type in line: " +
+                                     std::to_string(operation.getLine()));
         }
 
         result_type.setName("bool");
     } else if (operation.getContent() == "&" || operation.getContent() == "|" || operation.getContent() == "<<" || 
                 operation.getContent() == "^" || operation.getContent() == ">>" || operation.getContent() == "%") {
         if (lhs.getName() == "array" || rhs.getName() == "array") {
-           throw std::runtime_error("u can't do it with arrays");
+           throw std::runtime_error("u can't do it with arrays in line: " +
+                                    std::to_string(operation.getLine()));
         }
 
         if (rhs.getName() == "string" || lhs.getName() == "string") {
-            throw std::runtime_error("u can't do it with strings");
+            throw std::runtime_error("u can't do it with strings in line: " +
+                                     std::to_string(operation.getLine()));
         }
 
         if (rhs.getName() == "float" || lhs.getName() == "float") {
-            throw std::runtime_error("u can't do it with float");
+            throw std::runtime_error("u can't do it with float in line: " +
+                                     std::to_string(operation.getLine()));
         }
 
         if (rhs.getName() == "int" || lhs.getName() == "int") {
@@ -242,15 +266,18 @@ void SemanticStack::checkBinary() {
     } else if (operation.getContent() == "&=" || operation.getContent() == "|=" || operation.getContent() == "<<=" || 
                 operation.getContent() == "^=" || operation.getContent() == ">>=" || operation.getContent() == "%=") {
         if (lhs.getName() == "array" || rhs.getName() == "array") {
-           throw std::runtime_error("u can't do it with arrays");
+           throw std::runtime_error("u can't do it with arrays in line: " +
+                                    std::to_string(operation.getLine()));
         }
 
         if (rhs.getName() == "string" || lhs.getName() == "string") {
-            throw std::runtime_error("u can't do it with strings");
+            throw std::runtime_error("u can't do it with strings in line: " +
+                                     std::to_string(operation.getLine()));
         }
 
         if (rhs.getName() == "float" || lhs.getName() == "float") {
-            throw std::runtime_error("u can't do it with float");
+            throw std::runtime_error("u can't do it with float in line: " +
+                                     std::to_string(operation.getLine()));
         }
 
         if (rhs.getName() == "int" || lhs.getName() == "int") {
@@ -262,16 +289,19 @@ void SemanticStack::checkBinary() {
         }
 
         if (!lhs.isLvalue()) {
-            throw std::runtime_error("u need lvalue");
+            throw std::runtime_error("u need lvalue in line: " +
+                                     std::to_string(operation.getLine()));
         }
         result_type.setLvalue(true);
     } else if (operation.getContent() == "[") {
         if (lhs.getName() != "array" && lhs.getName() != "string") {
-            throw std::runtime_error("u can't get val by idx from not array type");
+            throw std::runtime_error("u can't get val by idx from not array type in line: " +
+                                     std::to_string(operation.getLine()));
         }
 
         if (rhs.getName() != "int" && rhs.getName() != "char" && rhs.getName() != "bool") {
-            throw std::runtime_error("need cast idx type to \"int\"");
+            throw std::runtime_error("need cast idx type to \"int\" in line: " +
+                                     std::to_string(operation.getLine()));
         }
 
         if (lhs.getName() == "string") {
@@ -283,7 +313,8 @@ void SemanticStack::checkBinary() {
         result_type.setLvalue(true);
     } else if (operation.getContent() == "=") {
         if (!lhs.isLvalue()) {
-            throw std::runtime_error("needs lvalue");
+            throw std::runtime_error("needs lvalue in line: " +
+                                     std::to_string(operation.getLine()));
         }
         result_type = lhs;
         if (lhs.getName() == rhs.getName() && rhs.getName() != "array") {
@@ -291,17 +322,21 @@ void SemanticStack::checkBinary() {
         }
 
         if (rhs.getName() == "int" || rhs.getName() == "float" || rhs.getName() == "char" || rhs.getName() == "bool") {
-            if (lhs.getName() != "int" && lhs.getName() != "float" && lhs.getName() != "char" && lhs.getName() != "bool") {
-                throw std::runtime_error("incorrect type");
+            if (lhs.getName() != "int" && lhs.getName() != "float" &&
+            lhs.getName() != "char" && lhs.getName() != "bool") {
+                throw std::runtime_error("incorrect type in line: " +
+                                         std::to_string(operation.getLine()));
             }
             goto final_push;
         }
 
         if (lhs.getName() == "array" && lhs != rhs) {
-            throw std::runtime_error("incorrect type");
+            throw std::runtime_error("incorrect type in line: " +
+                                     std::to_string(operation.getLine()));
         }
     } else {
-        throw std::runtime_error("operation is incorrect");
+        throw std::runtime_error("operation is incorrect in line: " +
+                                 std::to_string(operation.getLine()));
     }
 
     final_push:
@@ -318,7 +353,8 @@ void SemanticStack::checkType(Type type) {
     auto operand = popOperand();
 
     if (type.getName() == "int" || type.getName() == "char" || type.getName() == "bool" || type.getName() == "float") {
-        if (operand.getName() != "int" && operand.getName() != "char" && operand.getName() != "bool" && operand.getName() != "float") {
+        if (operand.getName() != "int" && operand.getName() != "char" &&
+        operand.getName() != "bool" && operand.getName() != "float") {
             throw std::runtime_error("can't cast");
         }
     } else {
