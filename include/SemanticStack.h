@@ -14,8 +14,8 @@ class SemanticStack {
  public:
     SemanticStack() = default;
 
-    void push(const Type& operand);
-    void push(const Token& operation);
+    void push(const Type& operand) noexcept;
+    void push(const Token& operation) noexcept;
 
     Type popOperand();
     Token popOperation();
@@ -25,14 +25,15 @@ class SemanticStack {
     void checkBool();
     void checkType(Type type);
 
-    void clear();
+    void clear() noexcept;
 
     class Error : public std::exception {
      public: 
         explicit Error(std::string what) : std::exception(), what_(std::move(what)) {}
         explicit Error(const char* what) : std::exception(), what_(what) {}
 
-        const char* what() const noexcept;
+        [[nodiscard]]
+        const char* what() const noexcept override;
      private:
         std::string what_;
     };

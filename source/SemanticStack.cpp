@@ -4,11 +4,11 @@ const char *SemanticStack::Error::what() const noexcept {
     return what_.c_str();
 }
 
-void SemanticStack::push(const Token& operation) {
+void SemanticStack::push(const Token& operation) noexcept {
     sem_stack_.emplace(operation);
 }
 
-void SemanticStack::push(const Type& operand) {
+void SemanticStack::push(const Type& operand) noexcept {
     sem_stack_.emplace(operand);
 }
 
@@ -349,7 +349,7 @@ void SemanticStack::checkBinary() {
     push(result_type);
 }
 
-void SemanticStack::clear() {
+void SemanticStack::clear() noexcept {
     while (!sem_stack_.empty()) {
         sem_stack_.pop();
     }
