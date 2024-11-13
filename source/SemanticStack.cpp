@@ -81,12 +81,12 @@ void SemanticStack::checkBinary() {
     auto lhs = popOperand();
 
     if (rhs.getName() != "int" && rhs.getName() != "float" && rhs.getName() != "char" && rhs.getName() != "bool" &&
-        rhs.getName() != "stirng" && rhs.getName() != "array") {
+        rhs.getName() != "string" && rhs.getName() != "array") {
         throw std::runtime_error("u can't do any operations with structs");
     }
 
     if (lhs.getName() != "int" && lhs.getName() != "float" && lhs.getName() != "char" && lhs.getName() != "bool" &&
-        lhs.getName() != "stirng" && lhs.getName() != "array") {
+        lhs.getName() != "string" && lhs.getName() != "array") {
         throw std::runtime_error("u can't do any operations with structs");
     }
 
