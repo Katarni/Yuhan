@@ -1,22 +1,27 @@
 func int main() {
+    int s = 0, f = 0;
+    bool h = false;
     if (s == 0) break;
     else if (f == 0) {
-        jjj;
+        s;
     } else if (h) continue;
     else {
-        kkk;
+        f;
     }
 
+    string x = "abc";
+    float ddd = 0.0;
     switch (x) {
         case "f" {
-            ddl;
             break;
             4;
-        } case 5 {
+        } case "ds" {
             ddd;
-        } case 5 {break;}
+        } case "abc" {break;}
         default {
             f += 4;
         }
     }
+
+    return 0;
 }

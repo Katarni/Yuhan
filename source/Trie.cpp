@@ -225,10 +225,20 @@ Type Type::getArrayType() const {
 Type::Type() : name_(""), size_array_(0), array_type_(nullptr), is_lvalue_(false) {}
 
 bool Type::compareWithCast(const Type &other) const {
+    if (name_ != "array" && name_ == other.name_) {
+        return true;
+    }
+
     if (name_ == "int" || name_ == "char" ||
         name_ == "float" || name_ == "bool") {
         if (other.name_ == "int" || other.name_ == "char" ||
             other.name_ == "float" || other.name_ == "bool") {
+            return true;
+        }
+        return false;
+    }
+    if (name_ == "string") {
+        if (other.name_ == "string") {
             return true;
         }
         return false;

@@ -131,7 +131,7 @@ void TIDTree::pushField(TIDTree::NodeTID *ptr, std::string &name, std::string &n
     ptr->pushFieldOfStruct(name, name_field, type_field);
     if (ptr->isNamespace() || ptr->isStruct()) {
         std::string struct_name = ptr->getNamespace() + "::" + name;
-        pushField(ptr->getParent(), name, name_field, type_field);
+        pushField(ptr->getParent(), struct_name, name_field, type_field);
     }
 }
 

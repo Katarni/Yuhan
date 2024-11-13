@@ -268,21 +268,40 @@ void SemanticStack::checkBinary() {
         }
         result_type.setLvalue(true);
     } else if (operation.getContent() == "[") {
-        if (rhs.getName() != "array" && rhs.getName() == "string") {
+        if (lhs.getName() != "array" && lhs.getName() != "string") {
             throw std::runtime_error("u can't get val by idx from not array type");
         }
 
-        if (lhs.getName() != "int" && lhs.getName() != "char" && lhs.getName() != "bool") {
+        if (rhs.getName() != "int" && rhs.getName() != "char" && rhs.getName() != "bool") {
             throw std::runtime_error("need cast idx type to \"int\"");
         }
 
-        if (rhs.getName() == "string") {
+        if (lhs.getName() == "string") {
             result_type.setName("char");
         } else {
-            result_type = rhs.getArrayType();
+            result_type = lhs.getArrayType();
         }
 
         result_type.setLvalue(true);
+    } else if (operation.getContent() == "=") {
+        if (!lhs.isLvalue()) {
+            throw std::runtime_error("needs lvalue");
+        }
+        result_type = lhs;
+        if (lhs.getName() == rhs.getName() && rhs.getName() != "array") {
+            goto final_push;
+        }
+
+        if (rhs.getName() == "int" || rhs.getName() == "float" || rhs.getName() == "char" || rhs.getName() == "bool") {
+            if (lhs.getName() != "int" && lhs.getName() != "float" && lhs.getName() != "char" && lhs.getName() != "bool") {
+                throw std::runtime_error("incorrect type");
+            }
+            goto final_push;
+        }
+
+        if (lhs.getName() == "array" && lhs != rhs) {
+            throw std::runtime_error("incorrect type");
+        }
     } else {
         throw std::runtime_error("operation is incorrect");
     }

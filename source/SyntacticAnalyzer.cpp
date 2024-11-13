@@ -54,7 +54,9 @@ void SyntacticAnalyzer::B() {
                 throw lex_;
             }
             Type type_last = sem_stack_.popOperand();
-            sem_stack_.push(tid_tree_.checkField(type_last.getName(), lex_.getContent()));
+            auto field = tid_tree_.checkField(type_last.getName(), lex_.getContent());
+            field.setLvalue(true);
+            sem_stack_.push(field);
             getLex();
         } else {
             break;
@@ -450,6 +452,11 @@ void SyntacticAnalyzer::varDefinition() {
 
 void SyntacticAnalyzer::statement() {
     if (lex_.getContent() == "break" || lex_.getContent() == "continue") {
+        if (lex_.getContent() == "break") {
+            tid_tree_.checkBreak();
+        } else {
+            tid_tree_.checkContinue();
+        }
         getLex();
         if (lex_.getType() != Token::Type::Semicolon) {
             throw lex_;
