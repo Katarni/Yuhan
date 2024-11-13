@@ -4,5 +4,6 @@
 ## TODO
 [TODO](https://github.com/users/Katarni/projects/2) for this project
 
-## Грамматика языка
-приоритеты базовых операций расписаны [здесь](docs/operation-priority.md)
+## Language grammar
+expression and language grammar in [docs](docs/)  
+operation priority is [here](docs/operation-priority.md)
