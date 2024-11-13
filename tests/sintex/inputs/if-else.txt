@@ -1,10 +1,10 @@
 func int main() {
     int s = 0, f = 0;
     bool h = false;
-    if (s == 0) break;
+    if (s == 0) s += 1;
     else if (f == 0) {
         s;
-    } else if (h) continue;
+    } else if (h) h = false;
     else {
         f;
     }
