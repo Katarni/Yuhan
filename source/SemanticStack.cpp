@@ -4,11 +4,11 @@ const char *SemanticStack::Error::what() const noexcept {
     return what_.c_str();
 }
 
-void SemanticStack::push(const Token& operation) {
+void SemanticStack::push(const Token& operation) noexcept {
     sem_stack_.emplace(operation);
 }
 
-void SemanticStack::push(const Type& operand) {
+void SemanticStack::push(const Type& operand) noexcept {
     sem_stack_.emplace(operand);
 }
 
@@ -329,7 +329,16 @@ void SemanticStack::checkBinary() {
 
         if (rhs.getName() == "int" || rhs.getName() == "float" || rhs.getName() == "char" || rhs.getName() == "bool") {
             if (lhs.getName() != "int" && lhs.getName() != "float" &&
-            lhs.getName() != "char" && lhs.getName() != "bool") {
+                lhs.getName() != "char" && lhs.getName() != "bool") {
+                throw Error("incorrect type in: " + std::to_string(operation.getLine()) +
+                            " " + std::to_string(operation.getColumn()));
+            }
+            goto final_push;
+        }
+
+        if (lhs.getName() == "int" || lhs.getName() == "float" || lhs.getName() == "char" || lhs.getName() == "bool") {
+            if (rhs.getName() != "int" && rhs.getName() != "float" &&
+                rhs.getName() != "char" && rhs.getName() != "bool") {
                 throw Error("incorrect type in: " + std::to_string(operation.getLine()) +
                             " " + std::to_string(operation.getColumn()));
             }
@@ -349,7 +358,7 @@ void SemanticStack::checkBinary() {
     push(result_type);
 }
 
-void SemanticStack::clear() {
+void SemanticStack::clear() noexcept {
     while (!sem_stack_.empty()) {
         sem_stack_.pop();
     }
