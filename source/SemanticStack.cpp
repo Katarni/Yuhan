@@ -329,7 +329,16 @@ void SemanticStack::checkBinary() {
 
         if (rhs.getName() == "int" || rhs.getName() == "float" || rhs.getName() == "char" || rhs.getName() == "bool") {
             if (lhs.getName() != "int" && lhs.getName() != "float" &&
-            lhs.getName() != "char" && lhs.getName() != "bool") {
+                lhs.getName() != "char" && lhs.getName() != "bool") {
+                throw Error("incorrect type in: " + std::to_string(operation.getLine()) +
+                            " " + std::to_string(operation.getColumn()));
+            }
+            goto final_push;
+        }
+
+        if (lhs.getName() == "int" || lhs.getName() == "float" || lhs.getName() == "char" || lhs.getName() == "bool") {
+            if (rhs.getName() != "int" && rhs.getName() != "float" &&
+                rhs.getName() != "char" && rhs.getName() != "bool") {
                 throw Error("incorrect type in: " + std::to_string(operation.getLine()) +
                             " " + std::to_string(operation.getColumn()));
             }
