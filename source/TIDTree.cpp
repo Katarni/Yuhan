@@ -130,20 +130,26 @@ void TIDTree::pushField(TIDTree::NodeTID *ptr, std::string &name, std::string &n
     if (ptr == nullptr) return;
     ptr->pushFieldOfStruct(name, name_field, type_field);
     if (ptr->isNamespace() || ptr->isStruct()) {
-        auto name_type = type_field.getName();
+        Type new_type = type_field;
+        auto name_type = new_type.getName();
         if (ptr->checkStruct(name_type)) {
-            type_field.setName(ptr->getNamespace() + "::" + name_type);
+            new_type.setName(ptr->getNamespace() + "::" + name_type);
         }
         std::string struct_name = ptr->getNamespace() + "::" + name;
-        pushField(ptr->getParent(), struct_name, name_field, type_field);
+        pushField(ptr->getParent(), struct_name, name_field, new_type);
     }
 }
 
 void TIDTree::pushVariable(TIDTree::NodeTID *ptr, std::string &name, Type &type) {
     if (ptr == nullptr) return;
     if (ptr->isStruct()) {
+        Type new_type = type;
+        auto name_type = new_type.getName();
+        if (ptr->checkStruct(name_type)) {
+            new_type.setName(ptr->getNamespace() + "::" + name_type);
+        }
         std::string name_of_struct = ptr->getNamespace();
-        pushField(ptr->getParent(), name_of_struct, name, type);
+        pushField(ptr->getParent(), name_of_struct, name, new_type);
         return;
     }
     ptr->pushID(name, type);
