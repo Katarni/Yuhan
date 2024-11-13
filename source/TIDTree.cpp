@@ -87,7 +87,7 @@ Type TIDTree::checkVariable(std::string name) {
 }
 
 Type TIDTree::checkVariable(TIDTree::NodeTID *ptr, std::string &name) {
-    if (ptr == nullptr) throw std::runtime_error("Identifier not found");
+    if (ptr == nullptr) throw not_found_error();
     try {
         return ptr->checkID(name);
     } catch (std::runtime_error &error) {
@@ -104,7 +104,7 @@ bool TIDTree::checkStruct(std::string name) {
 }
 
 bool TIDTree::checkStruct(TIDTree::NodeTID *ptr, std::string &name) {
-    if (ptr == nullptr) throw std::runtime_error("Identifier not found");
+    if (ptr == nullptr) throw not_found_error();
     if (ptr->checkStruct(name)) return true;
     return checkStruct(ptr->getParent(), name);
 }
@@ -114,10 +114,10 @@ Type TIDTree::checkFunction(std::string name, std::vector<Type> &args) {
 }
 
 Type TIDTree::checkFunction(TIDTree::NodeTID *ptr, std::string &name, std::vector<Type> &args) {
-    if (ptr == nullptr) throw std::runtime_error("Identifier not found");
+    if (ptr == nullptr) throw not_found_error();
     try {
         return ptr->checkFunction(name, args);
-    } catch (std::runtime_error &error) {
+    } catch (not_found_error &error) {
         return checkFunction(ptr->getParent(), name, args);
     }
 }

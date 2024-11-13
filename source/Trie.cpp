@@ -116,7 +116,10 @@ void FunctionNode::checkArgs(std::vector<Type> &args) {
         throw std::runtime_error("Incorrect number of arguments");
     }
     for (int i = 0; i < args_.size(); ++i) {
-        if (args[i] != args_[i].getType()) {
+        if (args_[i].getType().isLvalue() && ! args[i].isLvalue()) {
+            throw std::runtime_error("Incorrect category of argument " + args_[i].getName());
+        }
+        if (!args[i].compareWithCast(args_[i].getType())) {
             throw std::runtime_error("Incorrect argument type");
         }
     }
@@ -159,7 +162,7 @@ void TIDFunction::pushID(std::string &name, Type &type, std::vector<Variable> &a
 }
 
 Type TIDFunction::checkID(std::string &name) {
-    if (!isInTrie(name)) throw std::runtime_error("Identifier not found");
+    if (!isInTrie(name)) throw not_found_error();
     return getNode(name)->getType();
 }
 

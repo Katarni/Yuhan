@@ -2,6 +2,12 @@
 #include "includes.h"
 
 
+class not_found_error : public std::runtime_error {
+public:
+    not_found_error() : std::runtime_error("Identifier not found") {}
+};
+
+
 class Node {
 public:
     Node();
@@ -122,7 +128,7 @@ public:
         T *ptr = root_;
         for (auto& let : word) {
             ptr = static_cast<T*>(ptr->next(let));
-            if (ptr == nullptr) throw std::runtime_error("Identifier not found");
+            if (ptr == nullptr) throw not_found_error();
         }
         return ptr;
     }
