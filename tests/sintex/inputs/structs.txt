@@ -1,20 +1,28 @@
+struct b {
+    int fff;
+};
+
 struct a {
     int s;
 
     array<int, 400> a;
 
-    struct s {
+    struct f {
         int fff;
     };
+
+    typename f d;
+    typename b ff;
 };
 
 func int main() {
     int something_strange = 0;
-    typename a f = l;
+    typename a f;
 
-    a.s += f;
-    a.s.d = 0;
-    a().f = 0;
+    f.s += 5;
+    f.a[4] = 1000;
+    f.d.fff = 0;
+    f.ff.fff = 0;
 }
 
 struct ___ffasFFSDJ432434 {
