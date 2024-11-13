@@ -43,7 +43,12 @@ void SyntacticAnalyzer::B() {
             sem_stack_.push(lex_);
             getLex();
             exp14();
-            sem_stack_.checkBinary();
+            try {
+                sem_stack_.checkBinary();
+            } catch (std::runtime_error &error) {
+                throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                         std::to_string(lex_.getColumn()));
+            }
             if (lex_.getType() != Token::Type::CloseSquareBracket) {
                 throw lex_;
             }
@@ -53,10 +58,21 @@ void SyntacticAnalyzer::B() {
             if (lex_.getType() != Token::Type::Identifier) {
                 throw lex_;
             }
-            Type type_last = sem_stack_.popOperand();
-            auto field = tid_tree_.checkField(type_last.getName(), lex_.getContent());
+            Type type_last;
+            try {
+                type_last = sem_stack_.popOperand();
+            } catch (std::runtime_error &error) {
+                throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                         std::to_string(lex_.getColumn()));
+            }
+            Type field;
+            try {
+                field = tid_tree_.checkField(type_last.getName(), lex_.getContent());
+            } catch (std::runtime_error &error) {
+                throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                         std::to_string(lex_.getColumn()));
+            }
             field.setLvalue(true);
-//            field.setName(type_last.getName() + "::" + field.getName());
             sem_stack_.push(field);
             getLex();
         } else {
@@ -92,7 +108,13 @@ void SyntacticAnalyzer::exp1() {
             sem_stack_.push(tid_tree_.checkFunction(name, args));
             getLex();
         } else {
-            Type type_val = tid_tree_.checkVariable(name);
+            Type type_val;
+            try {
+                type_val = tid_tree_.checkVariable(name);
+            } catch (std::runtime_error &error) {
+                throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                         std::to_string(lex_.getColumn()));
+            }
             type_val.setLvalue(true);
             sem_stack_.push(type_val);
         }
@@ -120,7 +142,12 @@ void SyntacticAnalyzer::exp2() {
     }
     exp1();
     for (int i = 0; i < cnt_operations; ++i) {
-        sem_stack_.checkUno();
+        try {
+            sem_stack_.checkUno();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
 }
 
@@ -139,7 +166,12 @@ void SyntacticAnalyzer::exp3() {
         sem_stack_.push(lex_);
         getLex();
         exp2();
-        sem_stack_.checkBinary();
+        try {
+            sem_stack_.checkBinary();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
 }
 
@@ -149,7 +181,12 @@ void SyntacticAnalyzer::exp4() {
         sem_stack_.push(lex_);
         getLex();
         exp3();
-        sem_stack_.checkBinary();
+        try {
+            sem_stack_.checkBinary();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
 }
 
@@ -166,7 +203,12 @@ void SyntacticAnalyzer::exp5() {
         sem_stack_.push(lex_);
         getLex();
         exp4();
-        sem_stack_.checkBinary();
+        try {
+            sem_stack_.checkBinary();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
 }
 
@@ -186,7 +228,12 @@ void SyntacticAnalyzer::exp6() {
         sem_stack_.push(lex_);
         getLex();
         exp5();
-        sem_stack_.checkBinary();
+        try {
+            sem_stack_.checkBinary();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
 }
 
@@ -204,7 +251,12 @@ void SyntacticAnalyzer::exp7() {
         sem_stack_.push(lex_);
         getLex();
         exp6();
-        sem_stack_.checkBinary();
+        try {
+            sem_stack_.checkBinary();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
 }
 
@@ -214,7 +266,12 @@ void SyntacticAnalyzer::exp8() {
         sem_stack_.push(lex_);
         getLex();
         exp7();
-        sem_stack_.checkBinary();
+        try {
+            sem_stack_.checkBinary();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
 }
 
@@ -224,7 +281,12 @@ void SyntacticAnalyzer::exp9() {
         sem_stack_.push(lex_);
         getLex();
         exp8();
-        sem_stack_.checkBinary();
+        try {
+            sem_stack_.checkBinary();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
 }
 
@@ -234,7 +296,12 @@ void SyntacticAnalyzer::exp10() {
         sem_stack_.push(lex_);
         getLex();
         exp9();
-        sem_stack_.checkBinary();
+        try {
+            sem_stack_.checkBinary();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
 }
 
@@ -244,7 +311,12 @@ void SyntacticAnalyzer::exp11() {
         sem_stack_.push(lex_);
         getLex();
         exp10();
-        sem_stack_.checkBinary();
+        try {
+            sem_stack_.checkBinary();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
 }
 
@@ -254,7 +326,12 @@ void SyntacticAnalyzer::exp12() {
         sem_stack_.push(lex_);
         getLex();
         exp11();
-        sem_stack_.checkBinary();
+        try {
+            sem_stack_.checkBinary();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
 }
 
@@ -268,7 +345,12 @@ void SyntacticAnalyzer::exp13() {
         exp12();
     }
     for (int i = 0; i < cnt_operations; ++i) {
-        sem_stack_.checkBinary();
+        try {
+            sem_stack_.checkBinary();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
 }
 
@@ -282,7 +364,12 @@ void SyntacticAnalyzer::ifStatement() {
     }
     getLex();
     exp14();
-    sem_stack_.checkBool();
+    try {
+        sem_stack_.checkBool();
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                 std::to_string(lex_.getColumn()));
+    }
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
     }
@@ -309,7 +396,12 @@ void SyntacticAnalyzer::whileStatement() {
     }
     getLex();
     exp14();
-    sem_stack_.checkBool();
+    try {
+        sem_stack_.checkBool();
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                 std::to_string(lex_.getColumn()));
+    }
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
     }
@@ -334,7 +426,12 @@ void SyntacticAnalyzer::forStatement() {
             varDefinition();
         } else {
             exp14();
-            sem_stack_.popOperand();
+            try {
+                sem_stack_.popOperand();
+            } catch (std::runtime_error &error) {
+                throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                         std::to_string(lex_.getColumn()));
+            }
             if (lex_.getType() != Token::Type::Semicolon) {
                 throw lex_;
             }
@@ -345,7 +442,12 @@ void SyntacticAnalyzer::forStatement() {
     }
     if (lex_.getType() != Token::Type::Semicolon) {
         exp14();
-        sem_stack_.checkBool();
+        try {
+            sem_stack_.checkBool();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
@@ -353,7 +455,12 @@ void SyntacticAnalyzer::forStatement() {
     getLex();
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         exp14();
-        sem_stack_.popOperand();
+        try {
+            sem_stack_.popOperand();
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
@@ -386,7 +493,13 @@ void SyntacticAnalyzer::switchStatement() {
     }
     getLex();
     exp14();
-    Type type_exp = sem_stack_.popOperand();
+    Type type_exp;
+    try {
+        type_exp = sem_stack_.popOperand();
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                 std::to_string(lex_.getColumn()));
+    }
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
     }
@@ -419,8 +532,19 @@ void SyntacticAnalyzer::returnStatement() {
     }
     getLex();
     exp14();
-    Type type_exp = sem_stack_.popOperand();
-    tid_tree_.checkReturn(type_exp);
+    Type type_exp;
+    try {
+        type_exp = sem_stack_.popOperand();
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                 std::to_string(lex_.getColumn()));
+    }
+    try {
+        tid_tree_.checkReturn(type_exp);
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " +
+                                 std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
+    }
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
@@ -500,7 +624,12 @@ void SyntacticAnalyzer::statement() {
         return;
     }
     exp14();
-    sem_stack_.popOperand();
+    try {
+        sem_stack_.popOperand();
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                 std::to_string(lex_.getColumn()));
+    }
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
@@ -562,8 +691,18 @@ void SyntacticAnalyzer::var(Type type_var) {
     getLex();
     exp12();
     type_var.setLvalue(false);
-    sem_stack_.checkType(type_var);
-    tid_tree_.pushVariable(vari.getName(), type_var);
+    try {
+        sem_stack_.checkType(type_var);
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                 std::to_string(lex_.getColumn()));
+    }
+    try {
+        tid_tree_.pushVariable(vari.getName(), type_var);
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                 std::to_string(lex_.getColumn()));
+    }
     return;
 }
 
@@ -590,10 +729,20 @@ void SyntacticAnalyzer::function() {
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
     }
-    tid_tree_.pushFunction(name_func, type_func, args);
+    try {
+        tid_tree_.pushFunction(name_func, type_func, args);
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                 std::to_string(lex_.getColumn()));
+    }
     tid_tree_.createScope(TypeScope::Function, name_func);
     for (auto &arg: args) {
-        tid_tree_.pushVariable(arg.getName(), arg.getType());
+        try {
+            tid_tree_.pushVariable(arg.getName(), arg.getType());
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
     getLex();
     block();
@@ -635,7 +784,12 @@ void SyntacticAnalyzer::structure() {
     if (lex_.getType() != Token::Type::Identifier) {
         throw lex_;
     }
-    tid_tree_.pushStruct(lex_.getContent());
+    try {
+        tid_tree_.pushStruct(lex_.getContent());
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                 std::to_string(lex_.getColumn()));
+    }
     tid_tree_.createScope(TypeScope::Struct, lex_.getContent());
     getLex();
     if (lex_.getType() != Token::Type::OpenCurlyBrace) {
@@ -708,7 +862,13 @@ void SyntacticAnalyzer::identifierNamespace() {
 
 void SyntacticAnalyzer::startAnalysis() {
     getLex();
-    program();
+    try {
+        program();
+    } catch (std::exception &error) {
+        std::cout << "Yuhan og" << std::endl;
+        std::cout << error.what() << std::endl;
+        exit(-52);
+    }
 }
 
 Type SyntacticAnalyzer::array() {
@@ -754,11 +914,21 @@ bool SyntacticAnalyzer::isType() {
 
 void SyntacticAnalyzer::vars(std::vector<Type> &args) {
     exp13();
-    args.push_back(sem_stack_.popOperand());
+    try {
+        args.push_back(sem_stack_.popOperand());
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                 std::to_string(lex_.getColumn()));
+    }
     while (lex_.getType() == Token::Type::Comma) {
         getLex();
         exp13();
-        args.push_back(sem_stack_.popOperand());
+        try {
+            args.push_back(sem_stack_.popOperand());
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                     std::to_string(lex_.getColumn()));
+        }
     }
 }
 
