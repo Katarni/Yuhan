@@ -156,6 +156,7 @@ Type TIDFunction::checkID(std::string &name, std::vector<Type> &args) {
 }
 
 void TIDFunction::pushID(std::string &name, Type &type, std::vector<Variable> &args) {
+    if (isInTrie(name)) throw std::runtime_error("Function with this name has already been created");
     auto ptr = insert(name);
     ptr->setType(type);
     ptr->setArgs(args);
