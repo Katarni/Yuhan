@@ -41,11 +41,12 @@ void SemanticStack::checkUno() {
     Type result_operand = operand;
 
     switch (operation.getType()) {
+        case Token::Type::PlusOrMinusOperator:
         case Token::Type::RvalueUnaryOperator:
-            if (operand.getName() == "int" && operand.getName() == "char" && operand.getName() == "float") {
+            if (operand.getName() == "int" || operand.getName() == "char" || operand.getName() == "float") {
                 if (operation.getContent() == "!") {
                     result_operand.setName("bool");
-                } 
+                }
                 result_operand.setLvalue("false");
                 push(result_operand);
                 break;
