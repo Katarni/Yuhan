@@ -4,6 +4,8 @@
 
 #pragma once
 
+#include <utility>
+
 #include "Trie.h"
 #include "Token.h"
 
@@ -24,6 +26,16 @@ class SemanticStack {
     void checkType(Type type);
 
     void clear();
+
+    class Error : public std::exception {
+     public: 
+        explicit Error(std::string what) : std::exception(), what_(std::move(what)) {}
+        explicit Error(const char* what) : std::exception(), what_(what) {}
+
+        const char* what() const noexcept;
+     private:
+        std::string what_;
+    };
 
  private:
     std::stack<std::variant<Type, Token>> sem_stack_;
