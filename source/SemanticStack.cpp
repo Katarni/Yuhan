@@ -47,12 +47,12 @@ void SemanticStack::checkUno() {
                 if (operation.getContent() == "!") {
                     result_operand.setName("bool");
                 }
-                result_operand.setLvalue("false");
+                result_operand.setLvalue(false);
                 push(result_operand);
                 break;
             } 
             if (operand.getName() == "bool" && operation.getContent() == "!") {
-                result_operand.setLvalue("false");
+                result_operand.setLvalue(false);
                 push(result_operand);
                 break;
             }
