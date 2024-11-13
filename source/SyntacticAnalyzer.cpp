@@ -105,7 +105,12 @@ void SyntacticAnalyzer::exp1() {
             if (lex_.getType() != Token::Type::CloseParenthesis) {
                 throw lex_;
             }
-            sem_stack_.push(tid_tree_.checkFunction(name, args));
+            try {
+                sem_stack_.push(tid_tree_.checkFunction(name, args));
+            } catch (std::runtime_error &error) {
+                throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                         std::to_string(lex_.getColumn()));
+            }
             getLex();
         } else {
             Type type_val;
@@ -577,10 +582,14 @@ void SyntacticAnalyzer::varDefinition() {
 
 void SyntacticAnalyzer::statement() {
     if (lex_.getContent() == "break" || lex_.getContent() == "continue") {
-        if (lex_.getContent() == "break") {
-            tid_tree_.checkBreak();
-        } else {
-            tid_tree_.checkContinue();
+        try {
+            if (lex_.getContent() == "break") {
+                tid_tree_.checkBreak();
+            } else {
+                tid_tree_.checkContinue();
+            }
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
         }
         getLex();
         if (lex_.getType() != Token::Type::Semicolon) {
@@ -670,8 +679,12 @@ Type SyntacticAnalyzer::type() {
         lex_.getType() != Token::Type::NamespaceIdentifier) {
         throw lex_;
     }
-    if (!tid_tree_.checkStruct(lex_.getContent())) {
-        throw lex_;
+    try {
+        if (!tid_tree_.checkStruct(lex_.getContent())) {
+            throw lex_;
+        }
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
     }
     type.setName(lex_.getContent());
     getLex();
@@ -685,7 +698,11 @@ void SyntacticAnalyzer::var(Type type_var) {
     Variable vari(lex_.getContent(), type_var);
     getLex();
     if (lex_.getContent() != "=") {
-        tid_tree_.pushVariable(vari.getName(), type_var);
+        try {
+            tid_tree_.pushVariable(vari.getName(), type_var);
+        } catch (std::runtime_error &error) {
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
+        }
         return;
     }
     getLex();
