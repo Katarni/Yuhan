@@ -139,8 +139,6 @@ void SemanticStack::checkBinary() {
         } else {
             result_type.setName("bool");
         }
-    } else if (operation.getContent() == ".") {
-        // check structure
     } else if (operation.getContent() == "+=") {
         if (lhs.getName() == "array" || rhs.getName() == "array") {
             throw std::runtime_error("u can't do it with arrays");
