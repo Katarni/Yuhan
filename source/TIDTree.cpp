@@ -29,7 +29,7 @@ void TIDTree::NodeTID::pushStruct(std::string &name) {
 }
 
 void TIDTree::NodeTID::pushFieldOfStruct(std::string &name, std::string &name_field, Type &type_field) {
-    return structs_.pushField(name, name_field, type_field);
+    structs_.pushField(name, name_field, type_field);
 }
 
 TIDTree::NodeTID *TIDTree::NodeTID::getParent() {
@@ -130,6 +130,10 @@ void TIDTree::pushField(TIDTree::NodeTID *ptr, std::string &name, std::string &n
     if (ptr == nullptr) return;
     ptr->pushFieldOfStruct(name, name_field, type_field);
     if (ptr->isNamespace() || ptr->isStruct()) {
+        auto name_type = type_field.getName();
+        if (ptr->checkStruct(name_type)) {
+            type_field.setName(ptr->getNamespace() + "::" + name_type);
+        }
         std::string struct_name = ptr->getNamespace() + "::" + name;
         pushField(ptr->getParent(), struct_name, name_field, type_field);
     }
@@ -198,7 +202,7 @@ Type TIDTree::checkField(TIDTree::NodeTID *ptr, std::string &name, std::string &
     if (ptr->checkStruct(name)) {
         return ptr->checkFieldOfStruct(name, name_field);
     }
-    return checkField(ptr->getParent(), name, name_field);
+    return checkField(ptr->getParent(), name, name_field);;
 }
 
 void TIDTree::checkReturn(Type type_return) {

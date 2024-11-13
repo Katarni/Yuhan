@@ -56,6 +56,7 @@ void SyntacticAnalyzer::B() {
             Type type_last = sem_stack_.popOperand();
             auto field = tid_tree_.checkField(type_last.getName(), lex_.getContent());
             field.setLvalue(true);
+//            field.setName(type_last.getName() + "::" + field.getName());
             sem_stack_.push(field);
             getLex();
         } else {
