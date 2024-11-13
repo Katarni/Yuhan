@@ -782,6 +782,7 @@ void SyntacticAnalyzer::funcVarDefinition(std::vector<Variable> &args) {
         getLex();
         type_arg = type();
         if (lex_.getType() == Token::Type::Ampersand) {
+            type_arg.setLvalue(true);
             getLex();
         }
         if (lex_.getType() != Token::Type::Identifier &&
