@@ -1,6 +1,8 @@
 #pragma once
 
 #include "LexicalAnalyzer.h"
+#include "TIDTree.h"
+#include "SemanticStack.h"
 
 
 class SyntacticAnalyzer {
@@ -12,16 +14,18 @@ public:
 private:
     LexicalAnalyzer *lexer_;
     Token lex_;
+    TIDTree tid_tree_;
+    SemanticStack sem_stack_;
 
     void getLex();
 
     void exp14();
 
-    void literal();
+    Type literal();
 
     void B();
 
-    void vars();
+    void vars(std::vector<Type>& args);
 
     void exp1();
 
@@ -65,7 +69,7 @@ private:
 
     void forStatement();
 
-    void switchItem();
+    void switchItem(Type &type_exp);
 
     void switchStatement();
 
@@ -73,9 +77,9 @@ private:
 
     void block();
 
-    void type();
+    Type type();
 
-    void var();
+    void var(Type type_var);
 
     void varDefinition();
 
@@ -83,7 +87,7 @@ private:
 
     void function();
 
-    void funcVarDefinition();
+    void funcVarDefinition(std::vector<Variable>& args);
 
     void structure();
 
@@ -97,7 +101,7 @@ private:
 
     void identifierNamespace();
 
-    void array();
+    Type array();
 
     bool isType();
 };

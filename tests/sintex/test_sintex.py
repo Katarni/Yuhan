@@ -53,3 +53,10 @@ def test_namespaces():
 
     assert get_program_output() == "OK"
 
+
+def test_functions():
+    file = read_file("inputs/functions.txt")
+    write_file(file)
+
+    assert get_program_output() == "OK"
+

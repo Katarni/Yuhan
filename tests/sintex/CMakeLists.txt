@@ -3,7 +3,7 @@ project(Yuhan-sintex-tests)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(Yuhan-sintex-tests sintex.cpp 
+add_executable(Yuhan-sintex-tests sintex.cpp
         ../../source/Trie.cpp
         ../../include/Trie.h
         ../../include/includes.h
@@ -13,5 +13,9 @@ add_executable(Yuhan-sintex-tests sintex.cpp
         ../../source/Token.cpp
         ../../include/SyntacticAnalyzer.h
         ../../source/SyntacticAnalyzer.cpp
+        ../../include/TIDTree.h
+        ../../source/TIDTree.cpp
+        ../../include/SemanticStack.h
+        ../../source/SemanticStack.cpp
 )
 

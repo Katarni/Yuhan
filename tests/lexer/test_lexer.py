@@ -67,3 +67,14 @@ def test_reserved_words():
     expected = read_file("expected/reserved-words.txt")
 
     assert expected == get_program_output()
+    
+
+def test_identificators():
+    input_text = read_file("inputs/identificators.txt")
+
+    write_file(input_text)
+
+    expected = read_file("expected/identificators.txt") 
+
+    assert expected == get_program_output()
+

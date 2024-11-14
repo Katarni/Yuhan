@@ -15,5 +15,9 @@ add_executable(Yuhan main.cpp
         include/Starter.h
         include/SyntacticAnalyzer.h
         source/SyntacticAnalyzer.cpp
+        include/TIDTree.h
+        source/TIDTree.cpp
+        include/SemanticStack.h
+        source/SemanticStack.cpp
 )
 

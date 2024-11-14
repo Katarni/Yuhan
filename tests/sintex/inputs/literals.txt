@@ -1,10 +1,19 @@
+func int f(string s) {
+    s;
+}
+
+func int fa(string& s) {
+    s;
+}
+
 func int main() {
     string s = "ff";
-    float s = 4e5;
-    int s = 3;
-    float s = 4.6;
+    float fl = 4e5;
+    int in = 3;
+    float fl2 = 4.6;
 
     f("ss");
+    fa(s);
     4e5 + 4.5;
 }
 
