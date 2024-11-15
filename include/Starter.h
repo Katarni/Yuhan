@@ -4,7 +4,7 @@
 
 #pragma once
 
-#include "LexicalAnalyzer.h"
+#include "SyntacticAnalyzer.h"
 
 
 class Starter {
@@ -12,10 +12,10 @@ class Starter {
     explicit Starter(char* file_text, size_t text_size, const std::string& reserved_words_file);
     ~Starter();
 
-    std::vector<Token> getAllTokens();
+    void startAnalysis();
 
  private:
     char* file_text_;
     size_t text_size_;
-    LexicalAnalyzer *lexer_;
+    SyntacticAnalyzer *syntex_;
 };
