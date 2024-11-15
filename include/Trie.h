@@ -53,6 +53,8 @@ public:
     const std::string& getName() const;
 
     Type getArrayType() const;
+    
+    size_t getArraySize() const;
 
     void setArraySize(size_t array_size);
 

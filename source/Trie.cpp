@@ -256,3 +256,7 @@ bool Type::compareWithCast(const Type &other) const {
     return array_type_->compareWithCast(*other.array_type_);
 }
 
+size_t Type::getArraySize() const {
+    return size_array_;
+}
+

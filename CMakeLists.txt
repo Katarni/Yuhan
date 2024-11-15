@@ -17,5 +17,7 @@ add_executable(Yuhan main.cpp
         source/TIDTree.cpp
         include/SemanticStack.h
         source/SemanticStack.cpp
+        include/ReservedMemory.h
+        source/ReservedMemory.cpp
 )
 
