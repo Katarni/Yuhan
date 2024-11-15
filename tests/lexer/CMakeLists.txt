@@ -11,7 +11,5 @@ add_executable(Yuhan-lexer-tests lexer.cpp
         ../../source/LexicalAnalyzer.cpp
         ../../include/LexicalAnalyzer.h
         ../../source/Token.cpp
-        ../../include/Starter.h
-        ../../source/Starter.cpp
 )
 

@@ -1,4 +1,3 @@
-#include "include/Starter.h"
 #include "include/SyntacticAnalyzer.h"
 #include "include/TIDTree.h"
 
@@ -14,8 +13,13 @@ int main() {
     auto file_text = new char[file_size];
     file_fin.read(file_text, file_size);
 
-    Starter starter(file_text, file_size, "../reserved-words.txt");
+    LexicalAnalyzer *lexer;
+    lexer = new LexicalAnalyzer(file_text, file_size, "../reserved-words.txt");
 
-    starter.startAnalysis();
+    SyntacticAnalyzer sintex(lexer);
+
+    sintex.startAnalysis();
+    std::cout << "OK";
+
     return 0;
 }

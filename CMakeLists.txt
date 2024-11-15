@@ -11,8 +11,6 @@ add_executable(Yuhan main.cpp
         source/LexicalAnalyzer.cpp
         include/LexicalAnalyzer.h
         source/Token.cpp
-        source/Starter.cpp
-        include/Starter.h
         include/SyntacticAnalyzer.h
         source/SyntacticAnalyzer.cpp
         include/TIDTree.h
