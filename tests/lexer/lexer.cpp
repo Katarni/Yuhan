@@ -13,7 +13,7 @@ int main() {
     file_fin.read(file_text, file_size);
 
     LexicalAnalyzer *lexer;
-    lexer = new LexicalAnalyzer(file_text, file_size, "../reserved-words.txt");
+    lexer = new LexicalAnalyzer(file_text, file_size, "../../reserved-words.txt");
 
     Token cur_token;
     Token eof_token;
