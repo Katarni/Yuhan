@@ -19,5 +19,7 @@ add_executable(Yuhan main.cpp
         source/SemanticStack.cpp
         include/ReservedMemory.h
         source/ReservedMemory.cpp
+        include/PRNGenerator.h
+        source/PRNGenerator.cpp
 )
 
