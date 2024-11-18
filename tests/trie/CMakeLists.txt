@@ -7,5 +7,9 @@ add_executable(Yuhan-trie-tests trie.cpp
         ../../source/Trie.cpp
         ../../include/Trie.h
         ../../include/includes.h
+        ../../include/Token.h
+        ../../source/Token.cpp
+        ../../include/ReservedMemory.h
+        ../../source/ReservedMemory.cpp
 )
 
