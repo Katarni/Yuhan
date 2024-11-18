@@ -17,7 +17,7 @@ public:
 
     void createScope(TypeScope type = TypeScope::Other, std::string namespace_ = "");
 
-    Type checkVariable(std::string name);
+    ReservedMemory* checkVariable(std::string name);
 
     void pushVariable(std::string name, Type type);
 
@@ -25,7 +25,7 @@ public:
 
     void pushStruct(std::string name);
 
-    Type checkField(std::string name, std::string name_field);
+    ReservedMemory* checkField(std::string name, std::string name_field);
 
     Type checkFunction(std::string name, std::vector<Type>& args);
 
@@ -44,11 +44,11 @@ private:
 
         ~NodeTID();
 
-        Type checkID(std::string &name);
+        ReservedMemory* checkID(std::string &name);
 
         void pushID(std::string &name, Type &type);
 
-        Type checkFieldOfStruct(std::string &name, std::string &field_name);
+        ReservedMemory* checkFieldOfStruct(std::string &name, std::string &field_name);
 
         bool checkStruct(std::string& name);
 
@@ -87,7 +87,7 @@ private:
     };
     NodeTID *current_scope_;
 
-    Type checkVariable(NodeTID *ptr, std::string& name);
+    ReservedMemory* checkVariable(NodeTID *ptr, std::string& name);
 
     bool checkStruct(NodeTID *ptr, std::string& name);
 
@@ -101,7 +101,7 @@ private:
 
     void pushFunction(NodeTID *ptr, std::string& name, Type& type, std::vector<Variable>& args);
 
-    Type checkField(NodeTID *ptr, std::string& name, std::string& name_field);
+    ReservedMemory* checkField(NodeTID *ptr, std::string& name, std::string& name_field);
 
     void checkReturn(NodeTID *ptr, Type type_return);
 

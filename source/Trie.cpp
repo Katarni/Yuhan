@@ -28,8 +28,8 @@ Node::~Node() {
 
 Node::Node() : terminal_(false) {}
 
-Type TIDVariable::checkID(std::string &name) {
-    return getNode(name)->getType();
+ReservedMemory* TIDVariable::checkID(std::string &name) {
+    return getNode(name)->getVar();
 }
 
 void TIDVariable::pushID(std::string &name, Type &type) {
@@ -46,6 +46,10 @@ Type VariableNode::getType() const {
     return var_->getType();
 }
 
+ReservedMemory* VariableNode::getVar() const {
+    return var_;
+}
+
 void VariableNode::addChild(char let) {
     if (go_[let] != nullptr) return;
     go_[let] = new VariableNode();
@@ -55,7 +59,7 @@ bool TIDStructure::checkId(std::string &name) {
     return isInTrie(name);
 }
 
-Type TIDStructure::checkField(std::string &name, std::string &name_field) {
+ReservedMemory* TIDStructure::checkField(std::string &name, std::string &name_field) {
     return getNode(name)->checkIDField(name_field);
 }
 
@@ -68,7 +72,7 @@ void TIDStructure::pushID(std::string &name) {
     insert(name);
 }
 
-Type StructureNode::checkIDField(std::string &name) {
+ReservedMemory* StructureNode::checkIDField(std::string &name) {
     return fields_.checkID(name);
 }
 

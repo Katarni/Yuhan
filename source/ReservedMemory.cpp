@@ -114,4 +114,6 @@ ReservedMemory::ReservedMemory(Type type) {
     } else {
 
     }
+
+    type_.setLvalue(true);
 }

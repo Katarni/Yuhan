@@ -1,6 +1,6 @@
 #include "../include/TIDTree.h"
 
-Type TIDTree::NodeTID::checkID(std::string &name) {
+ReservedMemory* TIDTree::NodeTID::checkID(std::string &name) {
     return variables_.checkID(name);
 }
 
@@ -8,7 +8,7 @@ void TIDTree::NodeTID::pushID(std::string &name, Type &type) {
     variables_.pushID(name, type);
 }
 
-Type TIDTree::NodeTID::checkFieldOfStruct(std::string &name, std::string &field_name) {
+ReservedMemory* TIDTree::NodeTID::checkFieldOfStruct(std::string &name, std::string &field_name) {
     return structs_.checkField(name, field_name);
 }
 
@@ -82,11 +82,11 @@ void TIDTree::createScope(TypeScope type, std::string namespace_) {
     }
 }
 
-Type TIDTree::checkVariable(std::string name) {
+ReservedMemory* TIDTree::checkVariable(std::string name) {
     return checkVariable(current_scope_, name);
 }
 
-Type TIDTree::checkVariable(TIDTree::NodeTID *ptr, std::string &name) {
+ReservedMemory* TIDTree::checkVariable(TIDTree::NodeTID *ptr, std::string &name) {
     if (ptr == nullptr) throw not_found_error();
     try {
         return ptr->checkID(name);
@@ -195,11 +195,11 @@ TIDTree::~TIDTree() {
     delete current_scope_;
 }
 
-Type TIDTree::checkField(std::string name, std::string name_field) {
+ReservedMemory* TIDTree::checkField(std::string name, std::string name_field) {
     return checkField(current_scope_, name, name_field);
 }
 
-Type TIDTree::checkField(TIDTree::NodeTID *ptr, std::string &name, std::string &name_field) {
+ReservedMemory* TIDTree::checkField(TIDTree::NodeTID *ptr, std::string &name, std::string &name_field) {
     if (ptr == nullptr) throw std::runtime_error("Struct not found");
     if (ptr->checkStruct(name)) {
         return ptr->checkFieldOfStruct(name, name_field);

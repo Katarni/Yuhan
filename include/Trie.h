@@ -35,6 +35,7 @@ public:
 
     [[nodiscard]]
     Type getType() const;
+    ReservedMemory* getVar() const;
 
     void setType(Type& type);
 
@@ -102,14 +103,14 @@ protected:
 
 class TIDVariable : public Trie<VariableNode> {
 public:
-    Type checkID(std::string& name);
+    ReservedMemory* checkID(std::string& name);
 
     void pushID(std::string& name, Type& type);
 };
 
 class StructureNode : public Node {
 public:
-    Type checkIDField(std::string& name);
+    ReservedMemory* checkIDField(std::string& name);
 
     void pushIDField(std::string& name, Type& type);
 
@@ -126,7 +127,7 @@ public:
 
     void pushID(std::string& name);
 
-    Type checkField(std::string& name, std::string& name_field);
+    ReservedMemory* checkField(std::string& name, std::string& name_field);
 
     void pushField(std::string& name, std::string& name_field, Type& type_field);
 };

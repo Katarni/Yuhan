@@ -65,15 +65,14 @@ void SyntacticAnalyzer::B() {
                 throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                          std::to_string(lex_.getColumn()));
             }
-            Type field;
+            ReservedMemory* field;
             try {
                 field = tid_tree_.checkField(type_last.getName(), lex_.getContent());
             } catch (std::runtime_error &error) {
                 throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                          std::to_string(lex_.getColumn()));
             }
-            field.setLvalue(true);
-            sem_stack_.push(field);
+            sem_stack_.push(field->getType());
             getLex();
         } else {
             break;
@@ -113,15 +112,14 @@ void SyntacticAnalyzer::exp1() {
             }
             getLex();
         } else {
-            Type type_val;
+            ReservedMemory* var_ = nullptr;
             try {
-                type_val = tid_tree_.checkVariable(name);
+                var_ = tid_tree_.checkVariable(name);
             } catch (std::runtime_error &error) {
                 throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                          std::to_string(lex_.getColumn()));
             }
-            type_val.setLvalue(true);
-            sem_stack_.push(type_val);
+            sem_stack_.push(var_->getType());
         }
         B();
         return;
