@@ -17,5 +17,9 @@ add_executable(Yuhan-sintex-tests sintex.cpp
         ../../source/TIDTree.cpp
         ../../include/SemanticStack.h
         ../../source/SemanticStack.cpp
+        ../../include/ReservedMemory.h
+        ../../source/ReservedMemory.cpp
+        ../../include/PRNGenerator.h
+        ../../source/PRNGenerator.cpp
 )
 

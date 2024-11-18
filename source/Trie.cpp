@@ -39,11 +39,11 @@ void TIDVariable::pushID(std::string &name, Type &type) {
 }
 
 void VariableNode::setType(Type &type) {
-    type_ = type;
+    var_ = new ReservedMemory(type);
 }
 
 Type VariableNode::getType() const {
-    return type_;
+    return var_->getType();
 }
 
 void VariableNode::addChild(char let) {
@@ -166,97 +166,3 @@ Type TIDFunction::checkID(std::string &name) {
     if (!isInTrie(name)) throw not_found_error();
     return getNode(name)->getType();
 }
-
-bool Type::isLvalue() const {
-    return is_lvalue_;
-}
-
-const std::string &Type::getName() const {
-    return name_;
-}
-
-void Type::setLvalue(bool is_lvalue) {
-    is_lvalue_ = is_lvalue;
-}
-
-void Type::setName(const std::string &name) {
-    name_ = name;
-}
-
-Type::Type(std::string name, bool lvalue) : name_(std::move(name)), size_array_(0), array_type_(nullptr),
-                                            is_lvalue_(lvalue) {}
-
-Type::Type(const Type &other) {
-    name_ = other.name_;
-    size_array_ = other.size_array_;
-    if (other.array_type_ != nullptr) {
-        array_type_ = new Type(*other.array_type_);
-    } else {
-        array_type_ = nullptr;
-    }
-    is_lvalue_ = other.is_lvalue_;
-}
-
-Type Type::operator=(const Type &other) {
-    name_ = other.name_;
-    size_array_ = other.size_array_;
-    if (other.array_type_ != nullptr) {
-        array_type_ = new Type(*other.array_type_);
-    } else {
-        array_type_ = nullptr;
-    }
-    is_lvalue_ = other.is_lvalue_;
-    return *this;
-}
-
-void Type::setArrayType(Type type) {
-    array_type_ = new Type(type);
-}
-
-void Type::setArraySize(size_t array_size) {
-    array_size = array_size;
-}
-
-Type::~Type() {
-    if (array_type_ == nullptr) return;
-    delete array_type_;
-}
-
-Type Type::getArrayType() const {
-    return *array_type_;
-}
-
-Type::Type() : name_(""), size_array_(0), array_type_(nullptr), is_lvalue_(false) {}
-
-bool Type::compareWithCast(const Type &other) const {
-    if (name_ != "array" && name_ == other.name_) {
-        return true;
-    }
-
-    if (name_ == "int" || name_ == "char" ||
-        name_ == "float" || name_ == "bool") {
-        if (other.name_ == "int" || other.name_ == "char" ||
-            other.name_ == "float" || other.name_ == "bool") {
-            return true;
-        }
-        return false;
-    }
-    if (name_ == "string") {
-        if (other.name_ == "string") {
-            return true;
-        }
-        return false;
-    }
-    if (name_ != "array" && other.name_ == name_) {
-        return true;
-    }
-    if (size_array_ != other.size_array_) {
-        return false;
-    }
-    return array_type_->compareWithCast(*other.array_type_);
-}
-
-size_t Type::getArraySize() const {
-    return size_array_;
-}
-

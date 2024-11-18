@@ -1,5 +1,6 @@
 #pragma once
 #include "includes.h"
+#include "ReservedMemory.h"
 
 
 class not_found_error : public std::runtime_error {
@@ -28,60 +29,19 @@ protected:
     bool terminal_;
 };
 
-
-class Type {
-public:
-    Type();
-
-    explicit Type(std::string name, bool lvalue);
-
-    Type(const Type &other);
-
-    ~Type();
-
-    Type operator=(const Type &other);
-
-    bool operator==(const Type& other) const;
-    bool operator!=(const Type& other) const;
-
-    bool compareNoLvalue(const Type& other) const;
-
-    bool compareWithCast(const Type &other) const;
-
-    bool isLvalue() const;
-
-    const std::string& getName() const;
-
-    Type getArrayType() const;
-    
-    size_t getArraySize() const;
-
-    void setArraySize(size_t array_size);
-
-    void setArrayType(Type type);
-
-    void setLvalue(bool is_lvalue);
-
-    void setName(const std::string& name);
-
-private:
-    std::string name_;
-    size_t size_array_;
-    Type* array_type_;
-    bool is_lvalue_;
-};
-
 class VariableNode : public Node {
 public:
+    VariableNode() : var_(nullptr) {}
+
     [[nodiscard]]
     Type getType() const;
 
     void setType(Type& type);
 
-    void addChild(char let);
+    void addChild(char let) override;
 
 private:
-    Type type_;
+    ReservedMemory *var_;
 };
 
 template <typename T>
