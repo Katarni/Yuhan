@@ -13,10 +13,12 @@ int main() {
     auto file_text = new char[file_size];
     file_fin.read(file_text, file_size);
 
+    auto generator = new PRNGenerator;
+
     LexicalAnalyzer *lexer;
     lexer = new LexicalAnalyzer(file_text, file_size, "../reserved-words.txt");
 
-    SyntacticAnalyzer sintex(lexer);
+    SyntacticAnalyzer sintex(lexer, generator);
 
     sintex.startAnalysis();
     std::cout << "OK";

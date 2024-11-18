@@ -5,10 +5,16 @@ ReservedMemory* TIDTree::NodeTID::checkID(std::string &name) {
 }
 
 void TIDTree::NodeTID::pushID(std::string &name, Type &type) {
-    variables_.pushID(name, type);
+    std::vector<std::pair<std::string, Type>> fields;
+    if (type.getName() != "int" && type.getName() != "float" &&
+        type.getName() != "char" && type.getName() != "bool" &&
+        type.getName() != "string" && type.getName() != "array") {
+        fields = structs_.getAllFieldsByName(type.getName());
+    }
+    variables_.pushID(name, type, fields);
 }
 
-ReservedMemory* TIDTree::NodeTID::checkFieldOfStruct(std::string &name, std::string &field_name) {
+Type TIDTree::NodeTID::checkFieldOfStruct(std::string &name, std::string &field_name) {
     return structs_.checkField(name, field_name);
 }
 
@@ -195,11 +201,11 @@ TIDTree::~TIDTree() {
     delete current_scope_;
 }
 
-ReservedMemory* TIDTree::checkField(std::string name, std::string name_field) {
+Type TIDTree::checkField(std::string name, std::string name_field) {
     return checkField(current_scope_, name, name_field);
 }
 
-ReservedMemory* TIDTree::checkField(TIDTree::NodeTID *ptr, std::string &name, std::string &name_field) {
+Type TIDTree::checkField(TIDTree::NodeTID *ptr, std::string &name, std::string &name_field) {
     if (ptr == nullptr) throw std::runtime_error("Struct not found");
     if (ptr->checkStruct(name)) {
         return ptr->checkFieldOfStruct(name, name_field);

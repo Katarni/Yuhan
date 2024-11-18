@@ -32,10 +32,14 @@ ReservedMemory* TIDVariable::checkID(std::string &name) {
     return getNode(name)->getVar();
 }
 
-void TIDVariable::pushID(std::string &name, Type &type) {
+void TIDVariable::pushID(std::string &name, Type &type, const std::vector<std::pair<std::string, Type>>& fields) {
     if (isInTrie(name)) throw std::runtime_error("Variable with this name has already been created");
     auto ptr = insert(name);
     ptr->setType(type);
+
+    if (!fields.empty()) {
+        ptr->getVar()->setFields(fields);
+    }
 }
 
 void VariableNode::setType(Type &type) {
@@ -59,7 +63,7 @@ bool TIDStructure::checkId(std::string &name) {
     return isInTrie(name);
 }
 
-ReservedMemory* TIDStructure::checkField(std::string &name, std::string &name_field) {
+Type TIDStructure::checkField(std::string &name, std::string &name_field) {
     return getNode(name)->checkIDField(name_field);
 }
 
@@ -72,8 +76,8 @@ void TIDStructure::pushID(std::string &name) {
     insert(name);
 }
 
-ReservedMemory* StructureNode::checkIDField(std::string &name) {
-    return fields_.checkID(name);
+Type StructureNode::checkIDField(std::string &name) {
+    return fields_.checkID(name)->getType();
 }
 
 void StructureNode::pushIDField(std::string &name, Type &type) {
@@ -169,4 +173,38 @@ void TIDFunction::pushID(std::string &name, Type &type, std::vector<Variable> &a
 Type TIDFunction::checkID(std::string &name) {
     if (!isInTrie(name)) throw not_found_error();
     return getNode(name)->getType();
+}
+
+std::vector<std::pair<std::string, Type>> TIDStructure::getAllFieldsByName(const std::string& name) const {
+    StructureNode *ptr = root_;
+    for (auto& let : name) {
+        ptr = dynamic_cast<StructureNode*>(ptr->next(let));
+        if (ptr == nullptr) throw not_found_error();
+    }
+
+    if (!ptr->isTerminal()) throw not_found_error();
+
+    return ptr->getAllVarsWithName();
+}
+
+std::vector<std::pair<std::string, Type>> StructureNode::getAllVarsWithName() const {
+    return fields_.getAllVarsWithName();
+}
+
+std::vector<std::pair<std::string, Type>> TIDVariable::getAllVarsWithName() const {
+    std::vector<std::pair<std::string, Type>> vars;
+    root_->getAllVars(vars, "");
+    return vars;
+}
+
+void VariableNode::getAllVars(std::vector<std::pair<std::string, Type>> &vars, std::string cur) {
+    if (isTerminal()) {
+        vars.emplace_back(cur, getType());
+    }
+
+    for (auto [key, val] : go_) {
+        if (val == nullptr) continue;
+
+        dynamic_cast<VariableNode*>(val)->getAllVars(vars, cur + key);
+    }
 }

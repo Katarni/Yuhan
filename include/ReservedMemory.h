@@ -61,11 +61,16 @@ class ReservedMemory {
     explicit ReservedMemory(Type type);
 
     [[nodiscard]]
-    Type getType() const {
+    Type& getType() {
         return type_;
     }
 
+    ReservedMemory* getFieldByName(const std::string& name) const;
+
+    void setFields(const std::vector<std::pair<std::string, Type>>& fields);
+
  private:
     Type type_;
-    std::variant<int, bool, float, char, std::string, std::vector<ReservedMemory*>> data_;
+    std::variant<int, bool, float, char, std::string,
+                std::vector<ReservedMemory*>, std::map<std::string, ReservedMemory*>> data_;
 };

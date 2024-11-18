@@ -1,4 +1,5 @@
 #pragma once
+
 #include "includes.h"
 #include "ReservedMemory.h"
 
@@ -40,6 +41,8 @@ public:
     void setType(Type& type);
 
     void addChild(char let) override;
+
+    void getAllVars(std::vector<std::pair<std::string, Type>>& vars, std::string cur);
 
 private:
     ReservedMemory *var_;
@@ -105,18 +108,22 @@ class TIDVariable : public Trie<VariableNode> {
 public:
     ReservedMemory* checkID(std::string& name);
 
-    void pushID(std::string& name, Type& type);
+    void pushID(std::string& name, Type& type, const std::vector<std::pair<std::string, Type>>& fields = {});
+
+    std::vector<std::pair<std::string, Type>> getAllVarsWithName() const;
 };
 
 class StructureNode : public Node {
 public:
-    ReservedMemory* checkIDField(std::string& name);
+    Type checkIDField(std::string& name);
 
     void pushIDField(std::string& name, Type& type);
 
     void addChild(char let);
 
-private:
+    std::vector<std::pair<std::string, Type>> getAllVarsWithName() const;
+
+ private:
     TIDVariable fields_;
 };
 
@@ -127,9 +134,11 @@ public:
 
     void pushID(std::string& name);
 
-    ReservedMemory* checkField(std::string& name, std::string& name_field);
+    Type checkField(std::string& name, std::string& name_field);
 
     void pushField(std::string& name, std::string& name_field, Type& type_field);
+
+    std::vector<std::pair<std::string, Type>> getAllFieldsByName(const std::string& name) const;
 };
 
 class Variable {

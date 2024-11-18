@@ -25,7 +25,7 @@ public:
 
     void pushStruct(std::string name);
 
-    ReservedMemory* checkField(std::string name, std::string name_field);
+    Type checkField(std::string name, std::string name_field);
 
     Type checkFunction(std::string name, std::vector<Type>& args);
 
@@ -48,7 +48,7 @@ private:
 
         void pushID(std::string &name, Type &type);
 
-        ReservedMemory* checkFieldOfStruct(std::string &name, std::string &field_name);
+        Type checkFieldOfStruct(std::string &name, std::string &field_name);
 
         bool checkStruct(std::string& name);
 
@@ -101,7 +101,7 @@ private:
 
     void pushFunction(NodeTID *ptr, std::string& name, Type& type, std::vector<Variable>& args);
 
-    ReservedMemory* checkField(NodeTID *ptr, std::string& name, std::string& name_field);
+    Type checkField(NodeTID *ptr, std::string& name, std::string& name_field);
 
     void checkReturn(NodeTID *ptr, Type type_return);
 

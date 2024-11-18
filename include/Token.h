@@ -24,6 +24,7 @@ class Token : public std::exception {
     };
 
     Token() : std::exception(), line_(0), column_(0), type_(Type::Another) {}
+    Token(const Token& other) = default;
 
     [[nodiscard]]
     const char* what() const noexcept override {

@@ -112,8 +112,22 @@ ReservedMemory::ReservedMemory(Type type) {
             i = new ReservedMemory(type_.getArrayType());
         }
     } else {
-
+        data_ = std::map<std::string, ReservedMemory*>();
     }
 
     type_.setLvalue(true);
+}
+
+ReservedMemory *ReservedMemory::getFieldByName(const std::string &name) const {
+    return std::get<std::map<std::string, ReservedMemory*>>(data_).find(name)->second;
+}
+
+void ReservedMemory::setFields(const std::vector<std::pair<std::string, Type>> &fields) {
+    if (!std::holds_alternative<std::map<std::string, ReservedMemory*>>(data_)) {
+        throw std::runtime_error("expected struct");
+    }
+
+    for (const auto& [name, type] : fields) {
+        std::get<std::map<std::string, ReservedMemory*>>(data_)[name] = new ReservedMemory(type);
+    }
 }

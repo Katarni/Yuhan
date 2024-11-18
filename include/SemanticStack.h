@@ -4,15 +4,14 @@
 
 #pragma once
 
-#include <utility>
-
 #include "Trie.h"
 #include "Token.h"
+#include "PRNGenerator.h"
 
 
 class SemanticStack {
  public:
-    SemanticStack() = default;
+    SemanticStack(PRNGenerator* generator) : generator_(generator) {}
 
     void push(const Type& operand) noexcept;
     void push(const Token& operation) noexcept;
@@ -39,6 +38,7 @@ class SemanticStack {
     };
 
  private:
+    PRNGenerator* generator_;
     std::stack<std::variant<Type, Token>> sem_stack_;
 
     Type getOperand();

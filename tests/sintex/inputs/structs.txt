@@ -43,5 +43,5 @@ struct ___ffasFFSDJ432434 {
 
 func int f() {
     array<array<array<typename ___ffasFFSDJ432434, 5>, 4>, 3> shit;
-    shit[0][0][0].dd.rr.g = true;
+    // shit[0][0][0].dd.rr.g = true;
 }

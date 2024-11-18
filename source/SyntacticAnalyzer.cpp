@@ -1,6 +1,9 @@
 #include "../include/SyntacticAnalyzer.h"
 
-SyntacticAnalyzer::SyntacticAnalyzer(LexicalAnalyzer *lexer) : lexer_(lexer), tid_tree_() {}
+SyntacticAnalyzer::SyntacticAnalyzer(LexicalAnalyzer *lexer,
+                                     PRNGenerator* generator) : lexer_(lexer), tid_tree_(),
+                                                                generator_(generator), sem_stack_(generator),
+                                                                last_identifier_(nullptr) {}
 
 
 void SyntacticAnalyzer::getLex() {
@@ -65,14 +68,16 @@ void SyntacticAnalyzer::B() {
                 throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                          std::to_string(lex_.getColumn()));
             }
-            ReservedMemory* field;
+            Type field;
             try {
                 field = tid_tree_.checkField(type_last.getName(), lex_.getContent());
             } catch (std::runtime_error &error) {
                 throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                          std::to_string(lex_.getColumn()));
             }
-            sem_stack_.push(field->getType());
+            sem_stack_.push(field);
+            generator_->push(last_identifier_->getFieldByName(lex_.getContent()));
+            last_identifier_ = last_identifier_->getFieldByName(lex_.getContent());
             getLex();
         } else {
             break;
@@ -112,14 +117,16 @@ void SyntacticAnalyzer::exp1() {
             }
             getLex();
         } else {
-            ReservedMemory* var_ = nullptr;
+            ReservedMemory* var = nullptr;
             try {
-                var_ = tid_tree_.checkVariable(name);
+                var = tid_tree_.checkVariable(name);
             } catch (std::runtime_error &error) {
                 throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                          std::to_string(lex_.getColumn()));
             }
-            sem_stack_.push(var_->getType());
+            sem_stack_.push(var->getType());
+            generator_->push(var);
+            last_identifier_ = var;
         }
         B();
         return;

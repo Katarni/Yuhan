@@ -12,10 +12,12 @@ int main() {
     auto file_text = new char[file_size];
     file_fin.read(file_text, file_size);
 
-    LexicalAnalyzer *lexer;
-    lexer = new LexicalAnalyzer(file_text, file_size, "../../reserved-words.txt");
+    auto generator = new PRNGenerator;
 
-    SyntacticAnalyzer sintex(lexer);
+    LexicalAnalyzer *lexer;
+    lexer = new LexicalAnalyzer(file_text, file_size, "../../../reserved-words.txt");
+
+    SyntacticAnalyzer sintex(lexer, generator);
 
     try {
         sintex.startAnalysis();

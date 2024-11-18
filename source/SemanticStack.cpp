@@ -42,6 +42,8 @@ void SemanticStack::checkUno() {
     auto operand = popOperand();
     auto operation = popOperation();
 
+    generator_->push(operation);
+
     Type result_operand = operand;
 
     switch (operation.getType()) {
@@ -87,6 +89,8 @@ void SemanticStack::checkBinary() {
     auto rhs = popOperand();
     auto operation = popOperation();
     auto lhs = popOperand();
+
+    generator_->push(operation);
 
     if (rhs.getName() != "int" && rhs.getName() != "float" && rhs.getName() != "char" && rhs.getName() != "bool" &&
         rhs.getName() != "string" && rhs.getName() != "array") {
