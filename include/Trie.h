@@ -42,8 +42,6 @@ public:
 
     void addChild(char let) override;
 
-    void getAllVars(std::vector<std::pair<std::string, Type>>& vars, std::string cur);
-
 private:
     ReservedMemory *var_;
 };
@@ -81,7 +79,7 @@ public:
         return ptr;
     }
 
-    bool isInTrie(std::string &word) {
+    bool isInTrie(const std::string &word) {
         T *ptr = root_;
         for (auto& let : word) {
             ptr = static_cast<T*>(ptr->next(let));
@@ -90,7 +88,7 @@ public:
         return ptr->isTerminal();
     }
 
-    T *getNode(std::string& word) {
+    T *getNode(const std::string& word) {
         T *ptr = root_;
         for (auto& let : word) {
             ptr = static_cast<T*>(ptr->next(let));
@@ -109,8 +107,6 @@ public:
     ReservedMemory* checkID(std::string& name);
 
     void pushID(std::string& name, Type& type, const std::vector<std::pair<std::string, Type>>& fields = {});
-
-    std::vector<std::pair<std::string, Type>> getAllVarsWithName() const;
 };
 
 class StructureNode : public Node {
@@ -121,16 +117,18 @@ public:
 
     void addChild(char let);
 
+    [[nodiscard]]
     std::vector<std::pair<std::string, Type>> getAllVarsWithName() const;
 
  private:
     TIDVariable fields_;
+    std::vector<std::pair<std::string, Type>> name_fields_;
 };
 
 
 class TIDStructure : public Trie<StructureNode> {
 public:
-    bool checkId(std::string& name);
+    bool checkId(const std::string& name);
 
     void pushID(std::string& name);
 
@@ -138,7 +136,8 @@ public:
 
     void pushField(std::string& name, std::string& name_field, Type& type_field);
 
-    std::vector<std::pair<std::string, Type>> getAllFieldsByName(const std::string& name) const;
+    [[nodiscard]]
+    std::vector<std::pair<std::string, Type>> getAllFieldsByName(const std::string& name);
 };
 
 class Variable {

@@ -59,7 +59,7 @@ void VariableNode::addChild(char let) {
     go_[let] = new VariableNode();
 }
 
-bool TIDStructure::checkId(std::string &name) {
+bool TIDStructure::checkId(const std::string &name) {
     return isInTrie(name);
 }
 
@@ -76,12 +76,17 @@ void TIDStructure::pushID(std::string &name) {
     insert(name);
 }
 
+std::vector<std::pair<std::string, Type>> TIDStructure::getAllFieldsByName(const std::string& name) {
+    return getNode(name)->getAllVarsWithName();
+}
+
 Type StructureNode::checkIDField(std::string &name) {
     return fields_.checkID(name)->getType();
 }
 
 void StructureNode::pushIDField(std::string &name, Type &type) {
     fields_.pushID(name, type);
+    name_fields_.emplace_back(name, type);
 }
 
 void StructureNode::addChild(char let) {
@@ -175,36 +180,6 @@ Type TIDFunction::checkID(std::string &name) {
     return getNode(name)->getType();
 }
 
-std::vector<std::pair<std::string, Type>> TIDStructure::getAllFieldsByName(const std::string& name) const {
-    StructureNode *ptr = root_;
-    for (auto& let : name) {
-        ptr = dynamic_cast<StructureNode*>(ptr->next(let));
-        if (ptr == nullptr) throw not_found_error();
-    }
-
-    if (!ptr->isTerminal()) throw not_found_error();
-
-    return ptr->getAllVarsWithName();
-}
-
 std::vector<std::pair<std::string, Type>> StructureNode::getAllVarsWithName() const {
-    return fields_.getAllVarsWithName();
-}
-
-std::vector<std::pair<std::string, Type>> TIDVariable::getAllVarsWithName() const {
-    std::vector<std::pair<std::string, Type>> vars;
-    root_->getAllVars(vars, "");
-    return vars;
-}
-
-void VariableNode::getAllVars(std::vector<std::pair<std::string, Type>> &vars, std::string cur) {
-    if (isTerminal()) {
-        vars.emplace_back(cur, getType());
-    }
-
-    for (auto [key, val] : go_) {
-        if (val == nullptr) continue;
-
-        dynamic_cast<VariableNode*>(val)->getAllVars(vars, cur + key);
-    }
+    return name_fields_;
 }

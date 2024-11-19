@@ -46,15 +46,17 @@ private:
 
         ReservedMemory* checkID(std::string &name);
 
-        void pushID(std::string &name, Type &type);
+        void pushID(std::string &name, Type &type, const std::vector<std::pair<std::string, Type>>& fields);
 
         Type checkFieldOfStruct(std::string &name, std::string &field_name);
 
-        bool checkStruct(std::string& name);
+        bool checkStruct(const std::string& name);
 
         void pushStruct(std::string& name);
 
         void pushFieldOfStruct(std::string& name, std::string& name_field, Type& type_field);
+
+        std::vector<std::pair<std::string, Type>> getStructFields(const std::string &name);
 
         Type checkFunction(std::string& name, std::vector<Type>& args);
 
@@ -89,13 +91,15 @@ private:
 
     ReservedMemory* checkVariable(NodeTID *ptr, std::string& name);
 
-    bool checkStruct(NodeTID *ptr, std::string& name);
+    bool checkStruct(NodeTID *ptr, const std::string& name);
 
     Type checkFunction(NodeTID *ptr, std::string& name, std::vector<Type>& args);
 
     void pushField(TIDTree::NodeTID *ptr, std::string& name, std::string &name_field, Type& type_field);
 
-    void pushVariable(NodeTID *ptr, std::string& name, Type& type);
+    std::vector<std::pair<std::string, Type>> getStructFields(TIDTree::NodeTID *ptr, const std::string &name);
+
+    void pushVariable(NodeTID *ptr, std::string& name, Type& type, const std::vector<std::pair<std::string, Type>>& fields);
 
     void pushStruct(NodeTID *ptr, std::string& name);
 
