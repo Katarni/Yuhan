@@ -21,3 +21,9 @@ void PRNGenerator::push(Type literal) {
     types_.push_back(PRNType::Literal);
     ++cur_;
 }
+
+void PRNGenerator::push(const std::string &field) {
+    prn_.emplace_back(field);
+    types_.push_back(PRNType::FieldName);
+    ++cur_;
+}
