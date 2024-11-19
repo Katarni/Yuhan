@@ -15,7 +15,7 @@ int main() {
     auto generator = new PRNGenerator;
 
     LexicalAnalyzer *lexer;
-    lexer = new LexicalAnalyzer(file_text, file_size, "../../../reserved-words.txt");
+    lexer = new LexicalAnalyzer(file_text, file_size, "../../reserved-words.txt");
 
     SyntacticAnalyzer sintex(lexer, generator);
 
