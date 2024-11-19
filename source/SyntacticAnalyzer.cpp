@@ -2,9 +2,7 @@
 
 SyntacticAnalyzer::SyntacticAnalyzer(LexicalAnalyzer *lexer,
                                      PRNGenerator* generator) : lexer_(lexer), tid_tree_(),
-                                                                generator_(generator), sem_stack_(generator),
-                                                                last_identifier_(nullptr) {}
-
+                                                                generator_(generator), sem_stack_(generator) {}
 
 void SyntacticAnalyzer::getLex() {
     lex_ = lexer_->getToken();
@@ -118,14 +116,14 @@ void SyntacticAnalyzer::exp1() {
             }
             getLex();
         } else {
-            ReservedMemory* var = nullptr;
+            Identifier var;
             try {
                 var = tid_tree_.checkVariable(name);
             } catch (std::runtime_error &error) {
                 throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                          std::to_string(lex_.getColumn()));
             }
-            sem_stack_.push(var->getType());
+            sem_stack_.push(var.getType());
             generator_->push(var);
         }
         B();
@@ -707,36 +705,26 @@ void SyntacticAnalyzer::var(Type type_var) {
     if (lex_.getContent() != "=") {
         try {
             tid_tree_.pushVariable(vari.getName(), type_var);
-            generator_->push(tid_tree_.checkVariable(vari.getName()));
         } catch (std::runtime_error &error) {
-            throw std::runtime_error(std::string(error.what()) + " " +
-                    std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
+            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
         }
         return;
     }
-
-    auto eq = lex_;
-    type_var.setLvalue(false);
-
-    try {
-        tid_tree_.pushVariable(vari.getName(), type_var);
-        generator_->push(tid_tree_.checkVariable(vari.getName()));
-    } catch (std::runtime_error &error) {
-        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
-                                 std::to_string(lex_.getColumn()));
-    }
-
     getLex();
     exp12();
-
+    type_var.setLvalue(false);
     try {
         sem_stack_.checkType(type_var);
     } catch (std::runtime_error &error) {
         throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                  std::to_string(lex_.getColumn()));
     }
-
-    generator_->push(eq);
+    try {
+        tid_tree_.pushVariable(vari.getName(), type_var);
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                 std::to_string(lex_.getColumn()));
+    }
     return;
 }
 

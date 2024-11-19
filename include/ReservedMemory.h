@@ -30,29 +30,50 @@ class Type {
 
     [[nodiscard]]
     bool isLvalue() const;
-
     [[nodiscard]]
     const std::string& getName() const;
-
     [[nodiscard]]
     Type getArrayType() const;
-
     [[nodiscard]]
     size_t getArraySize() const;
 
     void setArraySize(size_t array_size);
-
     void setArrayType(Type type);
-
     void setLvalue(bool is_lvalue);
-
     void setName(const std::string& name);
+    void setFields(const std::vector<std::pair<std::string, Type>>& fields);
+
+    void clear();
 
  private:
     std::string name_;
     size_t size_array_;
     Type* array_type_;
     bool is_lvalue_;
+    std::map<std::string, Type*> fields_;
+};
+
+
+class Identifier {
+ public:
+    Identifier() = default;
+
+    [[nodiscard]]
+    Type& getType() {
+        return type_;
+    }
+
+    void setType(Type other);
+
+    void setFields(const std::vector<std::pair<std::string, Type>>& fields);
+
+    const std::string &getName() const;
+
+    void setName(const std::string &name);
+
+ private:
+    std::string name_;
+    Type type_;
 };
 
 

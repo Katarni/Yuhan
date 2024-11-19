@@ -51,6 +51,7 @@ void Type::setArraySize(size_t array_size) {
 }
 
 Type::~Type() {
+    clear();
     if (array_type_ == nullptr) return;
     delete array_type_;
 }
@@ -129,5 +130,36 @@ void ReservedMemory::setFields(const std::vector<std::pair<std::string, Type>> &
 
     for (const auto& [name, type] : fields) {
         std::get<std::map<std::string, ReservedMemory*>>(data_)[name] = new ReservedMemory(type);
+    }
+}
+
+void Identifier::setFields(const std::vector<std::pair<std::string, Type>> &fields) {
+    type_.setFields(fields);
+}
+
+void Type::setFields(const std::vector<std::pair<std::string, Type>> &fields) {
+    for (const auto& [name, type] : fields) {
+        fields_[name] = new Type(type);
+        fields_[name]->setLvalue(true);
+    }
+}
+
+void Identifier::setType(Type other) {
+    type_.clear();
+    type_ = other;
+    type_.setLvalue(true);
+}
+
+const std::string &Identifier::getName() const {
+    return name_;
+}
+
+void Identifier::setName(const std::string &name) {
+    name_ = name;
+}
+
+void Type::clear() {
+    for (const auto& [key, val] : fields_) {
+        delete val;
     }
 }

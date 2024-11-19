@@ -1,6 +1,6 @@
 #include "../include/TIDTree.h"
 
-ReservedMemory* TIDTree::NodeTID::checkID(std::string &name) {
+Identifier TIDTree::NodeTID::checkID(std::string &name) {
     return variables_.checkID(name);
 }
 
@@ -82,11 +82,11 @@ void TIDTree::createScope(TypeScope type, std::string namespace_) {
     }
 }
 
-ReservedMemory* TIDTree::checkVariable(std::string name) {
+Identifier TIDTree::checkVariable(std::string name) {
     return checkVariable(current_scope_, name);
 }
 
-ReservedMemory* TIDTree::checkVariable(TIDTree::NodeTID *ptr, std::string &name) {
+Identifier TIDTree::checkVariable(TIDTree::NodeTID *ptr, std::string &name) {
     if (ptr == nullptr) throw not_found_error();
     try {
         return ptr->checkID(name);

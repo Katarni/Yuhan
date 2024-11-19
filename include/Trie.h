@@ -32,18 +32,18 @@ protected:
 
 class VariableNode : public Node {
 public:
-    VariableNode() : var_(nullptr) {}
+    VariableNode() : var_() {}
 
     [[nodiscard]]
-    Type getType() const;
-    ReservedMemory* getVar() const;
+    Type getType();
+    Identifier getVar() const;
 
     void setType(Type& type);
 
     void addChild(char let) override;
 
 private:
-    ReservedMemory *var_;
+    Identifier var_;
 };
 
 template <typename T>
@@ -104,7 +104,7 @@ protected:
 
 class TIDVariable : public Trie<VariableNode> {
 public:
-    ReservedMemory* checkID(std::string& name);
+    Identifier checkID(std::string& name);
 
     void pushID(std::string& name, Type& type, const std::vector<std::pair<std::string, Type>>& fields = {});
 };

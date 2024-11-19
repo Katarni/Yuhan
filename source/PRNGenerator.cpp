@@ -4,7 +4,7 @@
 
 #include "../include/PRNGenerator.h"
 
-void PRNGenerator::push(ReservedMemory* identifier) {
+void PRNGenerator::push(Identifier identifier) {
     prn_.emplace_back(identifier);
     types_.push_back(PRNType::Identifier);
     ++cur_;

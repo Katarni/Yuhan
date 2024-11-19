@@ -17,7 +17,7 @@ public:
 
     void createScope(TypeScope type = TypeScope::Other, std::string namespace_ = "");
 
-    ReservedMemory* checkVariable(std::string name);
+    Identifier checkVariable(std::string name);
 
     void pushVariable(std::string name, Type type);
 
@@ -44,7 +44,7 @@ private:
 
         ~NodeTID();
 
-        ReservedMemory* checkID(std::string &name);
+        Identifier checkID(std::string &name);
 
         void pushID(std::string &name, Type &type, const std::vector<std::pair<std::string, Type>>& fields);
 
@@ -89,7 +89,7 @@ private:
     };
     NodeTID *current_scope_;
 
-    ReservedMemory* checkVariable(NodeTID *ptr, std::string& name);
+    Identifier checkVariable(NodeTID *ptr, std::string& name);
 
     bool checkStruct(NodeTID *ptr, const std::string& name);
 

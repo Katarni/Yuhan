@@ -17,7 +17,6 @@ private:
     TIDTree tid_tree_;
     SemanticStack sem_stack_;
     PRNGenerator* generator_;
-    ReservedMemory* last_identifier_;
 
     void getLex();
 

@@ -28,7 +28,7 @@ Node::~Node() {
 
 Node::Node() : terminal_(false) {}
 
-ReservedMemory* TIDVariable::checkID(std::string &name) {
+Identifier TIDVariable::checkID(std::string &name) {
     return getNode(name)->getVar();
 }
 
@@ -38,19 +38,19 @@ void TIDVariable::pushID(std::string &name, Type &type, const std::vector<std::p
     ptr->setType(type);
 
     if (!fields.empty()) {
-        ptr->getVar()->setFields(fields);
+        ptr->getVar().setFields(fields);
     }
 }
 
 void VariableNode::setType(Type &type) {
-    var_ = new ReservedMemory(type);
+    var_.setType(type);
 }
 
-Type VariableNode::getType() const {
-    return var_->getType();
+Type VariableNode::getType() {
+    return var_.getType();
 }
 
-ReservedMemory* VariableNode::getVar() const {
+Identifier VariableNode::getVar() const {
     return var_;
 }
 
@@ -81,7 +81,7 @@ std::vector<std::pair<std::string, Type>> TIDStructure::getAllFieldsByName(const
 }
 
 Type StructureNode::checkIDField(std::string &name) {
-    return fields_.checkID(name)->getType();
+    return fields_.checkID(name).getType();
 }
 
 void StructureNode::pushIDField(std::string &name, Type &type) {
