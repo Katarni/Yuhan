@@ -120,6 +120,14 @@ void FunctionNode::setType(Type &type) {
     type_ = type;
 }
 
+std::string FunctionNode::getId() {
+    return id_;
+}
+
+void FunctionNode::setId(const std::string& id) {
+    id_ = id;
+}
+
 void FunctionNode::setArgs(std::vector<Variable> &args) {
     args_ = args;
 }
@@ -168,11 +176,18 @@ Type TIDFunction::checkID(std::string &name, std::vector<Type> &args) {
     return ptr->getType();
 }
 
-void TIDFunction::pushID(std::string &name, Type &type, std::vector<Variable> &args) {
+std::string TIDFunction::checkIDName(std::string &name, std::vector<Type> &args) {
+    auto ptr = getNode(name);
+    ptr->checkArgs(args);
+    return ptr->getId();
+}
+
+void TIDFunction::pushID(std::string &name, Type &type, std::vector<Variable> &args, std::string id) {
     if (isInTrie(name)) throw std::runtime_error("Function with this name has already been created");
     auto ptr = insert(name);
     ptr->setType(type);
     ptr->setArgs(args);
+    ptr->setId(id);
 }
 
 Type TIDFunction::checkID(std::string &name) {

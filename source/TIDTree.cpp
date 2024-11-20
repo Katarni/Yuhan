@@ -21,8 +21,13 @@ Type TIDTree::NodeTID::checkFunction(std::string &name, std::vector<Type> &args)
     return functions_.checkID(name, args);
 }
 
-void TIDTree::NodeTID::pushFunction(std::string &name, Type &type, std::vector<Variable> &args) {
-    functions_.pushID(name, type, args);
+std::string TIDTree::NodeTID::checkFunctionName(std::string &name, std::vector<Type> &args) {
+    return functions_.checkIDName(name, args);
+}
+
+void TIDTree::NodeTID::pushFunction(std::string &name, Type &type,
+                                    std::vector<Variable> &args, std::string id) {
+    functions_.pushID(name, type, args, id);
 }
 
 void TIDTree::NodeTID::pushStruct(std::string &name) {
@@ -116,12 +121,25 @@ Type TIDTree::checkFunction(std::string name, std::vector<Type> &args) {
     return checkFunction(current_scope_, name, args);
 }
 
+std::string TIDTree::checkFunctionName(std::string name, std::vector<Type> &args) {
+    return checkFunctionName(current_scope_, name, args);
+}
+
 Type TIDTree::checkFunction(TIDTree::NodeTID *ptr, std::string &name, std::vector<Type> &args) {
     if (ptr == nullptr) throw not_found_error();
     try {
         return ptr->checkFunction(name, args);
     } catch (not_found_error &error) {
         return checkFunction(ptr->getParent(), name, args);
+    }
+}
+
+std::string TIDTree::checkFunctionName(TIDTree::NodeTID *ptr, std::string &name, std::vector<Type> &args) {
+    if (ptr == nullptr) throw not_found_error();
+    try {
+        return ptr->checkFunctionName(name, args);
+    } catch (not_found_error &error) {
+        return checkFunctionName(ptr->getParent(), name, args);
     }
 }
 
@@ -183,16 +201,17 @@ void TIDTree::pushStruct(TIDTree::NodeTID *ptr, std::string &name) {
     }
 }
 
-void TIDTree::pushFunction(std::string &name, Type &type, std::vector<Variable> &args) {
-    pushFunction(current_scope_, name, type, args);
+void TIDTree::pushFunction(std::string &name, Type &type, std::vector<Variable> &args, std::string id) {
+    pushFunction(current_scope_, name, type, args, id);
 }
 
-void TIDTree::pushFunction(TIDTree::NodeTID *ptr, std::string &name, Type &type, std::vector<Variable> &args) {
+void TIDTree::pushFunction(TIDTree::NodeTID *ptr, std::string &name, Type &type,
+                           std::vector<Variable> &args, std::string id) {
     if (ptr == nullptr) return;
-    ptr->pushFunction(name, type, args);
+    ptr->pushFunction(name, type, args, id);
     if (ptr->isNamespace()) {
         std::string new_name = ptr->getNamespace() + "::" + name;
-        pushFunction(ptr->getParent(), new_name, type, args);
+        pushFunction(ptr->getParent(), new_name, type, args, id);
         return;
     }
 }

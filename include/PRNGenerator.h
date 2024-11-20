@@ -13,20 +13,35 @@ class PRNGenerator {
  public:
     PRNGenerator() : cur_(0) {}
 
+    enum class SysVals {
+        FuncEnd, FuncStart
+    };
+
     void push(Identifier identifier);
     void push(Token operation);
     void push(Literal literal);
-    void push(const std::string& field);
+    void pushField(const std::string& field);
+    void pushFuncCall(const std::string& func_id);
+    void push(SysVals val);
+
+    void pushFuncDef(const std::string& func_id);
+
+    void setFuncArgsCnt(const std::string& func_id, size_t cnt);
+
+    void setMainId(const std::string& id);
 
  private:
+    size_t cur_;
+    std::string main_id_;
+    std::map<std::string, size_t> func_pos_, func_args_;
+
     enum class PRNType {
         Identifier, Operation, Literal,
-        Address, Function, FieldName
+        Address, Function, FieldName,
+        SystemValue
     };
 
-    size_t cur_;
-
     std::vector<std::variant<Identifier, Token, Literal,
-                            size_t, std::string>> prn_; // сюда добавить функции и служебные вещи
+                            size_t, std::string, SysVals>> prn_; // сюда добавить функции и служебные вещи
     std::vector<PRNType> types_; // информация о содержимом ячейки
 };

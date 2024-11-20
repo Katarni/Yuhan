@@ -22,8 +22,40 @@ void PRNGenerator::push(Literal literal) {
     ++cur_;
 }
 
-void PRNGenerator::push(const std::string &field) {
+void PRNGenerator::pushField(const std::string &field) {
     prn_.emplace_back(field);
     types_.push_back(PRNType::FieldName);
     ++cur_;
+}
+
+void PRNGenerator::pushFuncCall(const std::string &func_id) {
+    prn_.emplace_back(func_id);
+    types_.push_back(PRNType::Function);
+    ++cur_;
+}
+
+void PRNGenerator::pushFuncDef(const std::string &func_id) {
+    func_pos_[func_id] = cur_;
+    push(SysVals::FuncStart);
+}
+
+void PRNGenerator::push(PRNGenerator::SysVals val) {
+    prn_.emplace_back(val);
+    types_.emplace_back(PRNType::SystemValue);
+    ++cur_;
+}
+
+void PRNGenerator::setFuncArgsCnt(const std::string &func_id, size_t cnt) {
+    if (func_id == main_id_ && cnt != 0) {
+        throw std::runtime_error("main can't require args");
+    }
+
+    func_args_[func_id] = cnt;
+}
+
+void PRNGenerator::setMainId(const std::string &id) {
+    if (!main_id_.empty()) {
+        throw std::runtime_error("more than one main in program");
+    }
+    main_id_ = id;
 }

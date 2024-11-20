@@ -28,8 +28,9 @@ public:
     Type checkField(std::string name, std::string name_field);
 
     Type checkFunction(std::string name, std::vector<Type>& args);
+    std::string checkFunctionName(std::string name, std::vector<Type>& args);
 
-    void pushFunction(std::string& name, Type& type, std::vector<Variable>& args);
+    void pushFunction(std::string& name, Type& type, std::vector<Variable>& args, std::string id);
 
     void checkReturn(Type type_return);
 
@@ -60,10 +61,11 @@ private:
         std::vector<std::pair<std::string, Type>> getStructFields(const std::string &name);
 
         Type checkFunction(std::string& name, std::vector<Type>& args);
+        std::string checkFunctionName(std::string& name, std::vector<Type>& args);
 
         Type checkFunction(std::string& name);
 
-        void pushFunction(std::string& name, Type& type, std::vector<Variable>& args);
+        void pushFunction(std::string& name, Type& type, std::vector<Variable>& args, std::string id);
 
         NodeTID *getParent();
 
@@ -95,6 +97,7 @@ private:
     bool checkStruct(NodeTID *ptr, const std::string& name);
 
     Type checkFunction(NodeTID *ptr, std::string& name, std::vector<Type>& args);
+    std::string checkFunctionName(NodeTID *ptr, std::string& name, std::vector<Type>& args);
 
     void pushField(TIDTree::NodeTID *ptr, std::string& name, std::string &name_field, Type& type_field);
 
@@ -105,7 +108,7 @@ private:
 
     void pushStruct(NodeTID *ptr, std::string& name);
 
-    void pushFunction(NodeTID *ptr, std::string& name, Type& type, std::vector<Variable>& args);
+    void pushFunction(NodeTID *ptr, std::string& name, Type& type, std::vector<Variable>& args, std::string id);
 
     Type checkField(NodeTID *ptr, std::string& name, std::string& name_field);
 

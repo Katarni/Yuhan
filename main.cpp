@@ -2,8 +2,8 @@
 #include "include/TIDTree.h"
 
 int main() {
-    std::string file_path = "test.txt";
-    std::cin >> file_path;
+    std::string file_path = "../main.y";
+//    std::cin >> file_path;
 
     std::ifstream file_fin(file_path);
     file_fin.seekg(0, std::ios::end);

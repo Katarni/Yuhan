@@ -163,8 +163,10 @@ private:
 class FunctionNode : public Node {
 public:
     Type getType();
+    std::string getId();
 
     void setType(Type& type);
+    void setId(const std::string& id);
 
     void setArgs(std::vector<Variable>& args);
 
@@ -173,6 +175,7 @@ public:
     void addChild(char let);
 
 private:
+    std::string id_;
     Type type_;
     std::vector<Variable> args_;
 };
@@ -180,8 +183,9 @@ private:
 class TIDFunction : public Trie<FunctionNode> {
 public:
     Type checkID(std::string& name, std::vector<Type>& args);
+    std::string checkIDName(std::string& name, std::vector<Type>& args);
 
     Type checkID(std::string& name);
 
-    void pushID(std::string& name, Type& type, std::vector<Variable>& args);
+    void pushID(std::string& name, Type& type, std::vector<Variable>& args, std::string id);
 };

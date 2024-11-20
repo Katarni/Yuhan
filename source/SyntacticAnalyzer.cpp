@@ -79,7 +79,7 @@ void SyntacticAnalyzer::B() {
                                          std::to_string(lex_.getColumn()));
             }
             sem_stack_.push(field);
-            generator_->push(lex_.getContent());
+            generator_->pushField(lex_.getContent());
             generator_->push(dot);
             getLex();
         } else {
@@ -113,6 +113,7 @@ void SyntacticAnalyzer::exp1() {
                 throw lex_;
             }
             try {
+                generator_->pushFuncCall(tid_tree_.checkFunctionName(name, args));
                 sem_stack_.push(tid_tree_.checkFunction(name, args));
             } catch (std::runtime_error &error) {
                 throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
@@ -747,6 +748,13 @@ void SyntacticAnalyzer::function() {
         throw lex_;
     }
     name_func = lex_.getContent();
+    auto id_func = genId();
+
+    if (name_func == "main") {
+        generator_->setMainId(id_func);
+    }
+
+    generator_->pushFuncDef(id_func);
     getLex();
     if (lex_.getType() != Token::Type::OpenParenthesis) {
         throw lex_;
@@ -754,13 +762,14 @@ void SyntacticAnalyzer::function() {
     getLex();
     std::vector<Variable> args;
     if (lex_.getType() != Token::Type::CloseParenthesis) {
+        // here var definition (I don't know what to do)
         funcVarDefinition(args);
     }
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
     }
     try {
-        tid_tree_.pushFunction(name_func, type_func, args);
+        tid_tree_.pushFunction(name_func, type_func, args, id_func);
     } catch (std::runtime_error &error) {
         throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                  std::to_string(lex_.getColumn()));
@@ -768,15 +777,18 @@ void SyntacticAnalyzer::function() {
     tid_tree_.createScope(TypeScope::Function, name_func);
     for (auto &arg: args) {
         try {
-            // функции, это временное решение
-            tid_tree_.pushVariable(arg.getName(), arg.getType(), genId());
+            auto id = genId();
+            generator_->push({id, arg.getType()});
+            tid_tree_.pushVariable(arg.getName(), arg.getType(), id);
         } catch (std::runtime_error &error) {
             throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                      std::to_string(lex_.getColumn()));
         }
     }
+    generator_->setFuncArgsCnt(id_func, args.size());
     getLex();
     block();
+    generator_->push(PRNGenerator::SysVals::FuncEnd);
     tid_tree_.closeScope();
 }
 
