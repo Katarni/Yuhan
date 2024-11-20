@@ -546,6 +546,7 @@ void SyntacticAnalyzer::returnStatement() {
     if (lex_.getContent() != "return") {
         throw lex_;
     }
+    generator_->push(PRNGenerator::SysVals::Return);
     getLex();
     exp14();
     Type type_exp;
