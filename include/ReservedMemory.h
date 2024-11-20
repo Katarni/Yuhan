@@ -17,7 +17,7 @@ class Type {
 
     ~Type();
 
-    Type operator=(const Type &other);
+    Type& operator=(const Type &other);
 
     bool operator==(const Type& other) const;
     bool operator!=(const Type& other) const;
@@ -60,20 +60,34 @@ class Identifier {
     Identifier(std::string id, Type type) : name_(id), type_(type) {}
 
     [[nodiscard]]
-    Type& getType() {
-        return type_;
-    }
+    Type& getType();
 
     void setType(Type other);
 
     void setFields(const std::vector<std::pair<std::string, Type>>& fields);
 
+    [[nodiscard]]
     const std::string &getName() const;
 
     void setName(const std::string &name);
 
  private:
     std::string name_;
+    Type type_;
+};
+
+
+class Literal {
+ public:
+    Literal(Type type, std::string data);
+
+    [[nodiscard]]
+    Type& getType();
+
+    void setType(Type other);
+
+ private:
+    std::variant<int, char, bool, float, std::string> data_;
     Type type_;
 };
 
@@ -87,6 +101,7 @@ class ReservedMemory {
         return type_;
     }
 
+    [[nodiscard]]
     ReservedMemory* getFieldByName(const std::string& name) const;
 
     void setFields(const std::vector<std::pair<std::string, Type>>& fields);

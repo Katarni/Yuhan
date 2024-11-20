@@ -1,5 +1,3 @@
-#include <utility>
-
 #include "../include/Trie.h"
 
 bool Node::isTerminal() const {

@@ -19,19 +19,23 @@ void SyntacticAnalyzer::exp14() {
 
 Type SyntacticAnalyzer::literal() {
     if (lex_.getType() == Token::Type::CharLiteral) {
+        generator_->push({Type("char", false), lex_.getContent()});
         getLex();
         return Type("char", false);
     }
     if (lex_.getType() == Token::Type::ExponentialLiteral ||
         lex_.getType() == Token::Type::FloatLiteral) {
+        generator_->push({Type("float", false), lex_.getContent()});
         getLex();
         return Type("float", false);
     }
     if (lex_.getType() == Token::Type::NumericLiteral) {
+        generator_->push({Type("int", false), lex_.getContent()});
         getLex();
         return Type("int", false);
     }
     if (lex_.getType() == Token::Type::StringLiteral) {
+        generator_->push({Type("string", false), lex_.getContent()});
         getLex();
         return Type("string", false);
     }

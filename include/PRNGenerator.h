@@ -15,7 +15,7 @@ class PRNGenerator {
 
     void push(Identifier identifier);
     void push(Token operation);
-    void push(Type literal);
+    void push(Literal literal);
     void push(const std::string& field);
 
  private:
@@ -26,7 +26,7 @@ class PRNGenerator {
 
     size_t cur_;
 
-    std::vector<std::variant<Identifier, Token, Type,
+    std::vector<std::variant<Identifier, Token, Literal,
                             size_t, std::string>> prn_; // сюда добавить функции и служебные вещи
     std::vector<PRNType> types_; // информация о содержимом ячейки
 };

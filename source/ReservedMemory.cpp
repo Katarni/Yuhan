@@ -36,7 +36,7 @@ Type::Type(const Type &other) {
     is_lvalue_ = other.is_lvalue_;
 }
 
-Type Type::operator=(const Type &other) {
+Type& Type::operator=(const Type &other) {
     name_ = other.name_;
     size_array_ = other.size_array_;
     if (other.array_type_ != nullptr) {
@@ -166,6 +166,10 @@ const std::string &Identifier::getName() const {
     return name_;
 }
 
+Type &Identifier::getType() {
+    return type_;
+}
+
 void Identifier::setName(const std::string &name) {
     name_ = name;
 }
@@ -174,4 +178,30 @@ void Type::clear() {
     for (const auto& [key, val] : fields_) {
         delete val;
     }
+}
+
+Literal::Literal(Type type, std::string data) : type_(type) {
+    if (type_.getName() == "bool") {
+        if (data == "true") {
+            data_ = true;
+        } else {
+            data_ = false;
+        }
+    } else if (type_.getName() == "char") {
+        data_ = static_cast<char>(data[0]);
+    } else if (type_.getName() == "int") {
+        data_ = std::stoi(data);
+    } else if (type_.getName() == "float") {
+        data_ = std::stof(data);
+    } else if (type_.getName() == "string") {
+        data_ = data;
+    }
+}
+
+Type &Literal::getType() {
+    return type_;
+}
+
+void Literal::setType(Type other) {
+    type_ = other;
 }

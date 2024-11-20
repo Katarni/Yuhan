@@ -16,7 +16,7 @@ void PRNGenerator::push(Token operation) {
     ++cur_;
 }
 
-void PRNGenerator::push(Type literal) {
+void PRNGenerator::push(Literal literal) {
     prn_.emplace_back(literal);
     types_.push_back(PRNType::Literal);
     ++cur_;
