@@ -14,7 +14,7 @@ class PRNGenerator {
     PRNGenerator() : cur_(0) {}
 
     enum class SysVals {
-        FuncEnd, FuncStart
+        FuncEnd, FuncStart, Semicolon, Return
     };
 
     void push(Identifier identifier);

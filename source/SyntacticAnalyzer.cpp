@@ -448,9 +448,11 @@ void SyntacticAnalyzer::forStatement() {
             if (lex_.getType() != Token::Type::Semicolon) {
                 throw lex_;
             }
+            generator_->push(PRNGenerator::SysVals::Semicolon);
             getLex();
         }
     } else {
+        generator_->push(PRNGenerator::SysVals::Semicolon);
         getLex();
     }
     if (lex_.getType() != Token::Type::Semicolon) {
@@ -465,6 +467,7 @@ void SyntacticAnalyzer::forStatement() {
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
+    generator_->push(PRNGenerator::SysVals::Semicolon);
     getLex();
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         exp14();
@@ -561,6 +564,7 @@ void SyntacticAnalyzer::returnStatement() {
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
+    generator_->push(PRNGenerator::SysVals::Semicolon);
     getLex();
 }
 
@@ -585,6 +589,7 @@ void SyntacticAnalyzer::varDefinition() {
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
+    generator_->push(PRNGenerator::SysVals::Semicolon);
     getLex();
 }
 
@@ -604,6 +609,7 @@ void SyntacticAnalyzer::statement() {
         if (lex_.getType() != Token::Type::Semicolon) {
             throw lex_;
         }
+        generator_->push(PRNGenerator::SysVals::Semicolon);
         getLex();
         return;
     }
@@ -628,6 +634,7 @@ void SyntacticAnalyzer::statement() {
         return;
     }
     if (lex_.getType() == Token::Type::Semicolon) {
+        generator_->push(PRNGenerator::SysVals::Semicolon);
         getLex();
         return;
     }
@@ -651,6 +658,7 @@ void SyntacticAnalyzer::statement() {
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
+    generator_->push(PRNGenerator::SysVals::Semicolon);
     getLex();
 }
 
@@ -847,6 +855,7 @@ void SyntacticAnalyzer::structure() {
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
+    generator_->push(PRNGenerator::SysVals::Semicolon);
     getLex();
     tid_tree_.closeScope();
 }
