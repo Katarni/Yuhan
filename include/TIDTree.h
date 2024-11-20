@@ -19,7 +19,7 @@ public:
 
     Identifier checkVariable(std::string name);
 
-    void pushVariable(std::string name, Type type);
+    void pushVariable(std::string name, Type type, std::string id);
 
     bool checkStruct(std::string name);
 
@@ -46,7 +46,8 @@ private:
 
         Identifier checkID(std::string &name);
 
-        void pushID(std::string &name, Type &type, const std::vector<std::pair<std::string, Type>>& fields);
+        void pushID(std::string &name, Type &type,
+                    const std::vector<std::pair<std::string, Type>>& fields, std::string id);
 
         Type checkFieldOfStruct(std::string &name, std::string &field_name);
 
@@ -99,7 +100,8 @@ private:
 
     std::vector<std::pair<std::string, Type>> getStructFields(TIDTree::NodeTID *ptr, const std::string &name);
 
-    void pushVariable(NodeTID *ptr, std::string& name, Type& type, const std::vector<std::pair<std::string, Type>>& fields);
+    void pushVariable(NodeTID *ptr, std::string& name, Type& type,
+                      const std::vector<std::pair<std::string, Type>>& fields, std::string id);
 
     void pushStruct(NodeTID *ptr, std::string& name);
 

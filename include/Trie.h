@@ -32,13 +32,15 @@ protected:
 
 class VariableNode : public Node {
 public:
-    VariableNode() : var_() {}
+    VariableNode() {}
 
     [[nodiscard]]
     Type getType();
     Identifier getVar() const;
 
     void setType(Type& type);
+    void setId(std::string id);
+    void setFields(const std::vector<std::pair<std::string, Type>>& fields);
 
     void addChild(char let) override;
 
@@ -106,7 +108,8 @@ class TIDVariable : public Trie<VariableNode> {
 public:
     Identifier checkID(std::string& name);
 
-    void pushID(std::string& name, Type& type, const std::vector<std::pair<std::string, Type>>& fields = {});
+    void pushID(std::string& name, Type& type, const std::vector<std::pair<std::string, Type>>& fields = {},
+                std::string id = "");
 };
 
 class StructureNode : public Node {

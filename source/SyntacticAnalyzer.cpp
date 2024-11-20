@@ -701,18 +701,22 @@ void SyntacticAnalyzer::var(Type type_var) {
         throw lex_;
     }
     Variable vari(lex_.getContent(), type_var);
+    auto id = genId();
     getLex();
+    generator_->push({id, type_var});
     if (lex_.getContent() != "=") {
         try {
-            tid_tree_.pushVariable(vari.getName(), type_var);
+            tid_tree_.pushVariable(vari.getName(), type_var, id);
         } catch (std::runtime_error &error) {
             throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
         }
         return;
     }
+    auto eq = lex_;
     getLex();
     exp12();
     type_var.setLvalue(false);
+    generator_->push(eq);
     try {
         sem_stack_.checkType(type_var);
     } catch (std::runtime_error &error) {
@@ -720,7 +724,7 @@ void SyntacticAnalyzer::var(Type type_var) {
                                  std::to_string(lex_.getColumn()));
     }
     try {
-        tid_tree_.pushVariable(vari.getName(), type_var);
+        tid_tree_.pushVariable(vari.getName(), type_var, id);
     } catch (std::runtime_error &error) {
         throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                  std::to_string(lex_.getColumn()));
@@ -760,7 +764,8 @@ void SyntacticAnalyzer::function() {
     tid_tree_.createScope(TypeScope::Function, name_func);
     for (auto &arg: args) {
         try {
-            tid_tree_.pushVariable(arg.getName(), arg.getType());
+            // функции, это временное решение
+            tid_tree_.pushVariable(arg.getName(), arg.getType(), genId());
         } catch (std::runtime_error &error) {
             throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                      std::to_string(lex_.getColumn()));
@@ -963,4 +968,19 @@ void SyntacticAnalyzer::structBody() {
     varDefinition();
 }
 
+std::string SyntacticAnalyzer::genId() {
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
+    int sz = static_cast<int>(chars.size());
+    std::string res;
 
+    while (true) {
+        for (int i = 0; i < 20; ++i) res += chars[rng() % sz];
+
+        if (used_ids_.find(res) == used_ids_.end()) break;
+    }
+    used_ids_.insert(res);
+
+    return res;
+}

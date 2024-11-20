@@ -32,13 +32,15 @@ Identifier TIDVariable::checkID(std::string &name) {
     return getNode(name)->getVar();
 }
 
-void TIDVariable::pushID(std::string &name, Type &type, const std::vector<std::pair<std::string, Type>>& fields) {
+void TIDVariable::pushID(std::string &name, Type &type,
+                         const std::vector<std::pair<std::string, Type>>& fields, std::string id) {
     if (isInTrie(name)) throw std::runtime_error("Variable with this name has already been created");
     auto ptr = insert(name);
     ptr->setType(type);
+    ptr->setId(id);
 
     if (!fields.empty()) {
-        ptr->getVar().setFields(fields);
+        ptr->setFields(fields);
     }
 }
 
@@ -182,4 +184,12 @@ Type TIDFunction::checkID(std::string &name) {
 
 std::vector<std::pair<std::string, Type>> StructureNode::getAllVarsWithName() const {
     return name_fields_;
+}
+
+void VariableNode::setId(std::string id) {
+    var_.setName(id);
+}
+
+void VariableNode::setFields(const std::vector<std::pair<std::string, Type>> &fields) {
+    var_.setFields(fields);
 }

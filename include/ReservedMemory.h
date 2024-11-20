@@ -57,6 +57,7 @@ class Type {
 class Identifier {
  public:
     Identifier() = default;
+    Identifier(std::string id, Type type) : name_(id), type_(type) {}
 
     [[nodiscard]]
     Type& getType() {

@@ -17,6 +17,7 @@ private:
     TIDTree tid_tree_;
     SemanticStack sem_stack_;
     PRNGenerator* generator_;
+    std::set<std::string> used_ids_;
 
     void getLex();
 
@@ -82,4 +83,6 @@ private:
     Type array();
 
     bool isType();
+
+    std::string genId();
 };

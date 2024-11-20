@@ -4,8 +4,9 @@ Identifier TIDTree::NodeTID::checkID(std::string &name) {
     return variables_.checkID(name);
 }
 
-void TIDTree::NodeTID::pushID(std::string &name, Type &type, const std::vector<std::pair<std::string, Type>>& fields) {
-    variables_.pushID(name, type, fields);
+void TIDTree::NodeTID::pushID(std::string &name, Type &type,
+                              const std::vector<std::pair<std::string, Type>>& fields, std::string id) {
+    variables_.pushID(name, type, fields, id);
 }
 
 Type TIDTree::NodeTID::checkFieldOfStruct(std::string &name, std::string &field_name) {
@@ -124,14 +125,14 @@ Type TIDTree::checkFunction(TIDTree::NodeTID *ptr, std::string &name, std::vecto
     }
 }
 
-void TIDTree::pushVariable(std::string name, Type type) {
+void TIDTree::pushVariable(std::string name, Type type, std::string id) {
     std::vector<std::pair<std::string, Type>> fields;
     if (type.getName() != "int" && type.getName() != "float" &&
         type.getName() != "char" && type.getName() != "bool" &&
         type.getName() != "string" && type.getName() != "array") {
         fields = getStructFields(current_scope_, type.getName());
     }
-    pushVariable(current_scope_, name, type, fields);
+    pushVariable(current_scope_, name, type, fields, id);
 }
 
 void TIDTree::pushField(TIDTree::NodeTID *ptr, std::string &name, std::string &name_field, Type &type_field) {
@@ -148,8 +149,8 @@ void TIDTree::pushField(TIDTree::NodeTID *ptr, std::string &name, std::string &n
     }
 }
 
-void TIDTree::pushVariable(TIDTree::NodeTID *ptr, std::string &name,
-                           Type &type, const std::vector<std::pair<std::string, Type>>& fields) {
+void TIDTree::pushVariable(TIDTree::NodeTID *ptr, std::string &name, Type &type,
+                           const std::vector<std::pair<std::string, Type>>& fields, std::string id) {
     if (ptr == nullptr) return;
     if (ptr->isStruct()) {
         Type new_type = type;
@@ -161,10 +162,10 @@ void TIDTree::pushVariable(TIDTree::NodeTID *ptr, std::string &name,
         pushField(ptr->getParent(), name_of_struct, name, new_type);
         return;
     }
-    ptr->pushID(name, type, fields);
+    ptr->pushID(name, type, fields, id);
     if (ptr->isNamespace()) {
         std::string new_name = ptr->getNamespace() + "::" + name;
-        pushVariable(ptr->getParent(), new_name, type, fields);
+        pushVariable(ptr->getParent(), new_name, type, fields, id);
         return;
     }
 }
