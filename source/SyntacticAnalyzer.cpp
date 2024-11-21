@@ -444,6 +444,9 @@ void SyntacticAnalyzer::whileStatement() {
     tid_tree_.createScope(TypeScope::Loop);
     statement();
     tid_tree_.closeScope();
+
+    generator_->pushContinue();
+
     generator_->closeCycle();
 }
 
