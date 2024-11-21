@@ -417,7 +417,7 @@ void SyntacticAnalyzer::whileStatement() {
                                  std::to_string(lex_.getColumn()));
     }
 
-    generator_->pushWhileStatement();
+    generator_->pushCycleStatement();
 
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
@@ -460,6 +460,9 @@ void SyntacticAnalyzer::forStatement() {
         generator_->push(PRNGenerator::SysVals::Semicolon);
         getLex();
     }
+
+    generator_->push(PRNGenerator::SysVals::For);
+
     if (lex_.getType() != Token::Type::Semicolon) {
         exp14();
         try {
@@ -468,6 +471,7 @@ void SyntacticAnalyzer::forStatement() {
             throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                      std::to_string(lex_.getColumn()));
         }
+        generator_->pushCycleStatement();
     }
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
@@ -489,6 +493,7 @@ void SyntacticAnalyzer::forStatement() {
     getLex();
     statement();
     tid_tree_.closeScope();
+    generator_->closeCycle();
 }
 
 void SyntacticAnalyzer::switchItem(Type &type_exp) {
