@@ -15,7 +15,7 @@ class PRNGenerator {
 
     enum class SysVals {
         FuncEnd, FuncStart, Semicolon, Return, While,
-        GoTo, GoToByFalse, For
+        GoTo, GoToByFalse, For, If, Else
     };
 
     void push(Identifier identifier);
@@ -24,7 +24,8 @@ class PRNGenerator {
     void pushField(const std::string& field);
     void pushFuncCall(const std::string& func_id);
     void push(SysVals val);
-    void pushAddress(size_t address);
+    void push(size_t address);
+    void push(size_t address, size_t pos);
 
     void pushFuncDef(const std::string& func_id);
 
@@ -34,8 +35,11 @@ class PRNGenerator {
 
     void pushCycleStatement();
     void closeCycle();
+
     void pushBreak();
     void pushContinue();
+
+    size_t getCurIdx() const;
 
  private:
     size_t cur_;

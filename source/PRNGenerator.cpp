@@ -67,14 +67,24 @@ void PRNGenerator::setMainId(const std::string &id) {
 
 void PRNGenerator::pushCycleStatement() {
     break_stack_.top().push_back(cur_);
-    pushAddress(-1);
+    push(-1);
     push(SysVals::GoToByFalse);
 }
 
-void PRNGenerator::pushAddress(size_t address) {
+void PRNGenerator::push(size_t address) {
     prn_.emplace_back(address);
     types_.push_back(PRNType::Address);
     ++cur_;
+}
+
+void PRNGenerator::push(size_t address, size_t pos) {
+    if (pos >= prn_.size()) {
+        prn_.resize(pos + 1);
+        types_.resize(pos + 1);
+    }
+
+    prn_[pos] = address;
+    types_[pos] = PRNType::Address;
 }
 
 void PRNGenerator::closeCycle() {
@@ -90,11 +100,15 @@ void PRNGenerator::pushBreak() {
     if (break_stack_.empty()) return;
 
     break_stack_.top().push_back(cur_);
-    pushAddress(-1);
+    push(-1);
     push(SysVals::GoTo);
 }
 
 void PRNGenerator::pushContinue() {
-    pushAddress(cycles_starts_.top());
+    push(cycles_starts_.top());
     push(SysVals::GoTo);
+}
+
+size_t PRNGenerator::getCurIdx() const {
+    return cur_;
 }

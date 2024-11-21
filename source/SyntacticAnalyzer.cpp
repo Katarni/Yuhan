@@ -372,6 +372,9 @@ void SyntacticAnalyzer::ifStatement() {
         throw lex_;
     }
     getLex();
+
+    generator_->push(PRNGenerator::SysVals::If);
+
     if (lex_.getType() != Token::Type::OpenParenthesis) {
         throw lex_;
     }
@@ -386,17 +389,29 @@ void SyntacticAnalyzer::ifStatement() {
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
     }
+
+    auto pos_if = generator_->getCurIdx();
+    generator_->push(-1);
+    generator_->push(PRNGenerator::SysVals::GoToByFalse);
+
     getLex();
     tid_tree_.createScope();
     statement();
+
+    auto pos_end_if = generator_->getCurIdx();
+    generator_->push(-1);
+    generator_->push(PRNGenerator::SysVals::GoTo);
     tid_tree_.closeScope();
     if (lex_.getContent() != "else") {
         return;
     }
+    generator_->push(generator_->getCurIdx(), pos_if);
     getLex();
     tid_tree_.createScope();
     statement();
     tid_tree_.closeScope();
+
+    generator_->push(generator_->getCurIdx(), pos_end_if);
 }
 
 void SyntacticAnalyzer::whileStatement() {
