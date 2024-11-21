@@ -42,7 +42,7 @@ void PRNGenerator::pushFuncDef(const std::string &func_id) {
 void PRNGenerator::push(PRNGenerator::SysVals val) {
     if (val == SysVals::While || val == SysVals::For) {
         cycles_starts_.push(cur_);
-        break_stack_.emplace(std::vector<size_t>());
+        break_stack_.emplace();
     }
 
     prn_.emplace_back(val);
@@ -65,7 +65,7 @@ void PRNGenerator::setMainId(const std::string &id) {
     main_id_ = id;
 }
 
-void PRNGenerator::pushCycleStatement() {
+void PRNGenerator::pushWhileStatement() {
     break_stack_.top().push_back(cur_);
     push(-1);
     push(SysVals::GoToByFalse);

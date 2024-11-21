@@ -432,7 +432,7 @@ void SyntacticAnalyzer::whileStatement() {
                                  std::to_string(lex_.getColumn()));
     }
 
-    generator_->pushCycleStatement();
+    generator_->pushWhileStatement();
 
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
@@ -476,7 +476,7 @@ void SyntacticAnalyzer::forStatement() {
         getLex();
     }
 
-    generator_->push(PRNGenerator::SysVals::For);
+    auto for_statement_address = generator_->getCurIdx();
 
     if (lex_.getType() != Token::Type::Semicolon) {
         exp14();
@@ -486,12 +486,22 @@ void SyntacticAnalyzer::forStatement() {
             throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                      std::to_string(lex_.getColumn()));
         }
-        generator_->pushCycleStatement();
     }
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
     generator_->push(PRNGenerator::SysVals::Semicolon);
+
+    auto after_statement_address_out_block = generator_->getCurIdx();
+    generator_->push(-1);
+    generator_->push(PRNGenerator::SysVals::GoToByFalse);
+
+    auto after_statement_address_to_block = generator_->getCurIdx();
+    generator_->push(-1);
+    generator_->push(PRNGenerator::SysVals::GoTo);
+
+    generator_->push(PRNGenerator::SysVals::For);
+
     getLex();
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         exp14();
@@ -502,11 +512,21 @@ void SyntacticAnalyzer::forStatement() {
                                      std::to_string(lex_.getColumn()));
         }
     }
+
+    generator_->push(for_statement_address);
+    generator_->push(PRNGenerator::SysVals::GoTo);
+
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
     }
     getLex();
+
+    generator_->push(generator_->getCurIdx(), after_statement_address_to_block);
+
     statement();
+
+    generator_->push(generator_->getCurIdx(), after_statement_address_out_block);
+
     tid_tree_.closeScope();
     generator_->closeCycle();
 }
