@@ -400,10 +400,13 @@ void SyntacticAnalyzer::ifStatement() {
     generator_->push(-1);
     generator_->push(PRNGenerator::SysVals::GoTo);
     tid_tree_.closeScope();
+
+    generator_->push(generator_->getCurIdx(), pos_if);
+
     if (lex_.getContent() != "else") {
+        generator_->push(generator_->getCurIdx(), pos_end_if);
         return;
     }
-    generator_->push(generator_->getCurIdx(), pos_if);
     getLex();
     tid_tree_.createScope();
     statement();
@@ -525,6 +528,7 @@ void SyntacticAnalyzer::forStatement() {
 
     statement();
 
+    generator_->pushContinue();
     generator_->push(generator_->getCurIdx(), after_statement_address_out_block);
 
     tid_tree_.closeScope();
