@@ -86,6 +86,9 @@ void PRNGenerator::closeCycle() {
 }
 
 void PRNGenerator::pushBreak() {
+    // temp here (for tests)
+    if (break_stack_.empty()) return;
+
     break_stack_.top().push_back(cur_);
     pushAddress(-1);
     push(SysVals::GoTo);
