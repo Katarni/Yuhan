@@ -40,11 +40,6 @@ void PRNGenerator::pushFuncDef(const std::string &func_id) {
 }
 
 void PRNGenerator::push(PRNGenerator::SysVals val) {
-    if (val == SysVals::While || val == SysVals::For) {
-        cycles_starts_.push(cur_);
-        break_stack_.emplace();
-    }
-
     prn_.emplace_back(val);
     types_.emplace_back(PRNType::SystemValue);
     ++cur_;
@@ -111,4 +106,9 @@ void PRNGenerator::pushContinue() {
 
 size_t PRNGenerator::getCurIdx() const {
     return cur_;
+}
+
+void PRNGenerator::pushCycleStart() {
+    cycles_starts_.push(cur_);
+    break_stack_.emplace();
 }

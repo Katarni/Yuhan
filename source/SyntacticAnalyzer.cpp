@@ -373,8 +373,6 @@ void SyntacticAnalyzer::ifStatement() {
     }
     getLex();
 
-    generator_->push(PRNGenerator::SysVals::If);
-
     if (lex_.getType() != Token::Type::OpenParenthesis) {
         throw lex_;
     }
@@ -418,7 +416,9 @@ void SyntacticAnalyzer::whileStatement() {
     if (lex_.getContent() != "while") {
         throw lex_;
     }
-    generator_->push(PRNGenerator::SysVals::While);
+
+    generator_->pushCycleStart();
+
     getLex();
     if (lex_.getType() != Token::Type::OpenParenthesis) {
         throw lex_;
@@ -500,7 +500,7 @@ void SyntacticAnalyzer::forStatement() {
     generator_->push(-1);
     generator_->push(PRNGenerator::SysVals::GoTo);
 
-    generator_->push(PRNGenerator::SysVals::For);
+    generator_->pushCycleStart();
 
     getLex();
     if (lex_.getType() != Token::Type::CloseParenthesis) {

@@ -14,8 +14,8 @@ class PRNGenerator {
     PRNGenerator() : cur_(0) {}
 
     enum class SysVals {
-        FuncEnd, FuncStart, Semicolon, Return, While,
-        GoTo, GoToByFalse, For, If
+        FuncEnd, FuncStart, Semicolon, Return,
+        GoTo, GoToByFalse
     };
 
     void push(Identifier identifier);
@@ -38,6 +38,8 @@ class PRNGenerator {
 
     void pushBreak();
     void pushContinue();
+
+    void pushCycleStart();
 
     [[nodiscard]]
     size_t getCurIdx() const;
