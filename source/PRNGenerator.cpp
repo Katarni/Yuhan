@@ -82,10 +82,16 @@ void PRNGenerator::closeCycle() {
         prn_[idx] = cur_;
     }
     break_stack_.pop();
+    cycles_starts_.pop();
 }
 
 void PRNGenerator::pushBreak() {
     break_stack_.top().push_back(cur_);
     pushAddress(-1);
+    push(SysVals::GoTo);
+}
+
+void PRNGenerator::pushContinue() {
+    pushAddress(cycles_starts_.top());
     push(SysVals::GoTo);
 }

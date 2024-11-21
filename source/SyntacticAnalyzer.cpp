@@ -607,6 +607,7 @@ void SyntacticAnalyzer::statement() {
                 generator_->pushBreak();
             } else {
                 tid_tree_.checkContinue();
+                generator_->pushContinue();
             }
         } catch (std::runtime_error &error) {
             throw std::runtime_error(std::string(error.what()) + " " +

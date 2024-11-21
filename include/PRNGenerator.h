@@ -35,6 +35,7 @@ class PRNGenerator {
     void pushWhileStatement();
     void closeCycle();
     void pushBreak();
+    void pushContinue();
 
  private:
     size_t cur_;
