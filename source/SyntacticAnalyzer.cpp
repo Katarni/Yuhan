@@ -531,23 +531,48 @@ void SyntacticAnalyzer::forStatement() {
     generator_->closeCycle();
 }
 
-void SyntacticAnalyzer::switchItem(Type &type_exp) {
+std::pair<int, int> SyntacticAnalyzer::switchItem(Type &type_exp, std::pair<int, int> prev_links) {
     if (lex_.getContent() != "case") {
         throw lex_;
     }
+
+    if (prev_links.first != -1) {
+        generator_->push(generator_->getCurIdx(), prev_links.first);
+    }
+
     getLex();
     if (!type_exp.compareWithCast(literal())) {
         throw std::runtime_error("Wrong type in case");
     }
+
+    generator_->push(PRNGenerator::SysVals::Cmp);
+
+    int cur_state = static_cast<int>(generator_->getCurIdx());
+    generator_->push(-1);
+    generator_->push(PRNGenerator::SysVals::GoToByFalse);
+
+    if (prev_links.second != -1) {
+        generator_->push(generator_->getCurIdx(), prev_links.second);
+    }
+
     tid_tree_.createScope(TypeScope::SwitchItem);
     block();
     tid_tree_.closeScope();
+
+    int cur_state_end = static_cast<int>(generator_->getCurIdx());
+    generator_->push(-1);
+    generator_->push(PRNGenerator::SysVals::GoTo);
+
+    return {cur_state, cur_state_end};
 }
 
 void SyntacticAnalyzer::switchStatement() {
     if (lex_.getContent() != "switch") {
         throw lex_;
     }
+
+    generator_->pushSwitch();
+
     getLex();
     if (lex_.getType() != Token::Type::OpenParenthesis) {
         throw lex_;
@@ -570,13 +595,21 @@ void SyntacticAnalyzer::switchStatement() {
     }
     tid_tree_.createScope(TypeScope::Switch);
     getLex();
+
+    std::pair<int, int> prev_links = {-1, -1};
     while (lex_.getContent() != "default" &&
            lex_.getType() != Token::Type::CloseCurlyBrace) {
-        switchItem(type_exp);
+        prev_links = switchItem(type_exp, prev_links);
     }
     if (lex_.getContent() == "default") {
         getLex();
         tid_tree_.createScope(TypeScope::SwitchItem);
+
+        if (prev_links.first != -1) {
+            generator_->push(generator_->getCurIdx(), prev_links.first);
+            generator_->push(generator_->getCurIdx(), prev_links.second);
+        }
+
         block();
         tid_tree_.closeScope();
     }
@@ -585,6 +618,8 @@ void SyntacticAnalyzer::switchStatement() {
     }
     getLex();
     tid_tree_.closeScope();
+
+    generator_->closeSwitch();
 }
 
 void SyntacticAnalyzer::returnStatement() {

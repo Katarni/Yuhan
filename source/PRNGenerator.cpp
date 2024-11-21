@@ -91,9 +91,6 @@ void PRNGenerator::closeCycle() {
 }
 
 void PRNGenerator::pushBreak() {
-    // temp here (for tests)
-    if (break_stack_.empty()) return;
-
     break_stack_.top().push_back(cur_);
     push(-1);
     push(SysVals::GoTo);
@@ -111,4 +108,15 @@ size_t PRNGenerator::getCurIdx() const {
 void PRNGenerator::pushCycleStart() {
     cycles_starts_.push(cur_);
     break_stack_.emplace();
+}
+
+void PRNGenerator::pushSwitch() {
+    break_stack_.emplace();
+}
+
+void PRNGenerator::closeSwitch() {
+    for (auto idx : break_stack_.top()) {
+        prn_[idx] = cur_;
+    }
+    break_stack_.pop();
 }

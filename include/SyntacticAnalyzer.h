@@ -51,7 +51,7 @@ private:
     void whileStatement();
     void forStatement();
 
-    void switchItem(Type &type_exp);
+    std::pair<int, int> switchItem(Type &type_exp, std::pair<int, int> prev_links);
     void switchStatement();
 
     void returnStatement();
