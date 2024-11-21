@@ -647,6 +647,8 @@ void SyntacticAnalyzer::returnStatement() {
     }
     generator_->push(PRNGenerator::SysVals::Semicolon);
     getLex();
+
+    generator_->push(PRNGenerator::SysVals::Return);
 }
 
 void SyntacticAnalyzer::block() {
