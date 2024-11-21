@@ -18,6 +18,12 @@ class PRNGenerator {
         GoTo, GoToByFalse, Cmp
     };
 
+    enum class PRNType {
+        Identifier, Operation, Literal,
+        Address, Function, FieldName,
+        SystemValue
+    };
+
     void push(Identifier identifier);
     void push(Token operation);
     void push(Literal literal);
@@ -46,6 +52,13 @@ class PRNGenerator {
     [[nodiscard]]
     size_t getCurIdx() const;
 
+    [[nodiscard]]
+    size_t size() const;
+
+    [[nodiscard]]
+    std::pair<std::variant<Identifier, Token, Literal,
+                            size_t, std::string, SysVals>, PRNType> getById(size_t idx) const;
+
  private:
     size_t cur_;
     std::string main_id_;
@@ -53,13 +66,11 @@ class PRNGenerator {
     std::stack<std::vector<size_t>> break_stack_;
     std::stack<size_t> cycles_starts_;
 
-    enum class PRNType {
-        Identifier, Operation, Literal,
-        Address, Function, FieldName,
-        SystemValue
-    };
-
     std::vector<std::variant<Identifier, Token, Literal,
                             size_t, std::string, SysVals>> prn_; // сюда добавить функции и служебные вещи
     std::vector<PRNType> types_; // информация о содержимом ячейки
 };
+
+
+std::ofstream& operator<<(std::ofstream& os, std::pair<std::variant<Identifier, Token, Literal,
+                                                size_t, std::string, PRNGenerator::SysVals>, PRNGenerator::PRNType> state);

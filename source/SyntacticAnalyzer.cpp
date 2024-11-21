@@ -626,7 +626,6 @@ void SyntacticAnalyzer::returnStatement() {
     if (lex_.getContent() != "return") {
         throw lex_;
     }
-    generator_->push(PRNGenerator::SysVals::Return);
     getLex();
     exp14();
     Type type_exp;
@@ -645,10 +644,10 @@ void SyntacticAnalyzer::returnStatement() {
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
-    generator_->push(PRNGenerator::SysVals::Semicolon);
     getLex();
 
     generator_->push(PRNGenerator::SysVals::Return);
+    generator_->push(PRNGenerator::SysVals::Semicolon);
 }
 
 void SyntacticAnalyzer::block() {
