@@ -403,6 +403,7 @@ void SyntacticAnalyzer::whileStatement() {
     if (lex_.getContent() != "while") {
         throw lex_;
     }
+    generator_->push(PRNGenerator::SysVals::While);
     getLex();
     if (lex_.getType() != Token::Type::OpenParenthesis) {
         throw lex_;
@@ -415,6 +416,9 @@ void SyntacticAnalyzer::whileStatement() {
         throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                  std::to_string(lex_.getColumn()));
     }
+
+    generator_->pushWhileStatement();
+
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
     }
@@ -422,6 +426,7 @@ void SyntacticAnalyzer::whileStatement() {
     tid_tree_.createScope(TypeScope::Loop);
     statement();
     tid_tree_.closeScope();
+    generator_->closeCycle();
 }
 
 void SyntacticAnalyzer::forStatement() {
@@ -599,6 +604,7 @@ void SyntacticAnalyzer::statement() {
         try {
             if (lex_.getContent() == "break") {
                 tid_tree_.checkBreak();
+                generator_->pushBreak();
             } else {
                 tid_tree_.checkContinue();
             }

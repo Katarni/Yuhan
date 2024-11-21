@@ -40,6 +40,11 @@ void PRNGenerator::pushFuncDef(const std::string &func_id) {
 }
 
 void PRNGenerator::push(PRNGenerator::SysVals val) {
+    if (val == SysVals::While) {
+        cycles_starts_.push(cur_);
+        break_stack_.emplace(std::vector<size_t>());
+    }
+
     prn_.emplace_back(val);
     types_.emplace_back(PRNType::SystemValue);
     ++cur_;
@@ -58,4 +63,29 @@ void PRNGenerator::setMainId(const std::string &id) {
         throw std::runtime_error("more than one main in program");
     }
     main_id_ = id;
+}
+
+void PRNGenerator::pushWhileStatement() {
+    break_stack_.top().push_back(cur_);
+    pushAddress(-1);
+    push(SysVals::GoToByFalse);
+}
+
+void PRNGenerator::pushAddress(size_t address) {
+    prn_.emplace_back(address);
+    types_.push_back(PRNType::Address);
+    ++cur_;
+}
+
+void PRNGenerator::closeCycle() {
+    for (auto idx : break_stack_.top()) {
+        prn_[idx] = cur_;
+    }
+    break_stack_.pop();
+}
+
+void PRNGenerator::pushBreak() {
+    break_stack_.top().push_back(cur_);
+    pushAddress(-1);
+    push(SysVals::GoTo);
 }
