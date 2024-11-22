@@ -181,13 +181,7 @@ void Type::clear() {
 }
 
 Literal::Literal(Type type, std::string data) : type_(type) {
-    if (type_.getName() == "bool") {
-        if (data == "true") {
-            data_ = true;
-        } else {
-            data_ = false;
-        }
-    } else if (type_.getName() == "char") {
+    if (type_.getName() == "char") {
         data_ = static_cast<char>(data[0]);
     } else if (type_.getName() == "int") {
         data_ = std::stoi(data);
@@ -204,4 +198,8 @@ Type &Literal::getType() {
 
 void Literal::setType(Type other) {
     type_ = other;
+}
+
+std::variant<int, char, bool, float, std::string> Literal::getData() const {
+    return data_;
 }

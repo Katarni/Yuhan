@@ -38,8 +38,18 @@ int main() {
                 os << "Operator: " << std::get<Token>(state.first).getContent();
                 break;
             case PRNGenerator::PRNType::Literal:
-                // get val here
-                os << "Literal: " << std::get<Literal>(state.first).getType().getName();
+                os << "Literal: ";
+                if (std::get<Literal>(state.first).getType().getName() == "bool") {
+                    os << std::get<bool>(std::get<Literal>(state.first).getData());
+                } else if (std::get<Literal>(state.first).getType().getName() == "char") {
+                    os << std::get<char>(std::get<Literal>(state.first).getData());
+                } else if (std::get<Literal>(state.first).getType().getName() == "int") {
+                    os << std::get<int>(std::get<Literal>(state.first).getData());
+                } else if (std::get<Literal>(state.first).getType().getName() == "float") {
+                    os << std::get<float>(std::get<Literal>(state.first).getData());
+                } else if (std::get<Literal>(state.first).getType().getName() == "string") {
+                    os << std::get<std::string>(std::get<Literal>(state.first).getData());
+                }
                 break;
             case PRNGenerator::PRNType::Address:
                 os << "Address: " << std::get<size_t>(state.first);

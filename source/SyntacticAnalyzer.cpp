@@ -517,7 +517,6 @@ void SyntacticAnalyzer::forStatement() {
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
-    generator_->push(PRNGenerator::SysVals::Semicolon);
 
     auto after_statement_address_out_block = generator_->getCurIdx();
     generator_->push(-1);
@@ -526,6 +525,8 @@ void SyntacticAnalyzer::forStatement() {
     auto after_statement_address_to_block = generator_->getCurIdx();
     generator_->push(-1);
     generator_->push(PRNGenerator::SysVals::GoTo);
+
+    generator_->push(PRNGenerator::SysVals::Semicolon);
 
     generator_->pushCycleStart();
 

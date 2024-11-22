@@ -86,6 +86,9 @@ class Literal {
 
     void setType(Type other);
 
+    [[nodiscard]]
+    std::variant<int, char, bool, float, std::string> getData() const;
+
  private:
     std::variant<int, char, bool, float, std::string> data_;
     Type type_;
