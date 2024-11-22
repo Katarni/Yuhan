@@ -11,6 +11,8 @@ class Interpreter {
  public:
     explicit Interpreter(PRNGenerator *generator) : generator_(generator) {}
 
+    void run();
+
  private:
     PRNGenerator *generator_;
 };

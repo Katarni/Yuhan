@@ -3,3 +3,7 @@
 //
 
 #include "../include/Interpreter.h"
+
+void Interpreter::run() {
+
+}
