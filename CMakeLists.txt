@@ -21,5 +21,7 @@ add_executable(Yuhan main.cpp
         source/ReservedMemory.cpp
         include/PRNGenerator.h
         source/PRNGenerator.cpp
+        source/Interpreter.cpp
+        include/Interpreter.h
 )
 
