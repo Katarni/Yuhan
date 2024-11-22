@@ -73,6 +73,12 @@ int main() {
                     case PRNGenerator::SysVals::Cmp:
                         os << "Switch Cmp";
                         break;
+                    case PRNGenerator::SysVals::Scan:
+                        os << "Scan";
+                        break;
+                    case PRNGenerator::SysVals::Print:
+                        os << "Print";
+                        break;
                 }
                 break;
         }

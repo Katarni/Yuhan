@@ -112,13 +112,34 @@ void SyntacticAnalyzer::exp1() {
             if (lex_.getType() != Token::Type::CloseParenthesis) {
                 throw lex_;
             }
-            try {
-                generator_->pushFuncCall(tid_tree_.checkFunctionName(name, args));
-                sem_stack_.push(tid_tree_.checkFunction(name, args));
-            } catch (std::runtime_error &error) {
-                throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
-                                         std::to_string(lex_.getColumn()));
+
+
+            if (name == "print" || name == "scan") {
+                if (args.size() != 1) {
+                    throw std::runtime_error("incorrect args number for print or scan");
+                }
+
+                if (!args[0].isLvalue() && name == "scan") {
+                    throw std::runtime_error("scan needs lvalue");
+                }
+
+                if (name == "scan") {
+                    generator_->push(PRNGenerator::SysVals::Scan);
+                } else {
+                    generator_->push(PRNGenerator::SysVals::Print);
+                }
+
+                sem_stack_.push(args[0]);
+            } else {
+                try {
+                    generator_->pushFuncCall(tid_tree_.checkFunctionName(name, args));
+                    sem_stack_.push(tid_tree_.checkFunction(name, args));
+                } catch (std::runtime_error &error) {
+                    throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                             std::to_string(lex_.getColumn()));
+                }
             }
+
             getLex();
         } else {
             Identifier var;
@@ -851,6 +872,10 @@ void SyntacticAnalyzer::function() {
 
     if (name_func == "main") {
         generator_->setMainId(id_func);
+    }
+
+    if (name_func == "scan" || name_func == "print") {
+        throw std::runtime_error("scan and print function are reserve");
     }
 
     generator_->pushFuncDef(id_func);
