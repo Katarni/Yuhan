@@ -52,16 +52,39 @@ void Interpreter::callFunc(const std::string &func, const std::vector<ReservedMe
                 // functionCall
                 break;
             case PRNGenerator::PRNType::FieldName:
+                calc_stack_.emplace(std::get<std::string>(state.first));
                 break;
             case PRNGenerator::PRNType::SystemValue:
+                switch (std::get<PRNGenerator::SysVals>(state.first)) {
+                    case PRNGenerator::SysVals::FuncEnd:
+                        throw std::runtime_error("function should return value");
+                    case PRNGenerator::SysVals::Comma:
+                    case PRNGenerator::SysVals::Semicolon:
+                        calc_stack_.pop();
+                        break;
+                    case PRNGenerator::SysVals::Return:
+                        goto func_end;
+                    case PRNGenerator::SysVals::GoTo:
+                    case PRNGenerator::SysVals::GoToByFalse:
+                    case PRNGenerator::SysVals::Cmp:
+                    case PRNGenerator::SysVals::Scan:
+                    case PRNGenerator::SysVals::Print:
+                        operation(std::get<PRNGenerator::SysVals>(state.first));
+                }
                 break;
         }
 
         ++cur_;
     }
+
+    func_end:
 }
 
 void Interpreter::operation(const Token &operation) {
+
+}
+
+void Interpreter::operation(PRNGenerator::SysVals operation) {
 
 }
 
