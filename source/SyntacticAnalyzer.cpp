@@ -11,6 +11,7 @@ void SyntacticAnalyzer::getLex() {
 void SyntacticAnalyzer::exp14() {
     exp13();
     while (lex_.getType() == Token::Type::Comma) {
+        generator_->push(PRNGenerator::SysVals::Comma);
         sem_stack_.clear();
         getLex();
         exp13();
@@ -694,6 +695,7 @@ void SyntacticAnalyzer::varDefinition() {
     Type type_var = type();
     var(type_var);
     while (lex_.getType() == Token::Type::Comma) {
+        generator_->push(PRNGenerator::SysVals::Comma);
         getLex();
         var(type_var);
     }
@@ -910,6 +912,11 @@ void SyntacticAnalyzer::function() {
                                      std::to_string(lex_.getColumn()));
         }
     }
+
+    if (name_func == "main" && !args.empty()) {
+        throw std::runtime_error("main should have no arguments");
+    }
+
     generator_->setFuncArgsCnt(id_func, args.size());
     getLex();
     block();
@@ -930,6 +937,7 @@ void SyntacticAnalyzer::funcVarDefinition(std::vector<Variable> &args) {
     args.emplace_back(lex_.getContent(), type_arg);
     getLex();
     while (lex_.getType() == Token::Type::Comma) {
+        generator_->push(PRNGenerator::SysVals::Comma);
         getLex();
         type_arg = type();
         if (lex_.getType() == Token::Type::Ampersand) {
@@ -1054,6 +1062,7 @@ Type SyntacticAnalyzer::array() {
     getLex();
     type_arr.setArrayType(type());
     if (lex_.getType() != Token::Type::Comma) {
+        generator_->push(PRNGenerator::SysVals::Comma);
         throw lex_;
     }
     getLex();
@@ -1091,6 +1100,7 @@ void SyntacticAnalyzer::vars(std::vector<Type> &args) {
                                  std::to_string(lex_.getColumn()));
     }
     while (lex_.getType() == Token::Type::Comma) {
+        generator_->push(PRNGenerator::SysVals::Comma);
         getLex();
         exp13();
         try {

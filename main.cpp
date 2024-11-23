@@ -24,7 +24,8 @@ int main() {
     sintex.startAnalysis();
 
     auto interpreter = new Interpreter(generator);
-    interpreter->run();
+    interpreter->global();
+    interpreter->callFunc("main", {});
 
     return 0;
 }

@@ -98,6 +98,8 @@ class Literal {
 class ReservedMemory {
  public:
     explicit ReservedMemory(Type type);
+    ReservedMemory(const ReservedMemory& other) = default;
+    ReservedMemory& operator=(const ReservedMemory& other) = default;
 
     [[nodiscard]]
     Type& getType() {
