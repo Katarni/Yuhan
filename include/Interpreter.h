@@ -34,9 +34,11 @@ class Interpreter {
 
     size_t cur_;
 
-    std::deque<std::variant<Identifier, Literal>> calc_stack_;
+    std::stack<std::variant<Identifier, Literal, size_t>> calc_stack_;
     PRNGenerator *generator_;
 
     std::map<std::string, ReservedMemory*> global_vars_;
     std::deque<FunctionCall> function_stack_;
+
+    void operation(const Token& operation);
 };
