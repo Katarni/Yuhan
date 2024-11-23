@@ -117,7 +117,8 @@ void Interpreter::operation(const Token &operation) {
 
 void Interpreter::operation(PRNGenerator::SysVals operation) {
     size_t point;
-    ReservedMemory* lhs = nullptr;
+    ReservedMemory *lhs_var = nullptr, *rhs_var = nullptr;
+    Literal lhs_lit, rhs_lit;
     switch (operation) {
         case PRNGenerator::SysVals::GoTo:
             cur_ = std::get<size_t>(calc_stack_.top());
@@ -126,18 +127,37 @@ void Interpreter::operation(PRNGenerator::SysVals operation) {
         case PRNGenerator::SysVals::GoToByFalse:
             point = std::get<size_t>(calc_stack_.top());
             calc_stack_.pop();
-            lhs = getVar(std::get<Identifier>(calc_stack_.top()));
-            calc_stack_.pop();
 
-            if (lhs->isTrue()) {
-                cur_ = point;
+            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+                lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+
+                if (lhs_var->isTrue()) {
+                    cur_ = point;
+                }
+            } else {
+                lhs_lit = std::get<Literal>(calc_stack_.top());
+
+                if (lhs_lit.isTrue()) {
+                    cur_ = point;
+                }
             }
+
+            calc_stack_.pop();
             break;
         case PRNGenerator::SysVals::Cmp:
             break;
         case PRNGenerator::SysVals::Scan:
             break;
         case PRNGenerator::SysVals::Print:
+            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+                rhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+
+                std::cout << rhs_var;
+            } else {
+                rhs_lit = std::get<Literal>(calc_stack_.top());
+
+                std::cout << rhs_lit;
+            }
             break;
     }
 }

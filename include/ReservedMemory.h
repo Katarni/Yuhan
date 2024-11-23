@@ -79,15 +79,19 @@ class Identifier {
 
 class Literal {
  public:
+    Literal() = default;
     Literal(Type type, std::string data);
 
     [[nodiscard]]
     Type getType() const;
-
     void setType(Type other);
+
+    bool isTrue() const;
 
     [[nodiscard]]
     std::variant<int, char, bool, float, std::string> getData() const;
+
+    friend std::ostream& operator<<(std::ostream& os, Literal lit);
 
  private:
     std::variant<int, char, bool, float, std::string> data_;
@@ -112,6 +116,8 @@ class ReservedMemory {
     ReservedMemory* getFieldByName(const std::string& name) const;
 
     void setFields(const std::vector<std::pair<std::string, Type>>& fields);
+
+    friend std::ostream& operator<<(std::ostream& os, ReservedMemory* var);
 
  private:
     Type type_;

@@ -217,3 +217,53 @@ bool ReservedMemory::isTrue() const {
 
     throw std::runtime_error("can't compare types");
 }
+
+bool Literal::isTrue() const {
+    if (type_.getName() == "int") {
+        return std::get<int>(data_);
+    } else if (type_.getName() == "bool") {
+        return std::get<bool>(data_);
+    } else if (type_.getName() == "char") {
+        return std::get<char>(data_);
+    } else if (type_.getName() == "float") {
+        return static_cast<bool>(std::get<float>(data_));
+    }
+
+    throw std::runtime_error("can't compare types");
+}
+
+std::ostream &operator<<(std::ostream &os, ReservedMemory *var) {
+    if (var->type_.getName() == "int") {
+        std::cout << std::get<int>(var->data_);
+    } else if (var->type_.getName() == "bool") {
+        std::cout << std::get<bool>(var->data_);
+    } else if (var->type_.getName() == "char") {
+        std::cout << std::get<char>(var->data_);
+    } else if (var->type_.getName() == "float") {
+        std::cout << std::get<float>(var->data_);
+    } else if (var->type_.getName() == "string") {
+        std::cout << std::get<std::string>(var->data_);
+    } else {
+        throw std::runtime_error("no available print overload");
+    }
+
+    return os;
+}
+
+std::ostream &operator<<(std::ostream &os, Literal lit) {
+    if (lit.type_.getName() == "int") {
+        std::cout << std::get<int>(lit.data_);
+    } else if (lit.type_.getName() == "bool") {
+        std::cout << std::get<bool>(lit.data_);
+    } else if (lit.type_.getName() == "char") {
+        std::cout << std::get<char>(lit.data_);
+    } else if (lit.type_.getName() == "float") {
+        std::cout << std::get<float>(lit.data_);
+    } else if (lit.type_.getName() == "string") {
+        std::cout << std::get<std::string>(lit.data_);
+    } else {
+        throw std::runtime_error("no available print overload");
+    }
+
+    return os;
+}
