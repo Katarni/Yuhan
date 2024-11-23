@@ -4,7 +4,7 @@
 
 #include "../include/Interpreter.h"
 
-ReservedMemory *Interpreter::FunctionCall::getVar(const Identifier& name) {
+ReservedMemory *&Interpreter::FunctionCall::getVar(const Identifier& name) {
     return vars_[name.getName()];
 }
 
@@ -12,12 +12,25 @@ bool Interpreter::FunctionCall::findVar(const Identifier& name) {
     return vars_.find(name.getName()) != vars_.end();
 }
 
-ReservedMemory *Interpreter::FunctionCall::createVar(const Identifier &name) {
+ReservedMemory *&Interpreter::FunctionCall::createVar(const Identifier &name) {
+    if (vars_.find(name.getName()) != vars_.end()) return vars_[name.getName()];
+
     vars_[name.getName()] = new ReservedMemory(name.getType());
     return vars_[name.getName()];
 }
 
-ReservedMemory* Interpreter::getVar(const Identifier& name) {
+ReservedMemory *&Interpreter::createVar(const Identifier &name) {
+    if (!function_stack_.empty()) {
+        function_stack_.top().createVar(name);
+    }
+
+    if (global_vars_.find(name.getName()) != global_vars_.end()) return global_vars_[name.getName()];
+
+    global_vars_[name.getName()] = new ReservedMemory(name.getType());
+    return global_vars_[name.getName()];
+}
+
+ReservedMemory*& Interpreter::getVar(const Identifier& name) {
     if (!function_stack_.empty()) {
         if (function_stack_.top().findVar(name)) {
             return function_stack_.top().getVar(name);
@@ -67,6 +80,7 @@ void Interpreter::callFunc(const std::string &func, const std::vector<ReservedMe
 
         switch (state.second) {
             case PRNGenerator::PRNType::Identifier:
+                createVar(std::get<Identifier>(state.first));
                 calc_stack_.emplace(std::get<Identifier>(state.first));
                 break;
             case PRNGenerator::PRNType::Operation:
@@ -147,6 +161,7 @@ void Interpreter::operation(PRNGenerator::SysVals operation) {
         case PRNGenerator::SysVals::Cmp:
             break;
         case PRNGenerator::SysVals::Scan:
+            std::cin >> getVar(std::get<Identifier>(calc_stack_.top()));
             break;
         case PRNGenerator::SysVals::Print:
             if (std::holds_alternative<Identifier>(calc_stack_.top())) {

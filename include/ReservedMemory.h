@@ -118,6 +118,7 @@ class ReservedMemory {
     void setFields(const std::vector<std::pair<std::string, Type>>& fields);
 
     friend std::ostream& operator<<(std::ostream& os, ReservedMemory* var);
+    friend std::istream& operator>>(std::istream& is, ReservedMemory* var);
 
  private:
     Type type_;

@@ -234,20 +234,38 @@ bool Literal::isTrue() const {
 
 std::ostream &operator<<(std::ostream &os, ReservedMemory *var) {
     if (var->type_.getName() == "int") {
-        std::cout << std::get<int>(var->data_);
+        os << std::get<int>(var->data_);
     } else if (var->type_.getName() == "bool") {
-        std::cout << std::get<bool>(var->data_);
+        os << std::get<bool>(var->data_);
     } else if (var->type_.getName() == "char") {
-        std::cout << std::get<char>(var->data_);
+        os << std::get<char>(var->data_);
     } else if (var->type_.getName() == "float") {
-        std::cout << std::get<float>(var->data_);
+        os << std::get<float>(var->data_);
     } else if (var->type_.getName() == "string") {
-        std::cout << std::get<std::string>(var->data_);
+        os << std::get<std::string>(var->data_);
     } else {
         throw std::runtime_error("no available print overload");
     }
 
     return os;
+}
+
+std::istream &operator>>(std::istream &is, ReservedMemory *var) {
+    if (var->type_.getName() == "int") {
+        is >> std::get<int>(var->data_);
+    } else if (var->type_.getName() == "bool") {
+        is >> std::get<bool>(var->data_);
+    } else if (var->type_.getName() == "char") {
+        is >> std::get<char>(var->data_);
+    } else if (var->type_.getName() == "float") {
+        is >> std::get<float>(var->data_);
+    } else if (var->type_.getName() == "string") {
+        is >> std::get<std::string>(var->data_);
+    } else {
+        throw std::runtime_error("no available scan overload");
+    }
+
+    return is;
 }
 
 std::ostream &operator<<(std::ostream &os, Literal lit) {
