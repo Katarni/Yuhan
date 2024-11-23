@@ -650,6 +650,7 @@ void SyntacticAnalyzer::switchStatement() {
     tid_tree_.closeScope();
 
     generator_->closeSwitch();
+    generator_->push(PRNGenerator::SysVals::Semicolon);
 }
 
 void SyntacticAnalyzer::returnStatement() {

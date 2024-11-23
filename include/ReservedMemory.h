@@ -60,7 +60,7 @@ class Identifier {
     Identifier(std::string id, Type type) : name_(id), type_(type) {}
 
     [[nodiscard]]
-    Type& getType();
+    Type getType() const;
 
     void setType(Type other);
 
@@ -82,7 +82,7 @@ class Literal {
     Literal(Type type, std::string data);
 
     [[nodiscard]]
-    Type& getType();
+    Type getType() const;
 
     void setType(Type other);
 
@@ -105,6 +105,8 @@ class ReservedMemory {
     Type& getType() {
         return type_;
     }
+
+    bool isTrue() const;
 
     [[nodiscard]]
     ReservedMemory* getFieldByName(const std::string& name) const;

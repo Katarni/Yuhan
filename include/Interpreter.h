@@ -21,7 +21,9 @@ class Interpreter {
         explicit FunctionCall(size_t return_address) : return_address_(return_address) {}
         ~FunctionCall();
 
-        ReservedMemory* getVar(const std::string& name);
+        ReservedMemory* getVar(const Identifier& name);
+        bool findVar(const Identifier& name);
+        ReservedMemory* createVar(const Identifier& name);
 
         void setVar(const std::string& name, ReservedMemory* var_ptr);
         void setVar(const std::string& name, const ReservedMemory& var);
@@ -38,8 +40,10 @@ class Interpreter {
     PRNGenerator *generator_;
 
     std::map<std::string, ReservedMemory*> global_vars_;
-    std::deque<FunctionCall> function_stack_;
+    std::stack<FunctionCall> function_stack_;
 
     void operation(const Token& operation);
     void operation(PRNGenerator::SysVals operation);
+
+    ReservedMemory* getVar(const Identifier& name);
 };

@@ -166,7 +166,7 @@ const std::string &Identifier::getName() const {
     return name_;
 }
 
-Type &Identifier::getType() {
+Type Identifier::getType() const {
     return type_;
 }
 
@@ -192,7 +192,7 @@ Literal::Literal(Type type, std::string data) : type_(type) {
     }
 }
 
-Type &Literal::getType() {
+Type Literal::getType() const {
     return type_;
 }
 
@@ -202,4 +202,18 @@ void Literal::setType(Type other) {
 
 std::variant<int, char, bool, float, std::string> Literal::getData() const {
     return data_;
+}
+
+bool ReservedMemory::isTrue() const {
+    if (type_.getName() == "int") {
+        return std::get<int>(data_);
+    } else if (type_.getName() == "bool") {
+        return std::get<bool>(data_);
+    } else if (type_.getName() == "char") {
+        return std::get<char>(data_);
+    } else if (type_.getName() == "float") {
+        return static_cast<bool>(std::get<float>(data_));
+    }
+
+    throw std::runtime_error("can't compare types");
 }

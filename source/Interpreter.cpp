@@ -4,8 +4,38 @@
 
 #include "../include/Interpreter.h"
 
-ReservedMemory *Interpreter::FunctionCall::getVar(const std::string &name) {
-    return vars_[name];
+ReservedMemory *Interpreter::FunctionCall::getVar(const Identifier& name) {
+    return vars_[name.getName()];
+}
+
+bool Interpreter::FunctionCall::findVar(const Identifier& name) {
+    return vars_.find(name.getName()) != vars_.end();
+}
+
+ReservedMemory *Interpreter::FunctionCall::createVar(const Identifier &name) {
+    vars_[name.getName()] = new ReservedMemory(name.getType());
+    return vars_[name.getName()];
+}
+
+ReservedMemory* Interpreter::getVar(const Identifier& name) {
+    if (!function_stack_.empty()) {
+        if (function_stack_.top().findVar(name)) {
+            return function_stack_.top().getVar(name);
+        }
+
+        if (global_vars_.find(name.getName()) != global_vars_.end()) {
+            return global_vars_[name.getName()];
+        }
+
+        function_stack_.top().createVar(name);
+    }
+
+    if (global_vars_.find(name.getName()) != global_vars_.end()) {
+        return global_vars_[name.getName()];
+    }
+
+    global_vars_[name.getName()] = new ReservedMemory(name.getType());
+    return global_vars_[name.getName()];
 }
 
 void Interpreter::global() {
@@ -20,15 +50,15 @@ void Interpreter::callFunc(const std::string &func, const std::vector<ReservedMe
         address = generator_->getFuncParams(func).first;
     }
 
-    function_stack_.emplace_back(cur_ + 1);
+    function_stack_.emplace(cur_ + 1);
 
     cur_ = address + 1;
     for (size_t i = 0; i < vars.size(); ++i, ++cur_) {
         auto state = generator_->getById(cur_).first;
         if (std::get<Identifier>(state).getType().isLvalue()) {
-            function_stack_.back().setVar(std::get<Identifier>(state).getName(), vars[i]);
+            function_stack_.top().setVar(std::get<Identifier>(state).getName(), vars[i]);
         } else {
-            function_stack_.back().setVar(std::get<Identifier>(state).getName(), *vars[i]);
+            function_stack_.top().setVar(std::get<Identifier>(state).getName(), *vars[i]);
         }
     }
 
@@ -70,6 +100,7 @@ void Interpreter::callFunc(const std::string &func, const std::vector<ReservedMe
                     case PRNGenerator::SysVals::Scan:
                     case PRNGenerator::SysVals::Print:
                         operation(std::get<PRNGenerator::SysVals>(state.first));
+                        break;
                 }
                 break;
         }
@@ -85,7 +116,30 @@ void Interpreter::operation(const Token &operation) {
 }
 
 void Interpreter::operation(PRNGenerator::SysVals operation) {
+    size_t point;
+    ReservedMemory* lhs = nullptr;
+    switch (operation) {
+        case PRNGenerator::SysVals::GoTo:
+            cur_ = std::get<size_t>(calc_stack_.top());
+            calc_stack_.pop();
+            break;
+        case PRNGenerator::SysVals::GoToByFalse:
+            point = std::get<size_t>(calc_stack_.top());
+            calc_stack_.pop();
+            lhs = getVar(std::get<Identifier>(calc_stack_.top()));
+            calc_stack_.pop();
 
+            if (lhs->isTrue()) {
+                cur_ = point;
+            }
+            break;
+        case PRNGenerator::SysVals::Cmp:
+            break;
+        case PRNGenerator::SysVals::Scan:
+            break;
+        case PRNGenerator::SysVals::Print:
+            break;
+    }
 }
 
 void Interpreter::FunctionCall::setVar(const std::string& name, ReservedMemory *var_ptr) {
