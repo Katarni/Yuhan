@@ -135,7 +135,7 @@ void Interpreter::operation(PRNGenerator::SysVals operation) {
     Literal lhs_lit, rhs_lit;
     switch (operation) {
         case PRNGenerator::SysVals::GoTo:
-            cur_ = std::get<size_t>(calc_stack_.top());
+            cur_ = std::get<size_t>(calc_stack_.top()) - 1;
             calc_stack_.pop();
             break;
         case PRNGenerator::SysVals::GoToByFalse:
@@ -145,14 +145,14 @@ void Interpreter::operation(PRNGenerator::SysVals operation) {
             if (std::holds_alternative<Identifier>(calc_stack_.top())) {
                 lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
 
-                if (lhs_var->isTrue()) {
-                    cur_ = point;
+                if (!lhs_var->isTrue()) {
+                    cur_ = point - 1;
                 }
             } else {
                 lhs_lit = std::get<Literal>(calc_stack_.top());
 
-                if (lhs_lit.isTrue()) {
-                    cur_ = point;
+                if (!lhs_lit.isTrue()) {
+                    cur_ = point - 1;
                 }
             }
 
