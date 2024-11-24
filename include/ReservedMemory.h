@@ -99,6 +99,9 @@ class Literal {
     friend std::ostream& operator<<(std::ostream& os, Literal lit);
 
     friend Literal operator+(const Literal& lhs, const Literal& rhs);
+    friend Literal operator-(const Literal& lhs, const Literal& rhs);
+    friend Literal operator*(const Literal& lhs, const Literal& rhs);
+    friend Literal operator/(const Literal& lhs, const Literal& rhs);
 
  private:
     std::variant<int, char, bool, float, std::string> data_;
@@ -132,6 +135,18 @@ class ReservedMemory {
     friend Literal operator+(const ReservedMemory& lhs, const ReservedMemory& rhs);
     friend Literal operator+(const ReservedMemory& lhs, const Literal& rhs);
     friend Literal operator+(const Literal& lhs, const ReservedMemory& rhs);
+
+    friend Literal operator-(const ReservedMemory& lhs, const ReservedMemory& rhs);
+    friend Literal operator-(const ReservedMemory& lhs, const Literal& rhs);
+    friend Literal operator-(const Literal& lhs, const ReservedMemory& rhs);
+
+    friend Literal operator*(const ReservedMemory& lhs, const ReservedMemory& rhs);
+    friend Literal operator*(const ReservedMemory& lhs, const Literal& rhs);
+    friend Literal operator*(const Literal& lhs, const ReservedMemory& rhs);
+
+    friend Literal operator/(const ReservedMemory& lhs, const ReservedMemory& rhs);
+    friend Literal operator/(const ReservedMemory& lhs, const Literal& rhs);
+    friend Literal operator/(const Literal& lhs, const ReservedMemory& rhs);
 
  private:
     Type type_;

@@ -172,6 +172,110 @@ void Interpreter::operation(const Token &operation) {
 
             calc_stack_.emplace(res_lit);
         }
+    } else if (operation.getContent() == "-") {
+        if (operation.getType() == Token::Type::RvalueBinaryOperator) {
+            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+                rhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+                calc_stack_.pop();
+
+                if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+                    lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+                    calc_stack_.pop();
+
+                    res_lit = *lhs_var - *rhs_var;
+                } else {
+                    lhs_lit = std::get<Literal>(calc_stack_.top());
+                    calc_stack_.pop();
+
+                    res_lit = lhs_lit - *rhs_var;
+                }
+            } else {
+                rhs_lit = std::get<Literal>(calc_stack_.top());
+                calc_stack_.pop();
+
+                if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+                    lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+                    calc_stack_.pop();
+
+                    res_lit = *lhs_var - rhs_lit;
+                } else {
+                    lhs_lit = std::get<Literal>(calc_stack_.top());
+                    calc_stack_.pop();
+
+                    res_lit = lhs_lit - rhs_lit;
+                }
+            }
+
+            calc_stack_.emplace(res_lit);
+        }
+    } else if (operation.getContent() == "*") {
+        if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+            rhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+            calc_stack_.pop();
+
+            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+                lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+                calc_stack_.pop();
+
+                res_lit = *lhs_var * *rhs_var;
+            } else {
+                lhs_lit = std::get<Literal>(calc_stack_.top());
+                calc_stack_.pop();
+
+                res_lit = lhs_lit * *rhs_var;
+            }
+        } else {
+            rhs_lit = std::get<Literal>(calc_stack_.top());
+            calc_stack_.pop();
+
+            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+                lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+                calc_stack_.pop();
+
+                res_lit = *lhs_var * rhs_lit;
+            } else {
+                lhs_lit = std::get<Literal>(calc_stack_.top());
+                calc_stack_.pop();
+
+                res_lit = lhs_lit * rhs_lit;
+            }
+        }
+
+        calc_stack_.emplace(res_lit);
+    } else if (operation.getContent() == "/") {
+        if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+            rhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+            calc_stack_.pop();
+
+            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+                lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+                calc_stack_.pop();
+
+                res_lit = *lhs_var / *rhs_var;
+            } else {
+                lhs_lit = std::get<Literal>(calc_stack_.top());
+                calc_stack_.pop();
+
+                res_lit = lhs_lit / *rhs_var;
+            }
+        } else {
+            rhs_lit = std::get<Literal>(calc_stack_.top());
+            calc_stack_.pop();
+
+            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+                lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+                calc_stack_.pop();
+
+                res_lit = *lhs_var / rhs_lit;
+            } else {
+                lhs_lit = std::get<Literal>(calc_stack_.top());
+                calc_stack_.pop();
+
+                res_lit = lhs_lit / rhs_lit;
+            }
+        }
+
+        calc_stack_.emplace(res_lit);
     }
 }
 
