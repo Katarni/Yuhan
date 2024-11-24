@@ -42,6 +42,10 @@ void SemanticStack::checkUno() {
     auto operand = popOperand();
     auto operation = popOperation();
 
+    if (operation.getType() == Token::Type::PlusOrMinusOperator) {
+        operation.setType(Token::Type::RvalueUnaryOperator);
+    }
+
     generator_->push(operation);
 
     Type result_operand = operand;
@@ -49,6 +53,7 @@ void SemanticStack::checkUno() {
     switch (operation.getType()) {
         case Token::Type::PlusOrMinusOperator:
         case Token::Type::RvalueUnaryOperator:
+
             if (operand.getName() == "int" || operand.getName() == "char" || operand.getName() == "float") {
                 if (operation.getContent() == "!") {
                     result_operand.setName("bool");
@@ -89,6 +94,10 @@ void SemanticStack::checkBinary() {
     auto rhs = popOperand();
     auto operation = popOperation();
     auto lhs = popOperand();
+
+    if (operation.getType() == Token::Type::PlusOrMinusOperator) {
+        operation.setType(Token::Type::RvalueBinaryOperator);
+    }
 
     generator_->push(operation);
 

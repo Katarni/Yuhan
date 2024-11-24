@@ -77,8 +77,13 @@ class Identifier {
 };
 
 
+class ReservedMemory;
+
+
 class Literal {
  public:
+    friend ReservedMemory;
+
     Literal() = default;
     Literal(Type type, std::string data);
 
@@ -93,6 +98,8 @@ class Literal {
 
     friend std::ostream& operator<<(std::ostream& os, Literal lit);
 
+    friend Literal operator+(const Literal& lhs, const Literal& rhs);
+
  private:
     std::variant<int, char, bool, float, std::string> data_;
     Type type_;
@@ -101,6 +108,8 @@ class Literal {
 
 class ReservedMemory {
  public:
+    friend Literal;
+
     explicit ReservedMemory(Type type);
     ReservedMemory(const ReservedMemory& other) = default;
     ReservedMemory& operator=(const ReservedMemory& other) = default;
@@ -118,7 +127,11 @@ class ReservedMemory {
     void setFields(const std::vector<std::pair<std::string, Type>>& fields);
 
     friend std::ostream& operator<<(std::ostream& os, ReservedMemory* var);
-    friend std::istream& operator>>(std::istream& is, ReservedMemory* var);
+    friend std::istream& operator>>(std::istream& is, ReservedMemory*& var);
+
+    friend Literal operator+(const ReservedMemory& lhs, const ReservedMemory& rhs);
+    friend Literal operator+(const ReservedMemory& lhs, const Literal& rhs);
+    friend Literal operator+(const Literal& lhs, const ReservedMemory& rhs);
 
  private:
     Type type_;

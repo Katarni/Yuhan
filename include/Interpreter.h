@@ -28,6 +28,8 @@ class Interpreter {
         void setVar(const std::string& name, ReservedMemory* var_ptr);
         void setVar(const std::string& name, const ReservedMemory& var);
 
+        size_t returnAddress() const;
+
      private:
         size_t return_address_;
         std::map<std::string, ReservedMemory*> vars_;

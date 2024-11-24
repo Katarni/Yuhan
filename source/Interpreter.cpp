@@ -51,6 +51,10 @@ ReservedMemory*& Interpreter::getVar(const Identifier& name) {
     return global_vars_[name.getName()];
 }
 
+size_t Interpreter::FunctionCall::returnAddress() const {
+    return return_address_;
+}
+
 void Interpreter::global() {
 
 }
@@ -123,10 +127,52 @@ void Interpreter::callFunc(const std::string &func, const std::vector<ReservedMe
     }
 
     func_end:
+
+    cur_ = function_stack_.top().returnAddress();
+    function_stack_.pop();
 }
 
 void Interpreter::operation(const Token &operation) {
+    ReservedMemory *rhs_var = nullptr, *lhs_var = nullptr, *res_var = nullptr;
+    Literal rhs_lit, lhs_lit, res_lit;
 
+    if (operation.getContent() == "+") {
+        if (operation.getType() == Token::Type::RvalueBinaryOperator) {
+            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+                rhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+                calc_stack_.pop();
+
+                if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+                    lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+                    calc_stack_.pop();
+
+                    res_lit = *lhs_var + *rhs_var;
+                } else {
+                    lhs_lit = std::get<Literal>(calc_stack_.top());
+                    calc_stack_.pop();
+
+                    res_lit = lhs_lit + *rhs_var;
+                }
+            } else {
+                rhs_lit = std::get<Literal>(calc_stack_.top());
+                calc_stack_.pop();
+
+                if (std::holds_alternative<Identifier>(calc_stack_.top())) {
+                    lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+                    calc_stack_.pop();
+
+                    res_lit = *lhs_var + rhs_lit;
+                } else {
+                    lhs_lit = std::get<Literal>(calc_stack_.top());
+                    calc_stack_.pop();
+
+                    res_lit = lhs_lit + rhs_lit;
+                }
+            }
+
+            calc_stack_.emplace(res_lit);
+        }
+    }
 }
 
 void Interpreter::operation(PRNGenerator::SysVals operation) {
