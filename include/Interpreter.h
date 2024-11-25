@@ -39,7 +39,7 @@ class Interpreter {
 
     size_t cur_;
 
-    std::stack<std::variant<Identifier, Literal, size_t, std::string>> calc_stack_;
+    std::stack<std::variant<ReservedMemory*, Literal, size_t, std::string>> calc_stack_;
     PRNGenerator *generator_;
 
     std::map<std::string, ReservedMemory*> global_vars_;
@@ -47,6 +47,7 @@ class Interpreter {
 
     void operation(const Token& operation);
     void operation(PRNGenerator::SysVals operation);
+    void operation(const Token& operation, ReservedMemory* lhs, ReservedMemory* rhs);
 
     ReservedMemory*& getVar(const Identifier& name);
     ReservedMemory*& createVar(const Identifier& name);

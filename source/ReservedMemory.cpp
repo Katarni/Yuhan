@@ -172,6 +172,8 @@ Literal::Literal(Type type, std::string data) : type_(type) {
         data_ = std::stof(data);
     } else if (type_.getName() == "string") {
         data_ = data;
+    } else if (type_.getName() == "bool") {
+        data_ = bool(std::stoi(data));
     }
 }
 
@@ -219,7 +221,7 @@ std::istream &operator>>(std::istream &is, ReservedMemory *&var) {
     return is;
 }
 
-std::ostream &operator<<(std::ostream &os, Literal lit) {
+std::ostream &operator<<(std::ostream &os, const Literal& lit) {
     if (lit.type_.getName() == "int") {
         std::cout << std::get<int>(lit.data_);
     } else if (lit.type_.getName() == "bool") {
@@ -237,7 +239,7 @@ std::ostream &operator<<(std::ostream &os, Literal lit) {
     return os;
 }
 
-Literal operator+(const Literal &lhs, const Literal &rhs) {
+Literal operator+(Literal& lhs, Literal& rhs) {
     if (lhs.type_.getName() == "string" || rhs.type_.getName() == "string") {
         return {lhs.type_, std::get<std::string>(lhs.data_) + std::get<std::string>(rhs.data_)};
     }
@@ -293,7 +295,7 @@ Literal operator+(const Literal &lhs, const Literal &rhs) {
     throw std::runtime_error("no available operator + overloaded");
 }
 
-Literal operator*(const Literal &lhs, const Literal &rhs) {
+Literal operator*(Literal& lhs, Literal& rhs) {
     if (lhs.type_.getName() == "float") {
         if (rhs.type_.getName() == "float") {
             return {rhs.type_, std::to_string(std::get<float>(lhs.data_) * std::get<float>(rhs.data_))};
@@ -345,7 +347,7 @@ Literal operator*(const Literal &lhs, const Literal &rhs) {
     throw std::runtime_error("no available operator * overloaded");
 }
 
-Literal operator-(const Literal &lhs, const Literal &rhs) {
+Literal operator-(Literal& lhs, Literal& rhs) {
     if (lhs.type_.getName() == "float") {
         if (rhs.type_.getName() == "float") {
             return {rhs.type_, std::to_string(std::get<float>(lhs.data_) - std::get<float>(rhs.data_))};
@@ -397,7 +399,7 @@ Literal operator-(const Literal &lhs, const Literal &rhs) {
     throw std::runtime_error("no available operator - overloaded");
 }
 
-Literal operator/(const Literal &lhs, const Literal &rhs) {
+Literal operator/(Literal& lhs, Literal& rhs) {
     if (lhs.type_.getName() == "float") {
         if (rhs.type_.getName() == "float") {
             return {rhs.type_, std::to_string(std::get<float>(lhs.data_) / std::get<float>(rhs.data_))};
@@ -449,4 +451,137 @@ Literal operator/(const Literal &lhs, const Literal &rhs) {
     throw std::runtime_error("no available operator / overloaded");
 }
 
+Literal operator%(Literal& lhs, Literal& rhs) {
+    if (lhs.type_.getName() == "int") {
+        if (rhs.type_.getName() == "int") {
+            return {Type("int", false), std::to_string(std::get<int>(lhs.data_) % std::get<int>(rhs.data_))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("int", false), std::to_string(std::get<int>(lhs.data_) % std::get<char>(rhs.data_))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("int", false), std::to_string(std::get<int>(lhs.data_) % std::get<bool>(rhs.data_))};
+        }
+    } else if (lhs.type_.getName() == "char") {
+        if (rhs.type_.getName() == "int") {
+            return {Type("int", false), std::to_string(std::get<char>(lhs.data_) % std::get<int>(rhs.data_))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("int", false), std::to_string(std::get<char>(lhs.data_) % std::get<char>(rhs.data_))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("int", false), std::to_string(std::get<char>(lhs.data_) % std::get<bool>(rhs.data_))};
+        }
+    } else if (lhs.type_.getName() == "bool") {
+        if (rhs.type_.getName() == "int") {
+            return {Type("int", false), std::to_string(std::get<bool>(lhs.data_) % std::get<int>(rhs.data_))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("int", false), std::to_string(std::get<bool>(lhs.data_) % std::get<char>(rhs.data_))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("int", false), std::to_string(std::get<bool>(lhs.data_) % std::get<bool>(rhs.data_))};
+        }
+    }
+
+    throw std::runtime_error("no available operator % overloaded");
+}
+
+Literal operator&&(Literal& lhs, Literal& rhs) {
+    if (lhs.type_.getName() == "float") {
+        if (rhs.type_.getName() == "float") {
+            return {Type("bool", false), std::to_string(std::get<float>(lhs.data_) && std::get<float>(rhs.data_))};
+        } else if (rhs.type_.getName() == "int") {
+            return {Type("bool", false), std::to_string(std::get<float>(lhs.data_) &&
+                                              static_cast<float>(std::get<int>(rhs.data_)))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("bool", false), std::to_string(std::get<float>(lhs.data_) &&
+                                              static_cast<float>(std::get<char>(rhs.data_)))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("bool", false), std::to_string(std::get<float>(lhs.data_) &&
+                                              static_cast<float>(std::get<bool>(rhs.data_)))};
+        }
+    } else if (lhs.type_.getName() == "int") {
+        if (rhs.type_.getName() == "float") {
+            return {Type("bool", false), std::to_string(static_cast<float>(std::get<int>(lhs.data_)) &&
+                                              std::get<float>(rhs.data_))};
+        } else if (rhs.type_.getName() == "int") {
+            return {Type("bool", false), std::to_string(std::get<int>(lhs.data_) && std::get<int>(rhs.data_))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("bool", false), std::to_string(std::get<int>(lhs.data_) && std::get<char>(rhs.data_))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("bool", false), std::to_string(std::get<int>(lhs.data_) && std::get<bool>(rhs.data_))};
+        }
+    } else if (lhs.type_.getName() == "char") {
+        if (rhs.type_.getName() == "float") {
+            return {Type("bool", false), std::to_string(static_cast<float>(std::get<char>(lhs.data_)) &&
+                                              std::get<float>(rhs.data_))};
+        } else if (rhs.type_.getName() == "int") {
+            return {Type("bool", false), std::to_string(std::get<char>(lhs.data_) && std::get<int>(rhs.data_))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("bool", false), std::to_string(std::get<char>(lhs.data_) && std::get<char>(rhs.data_))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("bool", false), std::to_string(std::get<char>(lhs.data_) && std::get<bool>(rhs.data_))};
+        }
+    } else if (lhs.type_.getName() == "bool") {
+        if (rhs.type_.getName() == "float") {
+            return {Type("bool", false), std::to_string(static_cast<float>(std::get<bool>(lhs.data_)) &&
+                                              std::get<float>(rhs.data_))};
+        } else if (rhs.type_.getName() == "int") {
+            return {Type("bool", false), std::to_string(std::get<bool>(lhs.data_) && std::get<int>(rhs.data_))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("bool", false), std::to_string(std::get<bool>(lhs.data_) && std::get<char>(rhs.data_))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("bool", false), std::to_string(std::get<bool>(lhs.data_) && std::get<bool>(rhs.data_))};
+        }
+    }
+
+    throw std::runtime_error("no available operator and overloaded");
+}
+
+Literal operator||(Literal& lhs, Literal& rhs) {
+    if (lhs.type_.getName() == "float") {
+        if (rhs.type_.getName() == "float") {
+            return {Type("bool", false), std::to_string(std::get<float>(lhs.data_) || std::get<float>(rhs.data_))};
+        } else if (rhs.type_.getName() == "int") {
+            return {Type("bool", false), std::to_string(std::get<float>(lhs.data_) ||
+                                                        static_cast<float>(std::get<int>(rhs.data_)))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("bool", false), std::to_string(std::get<float>(lhs.data_) ||
+                                                        static_cast<float>(std::get<char>(rhs.data_)))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("bool", false), std::to_string(std::get<float>(lhs.data_) ||
+                                                        static_cast<float>(std::get<bool>(rhs.data_)))};
+        }
+    } else if (lhs.type_.getName() == "int") {
+        if (rhs.type_.getName() == "float") {
+            return {Type("bool", false), std::to_string(static_cast<float>(std::get<int>(lhs.data_)) ||
+                                                        std::get<float>(rhs.data_))};
+        } else if (rhs.type_.getName() == "int") {
+            return {Type("bool", false), std::to_string(std::get<int>(lhs.data_) || std::get<int>(rhs.data_))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("bool", false), std::to_string(std::get<int>(lhs.data_) || std::get<char>(rhs.data_))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("bool", false), std::to_string(std::get<int>(lhs.data_) || std::get<bool>(rhs.data_))};
+        }
+    } else if (lhs.type_.getName() == "char") {
+        if (rhs.type_.getName() == "float") {
+            return {Type("bool", false), std::to_string(static_cast<float>(std::get<char>(lhs.data_)) ||
+                                                        std::get<float>(rhs.data_))};
+        } else if (rhs.type_.getName() == "int") {
+            return {Type("bool", false), std::to_string(std::get<char>(lhs.data_) || std::get<int>(rhs.data_))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("bool", false), std::to_string(std::get<char>(lhs.data_) || std::get<char>(rhs.data_))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("bool", false), std::to_string(std::get<char>(lhs.data_) || std::get<bool>(rhs.data_))};
+        }
+    } else if (lhs.type_.getName() == "bool") {
+        if (rhs.type_.getName() == "float") {
+            return {Type("bool", false), std::to_string(static_cast<float>(std::get<bool>(lhs.data_)) ||
+                                                        std::get<float>(rhs.data_))};
+        } else if (rhs.type_.getName() == "int") {
+            return {Type("bool", false), std::to_string(std::get<bool>(lhs.data_) || std::get<int>(rhs.data_))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("bool", false), std::to_string(std::get<bool>(lhs.data_) || std::get<char>(rhs.data_))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("bool", false), std::to_string(std::get<bool>(lhs.data_) || std::get<bool>(rhs.data_))};
+        }
+    }
+
+    throw std::runtime_error("no available operator or overloaded");
+}
 

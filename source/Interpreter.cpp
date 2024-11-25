@@ -85,7 +85,7 @@ void Interpreter::callFunc(const std::string &func, const std::vector<ReservedMe
         switch (state.second) {
             case PRNGenerator::PRNType::Identifier:
                 createVar(std::get<Identifier>(state.first));
-                calc_stack_.emplace(std::get<Identifier>(state.first));
+                calc_stack_.emplace(getVar(std::get<Identifier>(state.first)));
                 break;
             case PRNGenerator::PRNType::Operation:
                 operation(std::get<Token>(state.first));
@@ -133,146 +133,37 @@ void Interpreter::callFunc(const std::string &func, const std::vector<ReservedMe
 }
 
 void Interpreter::operation(const Token &operation) {
-    ReservedMemory *rhs_var = nullptr, *lhs_var = nullptr, *res_var = nullptr;
-    Literal rhs_lit, lhs_lit, res_lit;
+    Literal *rhs_lit = nullptr, *lhs_lit = nullptr, res_lit;
 
-    if (operation.getContent() == "+") {
-        if (operation.getType() == Token::Type::RvalueBinaryOperator) {
-            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-                rhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
-                calc_stack_.pop();
-
-                if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-                    lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
-                    calc_stack_.pop();
-
-                    res_lit = *lhs_var + *rhs_var;
-                } else {
-                    lhs_lit = std::get<Literal>(calc_stack_.top());
-                    calc_stack_.pop();
-
-                    res_lit = lhs_lit + *rhs_var;
-                }
-            } else {
-                rhs_lit = std::get<Literal>(calc_stack_.top());
-                calc_stack_.pop();
-
-                if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-                    lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
-                    calc_stack_.pop();
-
-                    res_lit = *lhs_var + rhs_lit;
-                } else {
-                    lhs_lit = std::get<Literal>(calc_stack_.top());
-                    calc_stack_.pop();
-
-                    res_lit = lhs_lit + rhs_lit;
-                }
-            }
-
-            calc_stack_.emplace(res_lit);
-        }
-    } else if (operation.getContent() == "-") {
-        if (operation.getType() == Token::Type::RvalueBinaryOperator) {
-            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-                rhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
-                calc_stack_.pop();
-
-                if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-                    lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
-                    calc_stack_.pop();
-
-                    res_lit = *lhs_var - *rhs_var;
-                } else {
-                    lhs_lit = std::get<Literal>(calc_stack_.top());
-                    calc_stack_.pop();
-
-                    res_lit = lhs_lit - *rhs_var;
-                }
-            } else {
-                rhs_lit = std::get<Literal>(calc_stack_.top());
-                calc_stack_.pop();
-
-                if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-                    lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
-                    calc_stack_.pop();
-
-                    res_lit = *lhs_var - rhs_lit;
-                } else {
-                    lhs_lit = std::get<Literal>(calc_stack_.top());
-                    calc_stack_.pop();
-
-                    res_lit = lhs_lit - rhs_lit;
-                }
-            }
-
-            calc_stack_.emplace(res_lit);
-        }
-    } else if (operation.getContent() == "*") {
-        if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-            rhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
-            calc_stack_.pop();
-
-            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-                lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
-                calc_stack_.pop();
-
-                res_lit = *lhs_var * *rhs_var;
-            } else {
-                lhs_lit = std::get<Literal>(calc_stack_.top());
-                calc_stack_.pop();
-
-                res_lit = lhs_lit * *rhs_var;
-            }
+    if (operation.getType() == Token::Type::RvalueBinaryOperator) {
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
+            rhs_lit = std::get<ReservedMemory*>(calc_stack_.top());
         } else {
-            rhs_lit = std::get<Literal>(calc_stack_.top());
-            calc_stack_.pop();
-
-            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-                lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
-                calc_stack_.pop();
-
-                res_lit = *lhs_var * rhs_lit;
-            } else {
-                lhs_lit = std::get<Literal>(calc_stack_.top());
-                calc_stack_.pop();
-
-                res_lit = lhs_lit * rhs_lit;
-            }
+            rhs_lit = new Literal(std::get<Literal>(calc_stack_.top()));
         }
+        calc_stack_.pop();
 
-        calc_stack_.emplace(res_lit);
-    } else if (operation.getContent() == "/") {
-        if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-            rhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
-            calc_stack_.pop();
-
-            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-                lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
-                calc_stack_.pop();
-
-                res_lit = *lhs_var / *rhs_var;
-            } else {
-                lhs_lit = std::get<Literal>(calc_stack_.top());
-                calc_stack_.pop();
-
-                res_lit = lhs_lit / *rhs_var;
-            }
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
+            lhs_lit = std::get<ReservedMemory*>(calc_stack_.top());
         } else {
-            rhs_lit = std::get<Literal>(calc_stack_.top());
-            calc_stack_.pop();
+            lhs_lit = new Literal(std::get<Literal>(calc_stack_.top()));
+        }
+        calc_stack_.pop();
 
-            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-                lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
-                calc_stack_.pop();
-
-                res_lit = *lhs_var / rhs_lit;
-            } else {
-                lhs_lit = std::get<Literal>(calc_stack_.top());
-                calc_stack_.pop();
-
-                res_lit = lhs_lit / rhs_lit;
-            }
+        if (operation.getContent() == "+") {
+            res_lit = *lhs_lit + *rhs_lit;
+        } else if (operation.getContent() == "*") {
+            res_lit = *lhs_lit * *rhs_lit;
+        } else if (operation.getContent() == "/") {
+            res_lit = *lhs_lit / *rhs_lit;
+        } else if (operation.getContent() == "-") {
+            res_lit = *lhs_lit - *rhs_lit;
+        } else if (operation.getContent() == "%") {
+            res_lit = *lhs_lit % *rhs_lit;
+        } else if (operation.getContent() == "and") {
+            res_lit = *lhs_lit && *rhs_lit;
+        } else if (operation.getContent() == "or") {
+            res_lit = *lhs_lit || *rhs_lit;
         }
 
         calc_stack_.emplace(res_lit);
@@ -292,8 +183,8 @@ void Interpreter::operation(PRNGenerator::SysVals operation) {
             point = std::get<size_t>(calc_stack_.top());
             calc_stack_.pop();
 
-            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-                lhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+            if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
+                lhs_var = std::get<ReservedMemory*>(calc_stack_.top());
 
                 if (!lhs_var->isTrue()) {
                     cur_ = point - 1;
@@ -311,13 +202,13 @@ void Interpreter::operation(PRNGenerator::SysVals operation) {
         case PRNGenerator::SysVals::Cmp:
             break;
         case PRNGenerator::SysVals::Scan:
-            std::cin >> getVar(std::get<Identifier>(calc_stack_.top()));
+            std::cin >> std::get<ReservedMemory*>(calc_stack_.top());
             break;
         case PRNGenerator::SysVals::Print:
-            if (std::holds_alternative<Identifier>(calc_stack_.top())) {
-                rhs_var = getVar(std::get<Identifier>(calc_stack_.top()));
+            if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
+                rhs_var = std::get<ReservedMemory*>(calc_stack_.top());
 
-                std::cout << rhs_var;
+                std::cout << *rhs_var;
             } else {
                 rhs_lit = std::get<Literal>(calc_stack_.top());
 
