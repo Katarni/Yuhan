@@ -35,7 +35,7 @@ void TIDVariable::pushID(std::string &name, Type &type,
     if (isInTrie(name)) throw std::runtime_error("Variable with this name has already been created");
     auto ptr = insert(name);
     ptr->setType(type);
-    ptr->setId(id);
+    ptr->setId(std::move(id));
 
     if (!fields.empty()) {
         ptr->setFields(fields);
@@ -120,7 +120,7 @@ void FunctionNode::setType(Type &type) {
     type_ = type;
 }
 
-std::string FunctionNode::getId() {
+const std::string& FunctionNode::getId() {
     return id_;
 }
 

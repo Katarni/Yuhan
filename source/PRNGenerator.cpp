@@ -177,7 +177,7 @@ std::ofstream &operator<<(std::ofstream &os,
                 case PRNGenerator::SysVals::GoToByFalse:
                     os << "GoTo by False" << std::endl;
                     break;
-                case PRNGenerator::SysVals::Cmp:
+                case PRNGenerator::SysVals::SwitchCmp:
                     os << "Switch Cmp" << std::endl;
                     break;
             }

@@ -80,7 +80,7 @@ int main() {
                     case PRNGenerator::SysVals::GoToByFalse:
                         os << "GoTo by False";
                         break;
-                    case PRNGenerator::SysVals::Cmp:
+                    case PRNGenerator::SysVals::SwitchCmp:
                         os << "Switch Cmp";
                         break;
                     case PRNGenerator::SysVals::Scan:

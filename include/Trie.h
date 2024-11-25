@@ -163,7 +163,7 @@ private:
 class FunctionNode : public Node {
 public:
     Type getType();
-    std::string getId();
+    const std::string& getId();
 
     void setType(Type& type);
     void setId(const std::string& id);

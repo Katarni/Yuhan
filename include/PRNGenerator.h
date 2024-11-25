@@ -15,7 +15,7 @@ class PRNGenerator {
 
     enum class SysVals {
         FuncEnd, FuncStart, Semicolon, Return,
-        GoTo, GoToByFalse, Cmp, Scan, Print
+        GoTo, GoToByFalse, SwitchCmp, Scan, Print
     };
 
     enum class PRNType {
