@@ -132,8 +132,9 @@ class Literal {
 class ReservedMemory : public Literal {
  public:
     explicit ReservedMemory(Type type);
-    ReservedMemory(const ReservedMemory& other) = default;
-    ReservedMemory& operator=(const ReservedMemory& other) = default;
+    ReservedMemory(const ReservedMemory& other);
+    ReservedMemory& operator=(const ReservedMemory& other);
+    ReservedMemory& operator=(const Literal& other);
 
     [[nodiscard]]
     ReservedMemory* getFieldByName(const std::string& name) const;
@@ -143,6 +144,17 @@ class ReservedMemory : public Literal {
     friend std::istream& operator>>(std::istream& is, ReservedMemory*& var);
 
     ReservedMemory*& operator[](const Literal& idx);
+
+    ReservedMemory& operator+=(const Literal& other);
+    ReservedMemory& operator-=(const Literal& other);
+    ReservedMemory& operator/=(const Literal& other);
+    ReservedMemory& operator*=(const Literal& other);
+    ReservedMemory& operator%=(const Literal& other);
+    ReservedMemory& operator^=(const Literal& other);
+    ReservedMemory& operator&=(const Literal& other);
+    ReservedMemory& operator|=(const Literal& other);
+    ReservedMemory& operator<<=(const Literal& other);
+    ReservedMemory& operator>>=(const Literal& other);
 
  private:
     std::variant<std::vector<ReservedMemory*>, std::map<std::string, ReservedMemory*>> structs_data_;

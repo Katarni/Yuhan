@@ -161,6 +161,56 @@ void Interpreter::lvalueOperation(const Token &operation) {
 
         auto res = (*lhs)[*rhs];
         calc_stack_.emplace(res);
+    } else if (operation.getType() == Token::Type::LvalueBinaryOperator) {
+        Literal* rhs;
+        ReservedMemory* lhs;
+
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
+            rhs = std::get<ReservedMemory*>(calc_stack_.top());
+        } else {
+            rhs = new Literal(std::get<Literal>(calc_stack_.top()));
+        }
+        calc_stack_.pop();
+
+        lhs = std::get<ReservedMemory*>(calc_stack_.top());
+        calc_stack_.pop();
+
+        if (operation.getContent() == "=") {
+            *lhs = *rhs;
+        } else if (operation.getContent() == "+=") {
+            *lhs += *rhs;
+        } else if (operation.getContent() == "-=") {
+            *lhs -= *rhs;
+        } else if (operation.getContent() == "*=") {
+            *lhs *= *rhs;
+        } else if (operation.getContent() == "/=") {
+            *lhs /= *rhs;
+        } else if (operation.getContent() == "^=") {
+            *lhs ^= *rhs;
+        } else if (operation.getContent() == "&=") {
+            *lhs &= *rhs;
+        } else if (operation.getContent() == "|=") {
+            *lhs |= *rhs;
+        } else if (operation.getContent() == "<<=") {
+            *lhs &= *rhs;
+        } else if (operation.getContent() == ">>=") {
+            *lhs |= *rhs;
+        }
+
+        calc_stack_.emplace(lhs);
+    } else if (operation.getType() == Token::Type::LvalueUnaryOperator) {
+        ReservedMemory* lhs;
+
+        lhs = std::get<ReservedMemory*>(calc_stack_.top());
+        calc_stack_.pop();
+
+        if (operation.getContent() == "++") {
+            *lhs += Literal(Type("int", false), "1");
+        } else if (operation.getContent() == "--") {
+            *lhs -= Literal(Type("int", false), "1");
+        }
+
+        calc_stack_.emplace(lhs);
     }
 }
 

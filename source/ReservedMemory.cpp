@@ -863,3 +863,100 @@ ReservedMemory*& ReservedMemory::operator[](const Literal& idx) {
 
     return std::get<std::vector<ReservedMemory*>>(structs_data_)[num_idx];
 }
+
+ReservedMemory::ReservedMemory(const ReservedMemory &other) {
+    type_ = other.type_;
+
+    if (type_.getName() == "array") {
+        for (int i = 0; i < type_.getArraySize(); ++i) {
+            std::get<std::vector<ReservedMemory*>>(structs_data_)[i] =
+                    new ReservedMemory(*std::get<std::vector<ReservedMemory*>>(other.structs_data_)[i]);
+        }
+    } else if (type_.getName() != "int" && type_.getName() != "char" &&
+                type_.getName() != "float" && type_.getName() != "bool" &&
+                type_.getName() != "string") {
+        structs_data_ = std::map<std::string, ReservedMemory*>();
+        for (const auto& [key, val] : type_.getFields()) {
+            std::get<std::map<std::string, ReservedMemory*>>(structs_data_)[key] = new ReservedMemory(*val);
+        }
+    }
+}
+
+ReservedMemory &ReservedMemory::operator=(const ReservedMemory &other) {
+    type_ = other.type_;
+
+    if (type_.getName() == "array") {
+        for (int i = 0; i < type_.getArraySize(); ++i) {
+            std::get<std::vector<ReservedMemory*>>(structs_data_)[i] =
+                    new ReservedMemory(*std::get<std::vector<ReservedMemory*>>(other.structs_data_)[i]);
+        }
+    } else if (type_.getName() != "int" && type_.getName() != "char" &&
+               type_.getName() != "float" && type_.getName() != "bool" &&
+               type_.getName() != "string") {
+        structs_data_ = std::map<std::string, ReservedMemory*>();
+        for (const auto& [key, val] : type_.getFields()) {
+            std::get<std::map<std::string, ReservedMemory*>>(structs_data_)[key] = new ReservedMemory(*val);
+        }
+    } else {
+        data_ = other.data_;
+    }
+
+    return *this;
+}
+
+ReservedMemory &ReservedMemory::operator=(const Literal &other) {
+    type_ = other.getType();
+    data_ = other.getData();
+
+    return *this;
+}
+
+ReservedMemory &ReservedMemory::operator+=(const Literal &other) {
+    *this = *this + other;
+    return *this;
+}
+
+ReservedMemory &ReservedMemory::operator-=(const Literal &other) {
+    *this = *this - other;
+    return *this;
+}
+
+ReservedMemory &ReservedMemory::operator*=(const Literal &other) {
+    *this = *this * other;
+    return *this;
+}
+
+ReservedMemory &ReservedMemory::operator/=(const Literal &other) {
+    *this = *this / other;
+    return *this;
+}
+
+ReservedMemory &ReservedMemory::operator%=(const Literal &other) {
+    *this = *this % other;
+    return *this;
+}
+
+ReservedMemory &ReservedMemory::operator^=(const Literal &other) {
+    *this = *this ^ other;
+    return *this;
+}
+
+ReservedMemory &ReservedMemory::operator&=(const Literal &other) {
+    *this = *this & other;
+    return *this;
+}
+
+ReservedMemory &ReservedMemory::operator|=(const Literal &other) {
+    *this = *this | other;
+    return *this;
+}
+
+ReservedMemory &ReservedMemory::operator<<=(const Literal &other) {
+    *this = *this << other;
+    return *this;
+}
+
+ReservedMemory &ReservedMemory::operator>>=(const Literal &other) {
+    *this = *this >> other;
+    return *this;
+}
