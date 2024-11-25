@@ -91,6 +91,7 @@ class Literal {
 
     [[nodiscard]]
     std::variant<int, char, bool, float, std::string>& getData();
+    std::variant<int, char, bool, float, std::string> getData() const;
 
     friend std::ostream& operator<<(std::ostream& os, const Literal& lit);
 
@@ -116,11 +117,10 @@ class Literal {
     friend Literal operator<=(const Literal& lhs, const Literal& rhs);
     friend Literal operator>=(const Literal& lhs, const Literal& rhs);
 
- private:
+ protected:
     std::variant<int, char, bool, float, std::string> data_;
     Type type_;
 
- protected:
     void setLvalue(bool lvalue) {
         type_.setLvalue(lvalue);
     }
@@ -139,6 +139,8 @@ class ReservedMemory : public Literal {
     void setFields(const std::vector<std::pair<std::string, Type>>& fields);
 
     friend std::istream& operator>>(std::istream& is, ReservedMemory*& var);
+
+    ReservedMemory*& operator[](const Literal& idx);
 
  private:
     std::variant<std::vector<ReservedMemory*>, std::map<std::string, ReservedMemory*>> structs_data_;

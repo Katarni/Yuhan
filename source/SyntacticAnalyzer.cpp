@@ -1070,7 +1070,7 @@ Type SyntacticAnalyzer::array() {
     if (lex_.getType() != Token::Type::NumericLiteral) {
         throw lex_;
     }
-    type_arr.setArraySize(stoi(lex_.getContent()));
+    type_arr.setArraySize(std::stoi(lex_.getContent()));
     getLex();
     if (lex_.getContent() != ">") {
         throw lex_;

@@ -59,7 +59,7 @@ void Type::setArrayType(Type type) {
 }
 
 void Type::setArraySize(size_t array_size) {
-    array_size = array_size;
+    size_array_ = array_size;
 }
 
 Type::~Type() {
@@ -108,6 +108,14 @@ size_t Type::getArraySize() const {
 
 ReservedMemory::ReservedMemory(Type type) : Literal(type, "") {
     setLvalue(true);
+
+    if (type.getName() == "array") {
+        structs_data_ = std::vector<ReservedMemory*>(type.getArraySize(), nullptr);
+    } else if (type.getName() != "int" && type.getName() != "char" &&
+                type.getName() != "float" && type.getName() != "bool" &&
+                type.getName() != "string") {
+        structs_data_ = std::map<std::string, ReservedMemory*>();
+    }
 }
 
 ReservedMemory *ReservedMemory::getFieldByName(const std::string &name) const {
@@ -186,6 +194,10 @@ void Literal::setType(Type other) {
 }
 
 std::variant<int, char, bool, float, std::string>& Literal::getData() {
+    return data_;
+}
+
+std::variant<int, char, bool, float, std::string> Literal::getData() const {
     return data_;
 }
 
@@ -819,4 +831,28 @@ Literal operator<=(const Literal& lhs, const Literal& rhs) {
 
 Literal operator>=(const Literal& lhs, const Literal& rhs) {
     return !(lhs < rhs);
+}
+
+ReservedMemory*& ReservedMemory::operator[](const Literal& idx) {
+    int num_idx = 0;
+
+    if (idx.getType().getName() == "float") {
+        num_idx = static_cast<int>(std::get<float>(idx.getData()));
+    } else if (idx.getType().getName() == "int") {
+        num_idx = std::get<int>(idx.getData());
+    } else if (idx.getType().getName() == "char") {
+        num_idx = static_cast<unsigned char>(std::get<char>(idx.getData()));
+    } else if (idx.getType().getName() == "bool") {
+        num_idx = static_cast<int>(std::get<bool>(idx.getData()));
+    }
+
+    if (num_idx >= type_.getArraySize() || num_idx < 0) {
+        throw std::runtime_error("array out of range");
+    }
+
+    if (std::get<std::vector<ReservedMemory*>>(structs_data_)[num_idx] == nullptr) {
+        std::get<std::vector<ReservedMemory*>>(structs_data_)[num_idx] = new ReservedMemory(type_.getArrayType());
+    }
+
+    return std::get<std::vector<ReservedMemory*>>(structs_data_)[num_idx];
 }

@@ -132,12 +132,35 @@ void Interpreter::callFunc(const std::string &func, const std::vector<ReservedMe
     function_stack_.pop();
 }
 
+void Interpreter::lvalueOperation(const Token &operation) {
+    if (operation.getType() == Token::Type::Dot) {
+
+    } else if (operation.getContent() == "[") {
+        ReservedMemory *lhs = nullptr;
+        Literal *rhs = nullptr;
+
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
+            rhs = std::get<ReservedMemory*>(calc_stack_.top());
+        } else {
+            rhs = new Literal(std::get<Literal>(calc_stack_.top()));
+        }
+        calc_stack_.pop();
+
+        lhs = std::get<ReservedMemory*>(calc_stack_.top());
+        calc_stack_.pop();
+
+        auto res = (*lhs)[*rhs];
+        calc_stack_.emplace(res);
+    }
+}
+
 void Interpreter::operation(const Token &operation) {
     if (operation.getType() == Token::Type::LvalueBinaryOperator ||
         operation.getType() == Token::Type::LvalueUnaryOperator ||
         operation.getType() == Token::Type::Dot ||
         operation.getContent() == "[" ||
-        operation.getContent() == "==") {
+        operation.getContent() == "==" ||
+        operation.getContent() == "!=") {
 
         lvalueOperation(operation);
         return;
@@ -194,15 +217,23 @@ void Interpreter::operation(const Token &operation) {
             res = *lhs <= *rhs;
         } else if (operation.getContent() == ">=") {
             res = *lhs >= *rhs;
-        } else if (operation.getContent() == "==") {
-            res = *lhs == *rhs;
-        } else if (operation.getContent() == "!=") {
-            res = *lhs != *rhs;
         }
 
         calc_stack_.emplace(res);
     } else if (operation.getType() == Token::Type::RvalueUnaryOperator) {
+        Literal *literal;
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
+            literal = std::get<ReservedMemory*>(calc_stack_.top());
+        } else {
+            literal = new Literal(std::get<Literal>(calc_stack_.top()));
+        }
+        calc_stack_.pop();
 
+        Literal res;
+        if (operation.getContent() == "!") {
+            res = !(*literal);
+        }
+        calc_stack_.emplace(res);
     }
 }
 
@@ -269,8 +300,4 @@ Interpreter::FunctionCall::~FunctionCall() {
         if (is_lvalue_arg_[key]) continue;
         delete val;
     }
-}
-
-void Interpreter::lvalueOperation(const Token &operation) {
-
 }
