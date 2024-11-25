@@ -192,9 +192,9 @@ void Interpreter::lvalueOperation(const Token &operation) {
         } else if (operation.getContent() == "|=") {
             *lhs |= *rhs;
         } else if (operation.getContent() == "<<=") {
-            *lhs &= *rhs;
+            *lhs <<= *rhs;
         } else if (operation.getContent() == ">>=") {
-            *lhs |= *rhs;
+            *lhs >>= *rhs;
         }
 
         calc_stack_.emplace(lhs);
