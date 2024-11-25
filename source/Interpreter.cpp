@@ -67,7 +67,7 @@ void Interpreter::callFunc(const std::string &func, const std::vector<std::varia
         address = generator_->getFuncParams(func).first;
     }
 
-    function_stack_.emplace(cur_ + 1);
+    function_stack_.emplace(cur_);
 
     cur_ = address + 1;
     for (size_t i = 0; i < vars.size(); ++i, ++cur_) {
