@@ -11,13 +11,15 @@ add_executable(Yuhan main.cpp
         source/LexicalAnalyzer.cpp
         include/LexicalAnalyzer.h
         source/Token.cpp
-        source/Starter.cpp
-        include/Starter.h
         include/SyntacticAnalyzer.h
         source/SyntacticAnalyzer.cpp
         include/TIDTree.h
         source/TIDTree.cpp
         include/SemanticStack.h
         source/SemanticStack.cpp
+        include/ReservedMemory.h
+        source/ReservedMemory.cpp
+        include/PRNGenerator.h
+        source/PRNGenerator.cpp
 )
 

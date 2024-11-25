@@ -17,9 +17,9 @@ public:
 
     void createScope(TypeScope type = TypeScope::Other, std::string namespace_ = "");
 
-    Type checkVariable(std::string name);
+    Identifier checkVariable(std::string name);
 
-    void pushVariable(std::string name, Type type);
+    void pushVariable(std::string name, Type type, std::string id);
 
     bool checkStruct(std::string name);
 
@@ -28,8 +28,9 @@ public:
     Type checkField(std::string name, std::string name_field);
 
     Type checkFunction(std::string name, std::vector<Type>& args);
+    std::string checkFunctionName(std::string name, std::vector<Type>& args);
 
-    void pushFunction(std::string& name, Type& type, std::vector<Variable>& args);
+    void pushFunction(std::string& name, Type& type, std::vector<Variable>& args, std::string id);
 
     void checkReturn(Type type_return);
 
@@ -44,23 +45,27 @@ private:
 
         ~NodeTID();
 
-        Type checkID(std::string &name);
+        Identifier checkID(std::string &name);
 
-        void pushID(std::string &name, Type &type);
+        void pushID(std::string &name, Type &type,
+                    const std::vector<std::pair<std::string, Type>>& fields, std::string id);
 
         Type checkFieldOfStruct(std::string &name, std::string &field_name);
 
-        bool checkStruct(std::string& name);
+        bool checkStruct(const std::string& name);
 
         void pushStruct(std::string& name);
 
         void pushFieldOfStruct(std::string& name, std::string& name_field, Type& type_field);
 
+        std::vector<std::pair<std::string, Type>> getStructFields(const std::string &name);
+
         Type checkFunction(std::string& name, std::vector<Type>& args);
+        std::string checkFunctionName(std::string& name, std::vector<Type>& args);
 
         Type checkFunction(std::string& name);
 
-        void pushFunction(std::string& name, Type& type, std::vector<Variable>& args);
+        void pushFunction(std::string& name, Type& type, std::vector<Variable>& args, std::string id);
 
         NodeTID *getParent();
 
@@ -87,19 +92,23 @@ private:
     };
     NodeTID *current_scope_;
 
-    Type checkVariable(NodeTID *ptr, std::string& name);
+    Identifier checkVariable(NodeTID *ptr, std::string& name);
 
-    bool checkStruct(NodeTID *ptr, std::string& name);
+    bool checkStruct(NodeTID *ptr, const std::string& name);
 
     Type checkFunction(NodeTID *ptr, std::string& name, std::vector<Type>& args);
+    std::string checkFunctionName(NodeTID *ptr, std::string& name, std::vector<Type>& args);
 
     void pushField(TIDTree::NodeTID *ptr, std::string& name, std::string &name_field, Type& type_field);
 
-    void pushVariable(NodeTID *ptr, std::string& name, Type& type);
+    std::vector<std::pair<std::string, Type>> getStructFields(TIDTree::NodeTID *ptr, const std::string &name);
+
+    void pushVariable(NodeTID *ptr, std::string& name, Type& type,
+                      const std::vector<std::pair<std::string, Type>>& fields, std::string id);
 
     void pushStruct(NodeTID *ptr, std::string& name);
 
-    void pushFunction(NodeTID *ptr, std::string& name, Type& type, std::vector<Variable>& args);
+    void pushFunction(NodeTID *ptr, std::string& name, Type& type, std::vector<Variable>& args, std::string id);
 
     Type checkField(NodeTID *ptr, std::string& name, std::string& name_field);
 

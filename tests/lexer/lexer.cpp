@@ -1,4 +1,4 @@
-#include "../../include/Starter.h"
+#include "../../include/LexicalAnalyzer.h"
 
 int main() {
     std::string file_path;
@@ -12,9 +12,18 @@ int main() {
     auto file_text = new char[file_size];
     file_fin.read(file_text, file_size);
 
-    Starter starter(file_text, file_size, "../../reserved-words.txt");
+    LexicalAnalyzer *lexer;
+    lexer = new LexicalAnalyzer(file_text, file_size, "../../reserved-words.txt");
 
-    auto tokens = starter.getAllTokens();
+    Token cur_token;
+    Token eof_token;
+    eof_token.setType(Token::Type::EndOfFile);
+
+    std::vector<Token> tokens;
+
+    while (cur_token = lexer->getToken(), cur_token != eof_token) {
+        tokens.push_back(cur_token);
+    }
 
     std::map < Token::Type, std::string > descriptions = {
             {Token::Type::ReservedWord, "reserved word"},

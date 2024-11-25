@@ -1,10 +1,9 @@
-#include "include/Starter.h"
 #include "include/SyntacticAnalyzer.h"
 #include "include/TIDTree.h"
 
 int main() {
-    std::string file_path = "test.txt";
-    std::cin >> file_path;
+    std::string file_path = "../main.y";
+//    std::cin >> file_path;
 
     std::ifstream file_fin(file_path);
     file_fin.seekg(0, std::ios::end);
@@ -14,56 +13,90 @@ int main() {
     auto file_text = new char[file_size];
     file_fin.read(file_text, file_size);
 
-    Starter starter(file_text, file_size, "../reserved-words.txt");
+    auto generator = new PRNGenerator;
 
     LexicalAnalyzer *lexer;
     lexer = new LexicalAnalyzer(file_text, file_size, "../reserved-words.txt");
 
-    SyntacticAnalyzer sintex(lexer);
+    SyntacticAnalyzer sintex(lexer, generator);
 
     sintex.startAnalysis();
-    std::cout << "OK";
-//    TIDTree tree;
-//    std::string name = "a", name2 = "b";
-//    name = name2;
-//    std::vector<std::pair<std::string, Type>> variables;
-//    variables = {{"a", Type("int", true)}, {"aa", Type("float", true)}, {"str", Type("string", true)}, {"arr", Type("array", true)}};
-//    variables[3].second.setArraySize(5);
-//    variables[3].second.setArrayType(Type("string", true));
-//    for (auto & variable : variables) {
-//        tree.pushVariable(variable.first, variable.second);
-//    }
-//    for (auto & variable : variables) {
-//        std::cout << variable.first << ": " << tree.checkVariable(variable.first).getName() << "\n";
-//    }
-//    tree.createScope(TypeScope::Namespace, "name");
-//    tree.pushVariable(variables[3].first, variables[2].second);
-//    std::cout << variables[3].first << ": " << tree.checkVariable(variables[3].first).getName() << "\n";
-//    tree.closeScope();
-//    std::cout << variables[3].first << ": " << tree.checkVariable(variables[3].first).getName() << "\n";
-//    name = "name::" + variables[3].first;
-//    std::cout << name << ": " << tree.checkVariable(name).getName() << "\n";
-//    std::string name_struct = "name_struct", name_struct2 = "name_struct2", name_struct3 = "name_struct3";
-//    tree.pushStruct(name_struct);
-//    tree.createScope(TypeScope::Struct, name_struct);
-//    tree.pushVariable(variables[3].first, variables[0].second);
-//    tree.pushStruct(name_struct2);
-//    tree.createScope(TypeScope::Struct, name_struct2);
-//    std::cout << variables[3].first << ": " << tree.checkVariable(variables[3].first).getName() << "\n";
-//    tree.closeScope();
-//    tree.pushStruct(name_struct3);
-//    tree.createScope(TypeScope::Struct, name_struct3);
-//    std::cout << name_struct2 << ": " << tree.checkStruct(name_struct2) << "\n";
-//    tree.closeScope();
-//    tree.closeScope();
-//    std::cout << "Field of " << name_struct << "." << variables[3].first << ": " << tree.checkField(name_struct, variables[3].first).getName() << "\n";
-//    tree.createScope();
-//    std::string name_func = "function";
-//    Type type("int", false);
-//    std::vector<Variable> vars_func = {Variable("x", Type("int", true))};
-//    tree.pushFunction(name_func, type, vars_func);
-//    tree.createScope();
-//    tree.closeScope();
-//    std::cout << name_func << ": " << tree.checkFunction(name_func, vars_func).getName() << "\n";
+    std::cout << "OK" << std::endl;
+
+    std::ofstream os("../prn-file.txt");
+
+    for (int i = 0; i < generator->size(); ++i) {
+        os << i << ' ';
+
+        auto state = generator->getById(i);
+
+        switch (state.second) {
+            case PRNGenerator::PRNType::Identifier:
+                os << "Identifier: " << std::get<Identifier>(state.first).getName();
+                break;
+            case PRNGenerator::PRNType::Operation:
+                os << "Operator: " << std::get<Token>(state.first).getContent();
+                break;
+            case PRNGenerator::PRNType::Literal:
+                os << "Literal: ";
+                if (std::get<Literal>(state.first).getType().getName() == "bool") {
+                    os << std::get<bool>(std::get<Literal>(state.first).getData());
+                } else if (std::get<Literal>(state.first).getType().getName() == "char") {
+                    os << std::get<char>(std::get<Literal>(state.first).getData());
+                } else if (std::get<Literal>(state.first).getType().getName() == "int") {
+                    os << std::get<int>(std::get<Literal>(state.first).getData());
+                } else if (std::get<Literal>(state.first).getType().getName() == "float") {
+                    os << std::get<float>(std::get<Literal>(state.first).getData());
+                } else if (std::get<Literal>(state.first).getType().getName() == "string") {
+                    os << std::get<std::string>(std::get<Literal>(state.first).getData());
+                }
+                break;
+            case PRNGenerator::PRNType::Address:
+                os << "Address: " << std::get<size_t>(state.first);
+                break;
+            case PRNGenerator::PRNType::Function:
+                os << "Function: " << std::get<std::string>(state.first);
+                break;
+            case PRNGenerator::PRNType::FieldName:
+                os << "Struct Field: " << std::get<std::string>(state.first);
+                break;
+            case PRNGenerator::PRNType::SystemValue:
+                switch (std::get<PRNGenerator::SysVals>(state.first)) {
+                    case PRNGenerator::SysVals::FuncEnd:
+                        os << "Function End";
+                        break;
+                    case PRNGenerator::SysVals::FuncStart:
+                        os << "Function Start";
+                        break;
+                    case PRNGenerator::SysVals::Semicolon:
+                        os << "Semicolon";
+                        break;
+                    case PRNGenerator::SysVals::Return:
+                        os << "Return";
+                        break;
+                    case PRNGenerator::SysVals::GoTo:
+                        os << "GoTo";
+                        break;
+                    case PRNGenerator::SysVals::GoToByFalse:
+                        os << "GoTo by False";
+                        break;
+                    case PRNGenerator::SysVals::SwitchCmp:
+                        os << "Switch Cmp";
+                        break;
+                    case PRNGenerator::SysVals::Scan:
+                        os << "Scan";
+                        break;
+                    case PRNGenerator::SysVals::Print:
+                        os << "Print";
+                        break;
+                }
+                break;
+        }
+
+        os << std::endl;
+    }
+
+    os.close();
+
     return 0;
 }

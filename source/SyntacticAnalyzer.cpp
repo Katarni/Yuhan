@@ -1,7 +1,8 @@
 #include "../include/SyntacticAnalyzer.h"
 
-SyntacticAnalyzer::SyntacticAnalyzer(LexicalAnalyzer *lexer) : lexer_(lexer), tid_tree_() {}
-
+SyntacticAnalyzer::SyntacticAnalyzer(LexicalAnalyzer *lexer,
+                                     PRNGenerator* generator) : lexer_(lexer), tid_tree_(),
+                                                                generator_(generator), sem_stack_(generator) {}
 
 void SyntacticAnalyzer::getLex() {
     lex_ = lexer_->getToken();
@@ -18,19 +19,23 @@ void SyntacticAnalyzer::exp14() {
 
 Type SyntacticAnalyzer::literal() {
     if (lex_.getType() == Token::Type::CharLiteral) {
+        generator_->push({Type("char", false), lex_.getContent()});
         getLex();
         return Type("char", false);
     }
     if (lex_.getType() == Token::Type::ExponentialLiteral ||
         lex_.getType() == Token::Type::FloatLiteral) {
+        generator_->push({Type("float", false), lex_.getContent()});
         getLex();
         return Type("float", false);
     }
     if (lex_.getType() == Token::Type::NumericLiteral) {
+        generator_->push({Type("int", false), lex_.getContent()});
         getLex();
         return Type("int", false);
     }
     if (lex_.getType() == Token::Type::StringLiteral) {
+        generator_->push({Type("string", false), lex_.getContent()});
         getLex();
         return Type("string", false);
     }
@@ -54,6 +59,7 @@ void SyntacticAnalyzer::B() {
             }
             getLex();
         } else if (lex_.getType() == Token::Type::Dot) {
+            auto dot = lex_;
             getLex();
             if (lex_.getType() != Token::Type::Identifier) {
                 throw lex_;
@@ -72,8 +78,9 @@ void SyntacticAnalyzer::B() {
                 throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                          std::to_string(lex_.getColumn()));
             }
-            field.setLvalue(true);
             sem_stack_.push(field);
+            generator_->pushField(lex_.getContent());
+            generator_->push(dot);
             getLex();
         } else {
             break;
@@ -105,23 +112,45 @@ void SyntacticAnalyzer::exp1() {
             if (lex_.getType() != Token::Type::CloseParenthesis) {
                 throw lex_;
             }
-            try {
-                sem_stack_.push(tid_tree_.checkFunction(name, args));
-            } catch (std::runtime_error &error) {
-                throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
-                                         std::to_string(lex_.getColumn()));
+
+
+            if (name == "print" || name == "scan") {
+                if (args.size() != 1) {
+                    throw std::runtime_error("incorrect args number for print or scan");
+                }
+
+                if (!args[0].isLvalue() && name == "scan") {
+                    throw std::runtime_error("scan needs lvalue");
+                }
+
+                if (name == "scan") {
+                    generator_->push(PRNGenerator::SysVals::Scan);
+                } else {
+                    generator_->push(PRNGenerator::SysVals::Print);
+                }
+
+                sem_stack_.push(args[0]);
+            } else {
+                try {
+                    generator_->pushFuncCall(tid_tree_.checkFunctionName(name, args));
+                    sem_stack_.push(tid_tree_.checkFunction(name, args));
+                } catch (std::runtime_error &error) {
+                    throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                             std::to_string(lex_.getColumn()));
+                }
             }
+
             getLex();
         } else {
-            Type type_val;
+            Identifier var;
             try {
-                type_val = tid_tree_.checkVariable(name);
+                var = tid_tree_.checkVariable(name);
             } catch (std::runtime_error &error) {
                 throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                          std::to_string(lex_.getColumn()));
             }
-            type_val.setLvalue(true);
-            sem_stack_.push(type_val);
+            sem_stack_.push(var.getType());
+            generator_->push(var);
         }
         B();
         return;
@@ -364,6 +393,7 @@ void SyntacticAnalyzer::ifStatement() {
         throw lex_;
     }
     getLex();
+
     if (lex_.getType() != Token::Type::OpenParenthesis) {
         throw lex_;
     }
@@ -378,23 +408,41 @@ void SyntacticAnalyzer::ifStatement() {
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
     }
+
+    auto pos_if = generator_->getCurIdx();
+    generator_->push(-1);
+    generator_->push(PRNGenerator::SysVals::GoToByFalse);
+
     getLex();
     tid_tree_.createScope();
     statement();
+
+    auto pos_end_if = generator_->getCurIdx();
+    generator_->push(-1);
+    generator_->push(PRNGenerator::SysVals::GoTo);
     tid_tree_.closeScope();
+
+    generator_->push(generator_->getCurIdx(), pos_if);
+
     if (lex_.getContent() != "else") {
+        generator_->push(generator_->getCurIdx(), pos_end_if);
         return;
     }
     getLex();
     tid_tree_.createScope();
     statement();
     tid_tree_.closeScope();
+
+    generator_->push(generator_->getCurIdx(), pos_end_if);
 }
 
 void SyntacticAnalyzer::whileStatement() {
     if (lex_.getContent() != "while") {
         throw lex_;
     }
+
+    generator_->pushCycleStart();
+
     getLex();
     if (lex_.getType() != Token::Type::OpenParenthesis) {
         throw lex_;
@@ -407,6 +455,9 @@ void SyntacticAnalyzer::whileStatement() {
         throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                  std::to_string(lex_.getColumn()));
     }
+
+    generator_->pushWhileStatement();
+
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
     }
@@ -414,6 +465,10 @@ void SyntacticAnalyzer::whileStatement() {
     tid_tree_.createScope(TypeScope::Loop);
     statement();
     tid_tree_.closeScope();
+
+    generator_->pushContinue();
+
+    generator_->closeCycle();
 }
 
 void SyntacticAnalyzer::forStatement() {
@@ -440,11 +495,16 @@ void SyntacticAnalyzer::forStatement() {
             if (lex_.getType() != Token::Type::Semicolon) {
                 throw lex_;
             }
+            generator_->push(PRNGenerator::SysVals::Semicolon);
             getLex();
         }
     } else {
+        generator_->push(PRNGenerator::SysVals::Semicolon);
         getLex();
     }
+
+    auto for_statement_address = generator_->getCurIdx();
+
     if (lex_.getType() != Token::Type::Semicolon) {
         exp14();
         try {
@@ -457,6 +517,19 @@ void SyntacticAnalyzer::forStatement() {
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
+
+    auto after_statement_address_out_block = generator_->getCurIdx();
+    generator_->push(-1);
+    generator_->push(PRNGenerator::SysVals::GoToByFalse);
+
+    auto after_statement_address_to_block = generator_->getCurIdx();
+    generator_->push(-1);
+    generator_->push(PRNGenerator::SysVals::GoTo);
+
+    generator_->push(PRNGenerator::SysVals::Semicolon);
+
+    generator_->pushCycleStart();
+
     getLex();
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         exp14();
@@ -467,31 +540,68 @@ void SyntacticAnalyzer::forStatement() {
                                      std::to_string(lex_.getColumn()));
         }
     }
+
+    generator_->push(for_statement_address);
+    generator_->push(PRNGenerator::SysVals::GoTo);
+
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
     }
     getLex();
+
+    generator_->push(generator_->getCurIdx(), after_statement_address_to_block);
+
     statement();
+
+    generator_->pushContinue();
+    generator_->push(generator_->getCurIdx(), after_statement_address_out_block);
+
     tid_tree_.closeScope();
+    generator_->closeCycle();
 }
 
-void SyntacticAnalyzer::switchItem(Type &type_exp) {
+std::pair<int, int> SyntacticAnalyzer::switchItem(Type &type_exp, std::pair<int, int> prev_links) {
     if (lex_.getContent() != "case") {
         throw lex_;
     }
+
+    if (prev_links.first != -1) {
+        generator_->push(generator_->getCurIdx(), prev_links.first);
+    }
+
     getLex();
     if (!type_exp.compareWithCast(literal())) {
         throw std::runtime_error("Wrong type in case");
     }
+
+    generator_->push(PRNGenerator::SysVals::SwitchCmp);
+
+    int cur_state = static_cast<int>(generator_->getCurIdx());
+    generator_->push(-1);
+    generator_->push(PRNGenerator::SysVals::GoToByFalse);
+
+    if (prev_links.second != -1) {
+        generator_->push(generator_->getCurIdx(), prev_links.second);
+    }
+
     tid_tree_.createScope(TypeScope::SwitchItem);
     block();
     tid_tree_.closeScope();
+
+    int cur_state_end = static_cast<int>(generator_->getCurIdx());
+    generator_->push(-1);
+    generator_->push(PRNGenerator::SysVals::GoTo);
+
+    return {cur_state, cur_state_end};
 }
 
 void SyntacticAnalyzer::switchStatement() {
     if (lex_.getContent() != "switch") {
         throw lex_;
     }
+
+    generator_->pushSwitch();
+
     getLex();
     if (lex_.getType() != Token::Type::OpenParenthesis) {
         throw lex_;
@@ -514,13 +624,21 @@ void SyntacticAnalyzer::switchStatement() {
     }
     tid_tree_.createScope(TypeScope::Switch);
     getLex();
+
+    std::pair<int, int> prev_links = {-1, -1};
     while (lex_.getContent() != "default" &&
            lex_.getType() != Token::Type::CloseCurlyBrace) {
-        switchItem(type_exp);
+        prev_links = switchItem(type_exp, prev_links);
     }
     if (lex_.getContent() == "default") {
         getLex();
         tid_tree_.createScope(TypeScope::SwitchItem);
+
+        if (prev_links.first != -1) {
+            generator_->push(generator_->getCurIdx(), prev_links.first);
+            generator_->push(generator_->getCurIdx(), prev_links.second);
+        }
+
         block();
         tid_tree_.closeScope();
     }
@@ -529,6 +647,8 @@ void SyntacticAnalyzer::switchStatement() {
     }
     getLex();
     tid_tree_.closeScope();
+
+    generator_->closeSwitch();
 }
 
 void SyntacticAnalyzer::returnStatement() {
@@ -554,6 +674,9 @@ void SyntacticAnalyzer::returnStatement() {
         throw lex_;
     }
     getLex();
+
+    generator_->push(PRNGenerator::SysVals::Return);
+    generator_->push(PRNGenerator::SysVals::Semicolon);
 }
 
 void SyntacticAnalyzer::block() {
@@ -577,6 +700,7 @@ void SyntacticAnalyzer::varDefinition() {
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
+    generator_->push(PRNGenerator::SysVals::Semicolon);
     getLex();
 }
 
@@ -585,16 +709,20 @@ void SyntacticAnalyzer::statement() {
         try {
             if (lex_.getContent() == "break") {
                 tid_tree_.checkBreak();
+                generator_->pushBreak();
             } else {
                 tid_tree_.checkContinue();
+                generator_->pushContinue();
             }
         } catch (std::runtime_error &error) {
-            throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
+            throw std::runtime_error(std::string(error.what()) + " " +
+                    std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
         }
         getLex();
         if (lex_.getType() != Token::Type::Semicolon) {
             throw lex_;
         }
+        generator_->push(PRNGenerator::SysVals::Semicolon);
         getLex();
         return;
     }
@@ -619,6 +747,7 @@ void SyntacticAnalyzer::statement() {
         return;
     }
     if (lex_.getType() == Token::Type::Semicolon) {
+        generator_->push(PRNGenerator::SysVals::Semicolon);
         getLex();
         return;
     }
@@ -642,6 +771,7 @@ void SyntacticAnalyzer::statement() {
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
+    generator_->push(PRNGenerator::SysVals::Semicolon);
     getLex();
 }
 
@@ -684,7 +814,8 @@ Type SyntacticAnalyzer::type() {
             throw lex_;
         }
     } catch (std::runtime_error &error) {
-        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
+        throw std::runtime_error(std::string(error.what()) + " " +
+                std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
     }
     type.setName(lex_.getContent());
     getLex();
@@ -696,18 +827,22 @@ void SyntacticAnalyzer::var(Type type_var) {
         throw lex_;
     }
     Variable vari(lex_.getContent(), type_var);
+    auto id = genId();
     getLex();
+    generator_->push({id, type_var});
     if (lex_.getContent() != "=") {
         try {
-            tid_tree_.pushVariable(vari.getName(), type_var);
+            tid_tree_.pushVariable(vari.getName(), type_var, id);
         } catch (std::runtime_error &error) {
             throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
         }
         return;
     }
+    auto eq = lex_;
     getLex();
     exp12();
     type_var.setLvalue(false);
+    generator_->push(eq);
     try {
         sem_stack_.checkType(type_var);
     } catch (std::runtime_error &error) {
@@ -715,7 +850,7 @@ void SyntacticAnalyzer::var(Type type_var) {
                                  std::to_string(lex_.getColumn()));
     }
     try {
-        tid_tree_.pushVariable(vari.getName(), type_var);
+        tid_tree_.pushVariable(vari.getName(), type_var, id);
     } catch (std::runtime_error &error) {
         throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                  std::to_string(lex_.getColumn()));
@@ -734,6 +869,17 @@ void SyntacticAnalyzer::function() {
         throw lex_;
     }
     name_func = lex_.getContent();
+    auto id_func = genId();
+
+    if (name_func == "main") {
+        generator_->setMainId(id_func);
+    }
+
+    if (name_func == "scan" || name_func == "print") {
+        throw std::runtime_error("scan and print function are reserve");
+    }
+
+    generator_->pushFuncDef(id_func);
     getLex();
     if (lex_.getType() != Token::Type::OpenParenthesis) {
         throw lex_;
@@ -741,13 +887,14 @@ void SyntacticAnalyzer::function() {
     getLex();
     std::vector<Variable> args;
     if (lex_.getType() != Token::Type::CloseParenthesis) {
+        // here var definition (I don't know what to do)
         funcVarDefinition(args);
     }
     if (lex_.getType() != Token::Type::CloseParenthesis) {
         throw lex_;
     }
     try {
-        tid_tree_.pushFunction(name_func, type_func, args);
+        tid_tree_.pushFunction(name_func, type_func, args, id_func);
     } catch (std::runtime_error &error) {
         throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                  std::to_string(lex_.getColumn()));
@@ -755,14 +902,18 @@ void SyntacticAnalyzer::function() {
     tid_tree_.createScope(TypeScope::Function, name_func);
     for (auto &arg: args) {
         try {
-            tid_tree_.pushVariable(arg.getName(), arg.getType());
+            auto id = genId();
+            generator_->push({id, arg.getType()});
+            tid_tree_.pushVariable(arg.getName(), arg.getType(), id);
         } catch (std::runtime_error &error) {
             throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                      std::to_string(lex_.getColumn()));
         }
     }
+    generator_->setFuncArgsCnt(id_func, args.size());
     getLex();
     block();
+    generator_->push(PRNGenerator::SysVals::FuncEnd);
     tid_tree_.closeScope();
 }
 
@@ -821,6 +972,7 @@ void SyntacticAnalyzer::structure() {
     if (lex_.getType() != Token::Type::Semicolon) {
         throw lex_;
     }
+    generator_->push(PRNGenerator::SysVals::Semicolon);
     getLex();
     tid_tree_.closeScope();
 }
@@ -958,4 +1110,19 @@ void SyntacticAnalyzer::structBody() {
     varDefinition();
 }
 
+std::string SyntacticAnalyzer::genId() {
+    std::random_device rd;
+    std::mt19937 rng(rd());
+    std::string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
+    int sz = static_cast<int>(chars.size());
+    std::string res;
 
+    while (true) {
+        for (int i = 0; i < 20; ++i) res += chars[rng() % sz];
+
+        if (used_ids_.find(res) == used_ids_.end()) break;
+    }
+    used_ids_.insert(res);
+
+    return res;
+}

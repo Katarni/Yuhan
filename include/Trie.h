@@ -1,5 +1,7 @@
 #pragma once
+
 #include "includes.h"
+#include "ReservedMemory.h"
 
 
 class not_found_error : public std::runtime_error {
@@ -28,58 +30,22 @@ protected:
     bool terminal_;
 };
 
-
-class Type {
-public:
-    Type();
-
-    explicit Type(std::string name, bool lvalue);
-
-    Type(const Type &other);
-
-    ~Type();
-
-    Type operator=(const Type &other);
-
-    bool operator==(const Type& other) const;
-    bool operator!=(const Type& other) const;
-
-    bool compareNoLvalue(const Type& other) const;
-
-    bool compareWithCast(const Type &other) const;
-
-    bool isLvalue() const;
-
-    const std::string& getName() const;
-
-    Type getArrayType() const;
-
-    void setArraySize(size_t array_size);
-
-    void setArrayType(Type type);
-
-    void setLvalue(bool is_lvalue);
-
-    void setName(const std::string& name);
-
-private:
-    std::string name_;
-    size_t size_array_;
-    Type* array_type_;
-    bool is_lvalue_;
-};
-
 class VariableNode : public Node {
 public:
+    VariableNode() {}
+
     [[nodiscard]]
-    Type getType() const;
+    Type getType();
+    Identifier getVar() const;
 
     void setType(Type& type);
+    void setId(std::string id);
+    void setFields(const std::vector<std::pair<std::string, Type>>& fields);
 
-    void addChild(char let);
+    void addChild(char let) override;
 
 private:
-    Type type_;
+    Identifier var_;
 };
 
 template <typename T>
@@ -115,7 +81,7 @@ public:
         return ptr;
     }
 
-    bool isInTrie(std::string &word) {
+    bool isInTrie(const std::string &word) {
         T *ptr = root_;
         for (auto& let : word) {
             ptr = static_cast<T*>(ptr->next(let));
@@ -124,7 +90,7 @@ public:
         return ptr->isTerminal();
     }
 
-    T *getNode(std::string& word) {
+    T *getNode(const std::string& word) {
         T *ptr = root_;
         for (auto& let : word) {
             ptr = static_cast<T*>(ptr->next(let));
@@ -140,9 +106,10 @@ protected:
 
 class TIDVariable : public Trie<VariableNode> {
 public:
-    Type checkID(std::string& name);
+    Identifier checkID(std::string& name);
 
-    void pushID(std::string& name, Type& type);
+    void pushID(std::string& name, Type& type, const std::vector<std::pair<std::string, Type>>& fields = {},
+                std::string id = "");
 };
 
 class StructureNode : public Node {
@@ -153,20 +120,27 @@ public:
 
     void addChild(char let);
 
-private:
+    [[nodiscard]]
+    std::vector<std::pair<std::string, Type>> getAllVarsWithName() const;
+
+ private:
     TIDVariable fields_;
+    std::vector<std::pair<std::string, Type>> name_fields_;
 };
 
 
 class TIDStructure : public Trie<StructureNode> {
 public:
-    bool checkId(std::string& name);
+    bool checkId(const std::string& name);
 
     void pushID(std::string& name);
 
     Type checkField(std::string& name, std::string& name_field);
 
     void pushField(std::string& name, std::string& name_field, Type& type_field);
+
+    [[nodiscard]]
+    std::vector<std::pair<std::string, Type>> getAllFieldsByName(const std::string& name);
 };
 
 class Variable {
@@ -189,8 +163,10 @@ private:
 class FunctionNode : public Node {
 public:
     Type getType();
+    const std::string& getId();
 
     void setType(Type& type);
+    void setId(const std::string& id);
 
     void setArgs(std::vector<Variable>& args);
 
@@ -199,6 +175,7 @@ public:
     void addChild(char let);
 
 private:
+    std::string id_;
     Type type_;
     std::vector<Variable> args_;
 };
@@ -206,8 +183,9 @@ private:
 class TIDFunction : public Trie<FunctionNode> {
 public:
     Type checkID(std::string& name, std::vector<Type>& args);
+    std::string checkIDName(std::string& name, std::vector<Type>& args);
 
     Type checkID(std::string& name);
 
-    void pushID(std::string& name, Type& type, std::vector<Variable>& args);
+    void pushID(std::string& name, Type& type, std::vector<Variable>& args, std::string id);
 };
