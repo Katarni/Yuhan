@@ -164,6 +164,16 @@ void Interpreter::operation(const Token &operation) {
             res_lit = *lhs_lit && *rhs_lit;
         } else if (operation.getContent() == "or") {
             res_lit = *lhs_lit || *rhs_lit;
+        } else if (operation.getContent() == "&") {
+            res_lit = *lhs_lit & *rhs_lit;
+        } else if (operation.getContent() == "|") {
+            res_lit = *lhs_lit | *rhs_lit;
+        } else if (operation.getContent() == "^") {
+            res_lit = *lhs_lit ^ *rhs_lit;
+        } else if (operation.getContent() == "<<") {
+            res_lit = *lhs_lit << *rhs_lit;
+        } else if (operation.getContent() == ">>") {
+            res_lit = *lhs_lit >> *rhs_lit;
         }
 
         calc_stack_.emplace(res_lit);

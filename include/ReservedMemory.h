@@ -101,6 +101,11 @@ class Literal {
     friend Literal operator%(Literal& lhs, Literal& rhs);
     friend Literal operator&&(Literal& lhs, Literal& rhs);
     friend Literal operator||(Literal& lhs, Literal& rhs);
+    friend Literal operator&(Literal& lhs, Literal& rhs);
+    friend Literal operator|(Literal& lhs, Literal& rhs);
+    friend Literal operator^(Literal& lhs, Literal& rhs);
+    friend Literal operator>>(Literal& lhs, Literal& rhs);
+    friend Literal operator<<(Literal& lhs, Literal& rhs);
 
  private:
     std::variant<int, char, bool, float, std::string> data_;
