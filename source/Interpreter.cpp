@@ -133,50 +133,76 @@ void Interpreter::callFunc(const std::string &func, const std::vector<ReservedMe
 }
 
 void Interpreter::operation(const Token &operation) {
-    Literal *rhs_lit = nullptr, *lhs_lit = nullptr, res_lit;
+    if (operation.getType() == Token::Type::LvalueBinaryOperator ||
+        operation.getType() == Token::Type::LvalueUnaryOperator ||
+        operation.getType() == Token::Type::Dot ||
+        operation.getContent() == "[" ||
+        operation.getContent() == "==") {
 
-    if (operation.getType() == Token::Type::RvalueBinaryOperator) {
+        lvalueOperation(operation);
+        return;
+    }
+
+    if (operation.getType() == Token::Type::RvalueBinaryOperator ||
+        operation.getType() == Token::Type::LessThan ||
+        operation.getType() == Token::Type::GreaterThan) {
+        Literal *rhs = nullptr, *lhs = nullptr, res;
+
         if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
-            rhs_lit = std::get<ReservedMemory*>(calc_stack_.top());
+            rhs = std::get<ReservedMemory*>(calc_stack_.top());
         } else {
-            rhs_lit = new Literal(std::get<Literal>(calc_stack_.top()));
+            rhs = new Literal(std::get<Literal>(calc_stack_.top()));
         }
         calc_stack_.pop();
 
         if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
-            lhs_lit = std::get<ReservedMemory*>(calc_stack_.top());
+            lhs = std::get<ReservedMemory*>(calc_stack_.top());
         } else {
-            lhs_lit = new Literal(std::get<Literal>(calc_stack_.top()));
+            lhs = new Literal(std::get<Literal>(calc_stack_.top()));
         }
         calc_stack_.pop();
 
         if (operation.getContent() == "+") {
-            res_lit = *lhs_lit + *rhs_lit;
+            res = *lhs + *rhs;
         } else if (operation.getContent() == "*") {
-            res_lit = *lhs_lit * *rhs_lit;
+            res = *lhs * *rhs;
         } else if (operation.getContent() == "/") {
-            res_lit = *lhs_lit / *rhs_lit;
+            res = *lhs / *rhs;
         } else if (operation.getContent() == "-") {
-            res_lit = *lhs_lit - *rhs_lit;
+            res = *lhs - *rhs;
         } else if (operation.getContent() == "%") {
-            res_lit = *lhs_lit % *rhs_lit;
+            res = *lhs % *rhs;
         } else if (operation.getContent() == "and") {
-            res_lit = *lhs_lit && *rhs_lit;
+            res = *lhs && *rhs;
         } else if (operation.getContent() == "or") {
-            res_lit = *lhs_lit || *rhs_lit;
+            res = *lhs || *rhs;
         } else if (operation.getContent() == "&") {
-            res_lit = *lhs_lit & *rhs_lit;
+            res = *lhs & *rhs;
         } else if (operation.getContent() == "|") {
-            res_lit = *lhs_lit | *rhs_lit;
+            res = *lhs | *rhs;
         } else if (operation.getContent() == "^") {
-            res_lit = *lhs_lit ^ *rhs_lit;
+            res = *lhs ^ *rhs;
         } else if (operation.getContent() == "<<") {
-            res_lit = *lhs_lit << *rhs_lit;
+            res = *lhs << *rhs;
         } else if (operation.getContent() == ">>") {
-            res_lit = *lhs_lit >> *rhs_lit;
+            res = *lhs >> *rhs;
+        } else if (operation.getContent() == "<") {
+            res = *lhs < *rhs;
+        } else if (operation.getContent() == ">") {
+            res = *lhs > *rhs;
+        } else if (operation.getContent() == "<=") {
+            res = *lhs <= *rhs;
+        } else if (operation.getContent() == ">=") {
+            res = *lhs >= *rhs;
+        } else if (operation.getContent() == "==") {
+            res = *lhs == *rhs;
+        } else if (operation.getContent() == "!=") {
+            res = *lhs != *rhs;
         }
 
-        calc_stack_.emplace(res_lit);
+        calc_stack_.emplace(res);
+    } else if (operation.getType() == Token::Type::RvalueUnaryOperator) {
+
     }
 }
 
@@ -243,4 +269,8 @@ Interpreter::FunctionCall::~FunctionCall() {
         if (is_lvalue_arg_[key]) continue;
         delete val;
     }
+}
+
+void Interpreter::lvalueOperation(const Token &operation) {
+
 }

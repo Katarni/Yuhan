@@ -47,6 +47,7 @@ class Interpreter {
 
     void operation(const Token& operation);
     void operation(PRNGenerator::SysVals operation);
+    void lvalueOperation(const Token& operation);
 
     ReservedMemory*& getVar(const Identifier& name);
     ReservedMemory*& createVar(const Identifier& name);

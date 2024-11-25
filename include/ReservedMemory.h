@@ -94,18 +94,27 @@ class Literal {
 
     friend std::ostream& operator<<(std::ostream& os, const Literal& lit);
 
-    friend Literal operator+(Literal& lhs, Literal& rhs);
-    friend Literal operator-(Literal& lhs, Literal& rhs);
-    friend Literal operator*(Literal& lhs, Literal& rhs);
-    friend Literal operator/(Literal& lhs, Literal& rhs);
-    friend Literal operator%(Literal& lhs, Literal& rhs);
-    friend Literal operator&&(Literal& lhs, Literal& rhs);
-    friend Literal operator||(Literal& lhs, Literal& rhs);
-    friend Literal operator&(Literal& lhs, Literal& rhs);
-    friend Literal operator|(Literal& lhs, Literal& rhs);
-    friend Literal operator^(Literal& lhs, Literal& rhs);
-    friend Literal operator>>(Literal& lhs, Literal& rhs);
-    friend Literal operator<<(Literal& lhs, Literal& rhs);
+    friend Literal operator!(const Literal& literal);
+
+    friend Literal operator+(const Literal& lhs, const Literal& rhs);
+    friend Literal operator-(const Literal& lhs, const Literal& rhs);
+    friend Literal operator*(const Literal& lhs, const Literal& rhs);
+    friend Literal operator/(const Literal& lhs, const Literal& rhs);
+    friend Literal operator%(const Literal& lhs, const Literal& rhs);
+    friend Literal operator&&(const Literal& lhs, const Literal& rhs);
+    friend Literal operator||(const Literal& lhs, const Literal& rhs);
+    friend Literal operator&(const Literal& lhs, const Literal& rhs);
+    friend Literal operator|(const Literal& lhs, const Literal& rhs);
+    friend Literal operator^(const Literal& lhs, const Literal& rhs);
+    friend Literal operator>>(const Literal& lhs, const Literal& rhs);
+    friend Literal operator<<(const Literal& lhs, const Literal& rhs);
+
+    friend Literal operator==(const Literal& lhs, const Literal& rhs);
+    friend Literal operator!=(const Literal& lhs, const Literal& rhs);
+    friend Literal operator<(const Literal& lhs, const Literal& rhs);
+    friend Literal operator>(const Literal& lhs, const Literal& rhs);
+    friend Literal operator<=(const Literal& lhs, const Literal& rhs);
+    friend Literal operator>=(const Literal& lhs, const Literal& rhs);
 
  private:
     std::variant<int, char, bool, float, std::string> data_;
