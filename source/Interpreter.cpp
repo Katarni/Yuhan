@@ -134,7 +134,17 @@ void Interpreter::callFunc(const std::string &func, const std::vector<ReservedMe
 
 void Interpreter::lvalueOperation(const Token &operation) {
     if (operation.getType() == Token::Type::Dot) {
+        std::string rhs;
+        ReservedMemory *lhs = nullptr;
 
+        rhs = std::get<std::string>(calc_stack_.top());
+        calc_stack_.pop();
+
+        lhs = std::get<ReservedMemory*>(calc_stack_.top());
+        calc_stack_.pop();
+
+        auto res = lhs->getFieldByName(rhs);
+        calc_stack_.emplace(res);
     } else if (operation.getContent() == "[") {
         ReservedMemory *lhs = nullptr;
         Literal *rhs = nullptr;

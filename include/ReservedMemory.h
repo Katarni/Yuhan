@@ -45,6 +45,8 @@ class Type {
 
     void clear();
 
+    std::map<std::string, Type*> getFields();
+
  private:
     std::string name_;
     size_t size_array_;

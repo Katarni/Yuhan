@@ -38,6 +38,8 @@ public:
 
     void checkContinue();
 
+    bool isStructScope();
+
 private:
     class NodeTID {
     public:

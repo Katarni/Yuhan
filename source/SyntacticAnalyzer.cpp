@@ -832,15 +832,28 @@ void SyntacticAnalyzer::var(Type type_var) {
     Variable vari(lex_.getContent(), type_var);
     auto id = genId();
     getLex();
-    generator_->push({id, type_var});
     if (lex_.getContent() != "=") {
         try {
             tid_tree_.pushVariable(vari.getName(), type_var, id);
+            if (!tid_tree_.isStructScope()) {
+                generator_->push(tid_tree_.checkVariable(vari.getName()));
+            }
         } catch (std::runtime_error &error) {
             throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
         }
         return;
     }
+
+    try {
+        tid_tree_.pushVariable(vari.getName(), type_var, id);
+        if (!tid_tree_.isStructScope()) {
+            generator_->push(tid_tree_.checkVariable(vari.getName()));
+        }
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                 std::to_string(lex_.getColumn()));
+    }
+
     auto eq = lex_;
     getLex();
     exp12();
@@ -848,12 +861,6 @@ void SyntacticAnalyzer::var(Type type_var) {
     generator_->push(eq);
     try {
         sem_stack_.checkType(type_var);
-    } catch (std::runtime_error &error) {
-        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
-                                 std::to_string(lex_.getColumn()));
-    }
-    try {
-        tid_tree_.pushVariable(vari.getName(), type_var, id);
     } catch (std::runtime_error &error) {
         throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                  std::to_string(lex_.getColumn()));

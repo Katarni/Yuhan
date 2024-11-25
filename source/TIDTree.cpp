@@ -285,3 +285,6 @@ std::vector<std::pair<std::string, Type>> TIDTree::NodeTID::getStructFields(cons
     return structs_.getAllFieldsByName(name);
 }
 
+bool TIDTree::isStructScope() {
+    return current_scope_->getType() == TypeScope::Struct;
+}

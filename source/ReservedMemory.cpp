@@ -106,6 +106,10 @@ size_t Type::getArraySize() const {
     return size_array_;
 }
 
+std::map<std::string, Type *> Type::getFields() {
+    return fields_;
+}
+
 ReservedMemory::ReservedMemory(Type type) : Literal(type, "") {
     setLvalue(true);
 
@@ -115,6 +119,9 @@ ReservedMemory::ReservedMemory(Type type) : Literal(type, "") {
                 type.getName() != "float" && type.getName() != "bool" &&
                 type.getName() != "string") {
         structs_data_ = std::map<std::string, ReservedMemory*>();
+        for (const auto& [key, val] : type.getFields()) {
+            std::get<std::map<std::string, ReservedMemory*>>(structs_data_)[key] = new ReservedMemory(*val);
+        }
     }
 }
 
