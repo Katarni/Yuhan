@@ -59,7 +59,7 @@ void Interpreter::global() {
 
 }
 
-void Interpreter::callFunc(const std::string &func, const std::vector<ReservedMemory*>& vars) {
+void Interpreter::callFunc(const std::string &func, const std::vector<std::variant<ReservedMemory*, Literal>>& vars) {
     size_t address;
     if (func == "main") {
         address = generator_->getFuncParams(generator_->mainId()).first;
@@ -73,12 +73,18 @@ void Interpreter::callFunc(const std::string &func, const std::vector<ReservedMe
     for (size_t i = 0; i < vars.size(); ++i, ++cur_) {
         auto state = generator_->getById(cur_).first;
         if (std::get<Identifier>(state).getType().isLvalue()) {
-            function_stack_.top().setVar(std::get<Identifier>(state).getName(), vars[i]);
+            function_stack_.top().setVar(std::get<Identifier>(state).getName(), std::get<ReservedMemory*>(vars[i]));
         } else {
-            function_stack_.top().setVar(std::get<Identifier>(state).getName(), *vars[i]);
+            if (std::holds_alternative<ReservedMemory*>(vars[i])) {
+                function_stack_.top().setVar(std::get<Identifier>(state).getName(), *std::get<ReservedMemory*>(vars[i]));
+            } else {
+                function_stack_.top().setVar(std::get<Identifier>(state).getName(), std::get<Literal>(vars[i]));
+            }
         }
     }
 
+    std::string func_name;
+    std::vector<std::variant<ReservedMemory*, Literal>> args;
     while (true) {
         auto state = generator_->getById(cur_);
 
@@ -97,7 +103,19 @@ void Interpreter::callFunc(const std::string &func, const std::vector<ReservedMe
                 calc_stack_.emplace(std::get<size_t>(state.first));
                 break;
             case PRNGenerator::PRNType::Function:
-                // functionCall
+                func_name = std::get<std::string>(state.first);
+                args.resize(generator_->getFuncParams(func_name).second);
+                for (int i = static_cast<int>(args.size() - 1); i >= 0; --i) {
+                    if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
+                        args[i] = std::get<ReservedMemory*>(calc_stack_.top());
+                    } else {
+                        args[i] = std::get<Literal>(calc_stack_.top());
+                    }
+                    calc_stack_.pop();
+                }
+
+                callFunc(func_name, args);
+
                 break;
             case PRNGenerator::PRNType::FieldName:
                 calc_stack_.emplace(std::get<std::string>(state.first));

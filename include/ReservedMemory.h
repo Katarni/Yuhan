@@ -132,6 +132,7 @@ class Literal {
 class ReservedMemory : public Literal {
  public:
     explicit ReservedMemory(Type type);
+    ReservedMemory(const Literal& other);
     ReservedMemory(const ReservedMemory& other);
     ReservedMemory& operator=(const ReservedMemory& other);
     ReservedMemory& operator=(const Literal& other);

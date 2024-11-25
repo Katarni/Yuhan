@@ -13,7 +13,7 @@ class Interpreter {
 
     void global();
 
-    void callFunc(const std::string& func, const std::vector<ReservedMemory*>& vars);
+    void callFunc(const std::string& func, const std::vector<std::variant<ReservedMemory*, Literal>>& vars);
 
  private:
     class FunctionCall {

@@ -873,13 +873,20 @@ ReservedMemory::ReservedMemory(const ReservedMemory &other) {
                     new ReservedMemory(*std::get<std::vector<ReservedMemory*>>(other.structs_data_)[i]);
         }
     } else if (type_.getName() != "int" && type_.getName() != "char" &&
-                type_.getName() != "float" && type_.getName() != "bool" &&
-                type_.getName() != "string") {
+               type_.getName() != "float" && type_.getName() != "bool" &&
+               type_.getName() != "string") {
         structs_data_ = std::map<std::string, ReservedMemory*>();
         for (const auto& [key, val] : type_.getFields()) {
             std::get<std::map<std::string, ReservedMemory*>>(structs_data_)[key] = new ReservedMemory(*val);
         }
+    } else {
+        data_ = other.getData();
     }
+}
+
+ReservedMemory::ReservedMemory(const Literal &other) {
+    type_ = other.getType();
+    data_ = other.getData();
 }
 
 ReservedMemory &ReservedMemory::operator=(const ReservedMemory &other) {
