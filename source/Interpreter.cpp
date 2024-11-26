@@ -29,7 +29,7 @@ ReservedMemory *&Interpreter::createVar(const Identifier &name) {
             return global_vars_[name.getName()];
         }
 
-        function_stack_.top().createVar(name);
+        return function_stack_.top().createVar(name);
     }
 
     if (global_vars_.find(name.getName()) != global_vars_.end()) return global_vars_[name.getName()];
@@ -48,7 +48,7 @@ ReservedMemory*& Interpreter::getVar(const Identifier& name) {
             return global_vars_[name.getName()];
         }
 
-        function_stack_.top().createVar(name);
+        return function_stack_.top().createVar(name);
     }
 
     if (global_vars_.find(name.getName()) != global_vars_.end()) {
