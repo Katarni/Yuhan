@@ -68,8 +68,12 @@ void Interpreter::callFunc(const std::string &func, const std::vector<std::varia
     }
 
     function_stack_.emplace(cur_);
+    calc_stack_.emplace();
 
     cur_ = address + 1;
+
+    for (int i = 1; i < vars.size(); ++i, ++cur_) {}
+
     for (size_t i = 0; i < vars.size(); ++i, ++cur_) {
         auto state = generator_->getById(cur_).first;
         if (std::get<Identifier>(state).getType().isLvalue()) {
@@ -85,50 +89,55 @@ void Interpreter::callFunc(const std::string &func, const std::vector<std::varia
 
     std::string func_name;
     std::vector<std::variant<ReservedMemory*, Literal>> args;
+    std::variant<ReservedMemory*, Literal, size_t, std::string> ret;
     while (true) {
         auto state = generator_->getById(cur_);
 
         switch (state.second) {
             case PRNGenerator::PRNType::Identifier:
                 createVar(std::get<Identifier>(state.first));
-                calc_stack_.emplace(getVar(std::get<Identifier>(state.first)));
+                calc_stack_.top().emplace(getVar(std::get<Identifier>(state.first)));
                 break;
             case PRNGenerator::PRNType::Operation:
                 operation(std::get<Token>(state.first));
                 break;
             case PRNGenerator::PRNType::Literal:
-                calc_stack_.emplace(std::get<Literal>(state.first));
+                calc_stack_.top().emplace(std::get<Literal>(state.first));
                 break;
             case PRNGenerator::PRNType::Address:
-                calc_stack_.emplace(std::get<size_t>(state.first));
+                calc_stack_.top().emplace(std::get<size_t>(state.first));
                 break;
             case PRNGenerator::PRNType::Function:
                 func_name = std::get<std::string>(state.first);
                 args.resize(generator_->getFuncParams(func_name).second);
                 for (int i = static_cast<int>(args.size() - 1); i >= 0; --i) {
-                    if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
-                        args[i] = std::get<ReservedMemory*>(calc_stack_.top());
+                    if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+                        args[i] = std::get<ReservedMemory*>(calc_stack_.top().top());
                     } else {
-                        args[i] = std::get<Literal>(calc_stack_.top());
+                        args[i] = std::get<Literal>(calc_stack_.top().top());
                     }
-                    calc_stack_.pop();
+                    calc_stack_.top().pop();
                 }
 
                 callFunc(func_name, args);
 
                 break;
             case PRNGenerator::PRNType::FieldName:
-                calc_stack_.emplace(std::get<std::string>(state.first));
+                calc_stack_.top().emplace(std::get<std::string>(state.first));
                 break;
             case PRNGenerator::PRNType::SystemValue:
                 switch (std::get<PRNGenerator::SysVals>(state.first)) {
                     case PRNGenerator::SysVals::FuncEnd:
                         throw std::runtime_error("function should return value");
-                    case PRNGenerator::SysVals::Comma:
                     case PRNGenerator::SysVals::Semicolon:
-                        calc_stack_.pop();
+                        while (!calc_stack_.top().empty()) {
+                            calc_stack_.top().pop();
+                        }
                         break;
                     case PRNGenerator::SysVals::Return:
+                        ret = calc_stack_.top().top();
+                        calc_stack_.pop();
+                        calc_stack_.top().emplace(ret);
                         goto func_end;
                     case PRNGenerator::SysVals::GoTo:
                     case PRNGenerator::SysVals::GoToByFalse:
@@ -155,43 +164,43 @@ void Interpreter::lvalueOperation(const Token &operation) {
         std::string rhs;
         ReservedMemory *lhs = nullptr;
 
-        rhs = std::get<std::string>(calc_stack_.top());
-        calc_stack_.pop();
+        rhs = std::get<std::string>(calc_stack_.top().top());
+        calc_stack_.top().pop();
 
-        lhs = std::get<ReservedMemory*>(calc_stack_.top());
-        calc_stack_.pop();
+        lhs = std::get<ReservedMemory*>(calc_stack_.top().top());
+        calc_stack_.top().pop();
 
         auto res = lhs->getFieldByName(rhs);
-        calc_stack_.emplace(res);
+        calc_stack_.top().emplace(res);
     } else if (operation.getContent() == "[") {
         ReservedMemory *lhs = nullptr;
         Literal *rhs = nullptr;
 
-        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
-            rhs = std::get<ReservedMemory*>(calc_stack_.top());
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+            rhs = std::get<ReservedMemory*>(calc_stack_.top().top());
         } else {
-            rhs = new Literal(std::get<Literal>(calc_stack_.top()));
+            rhs = new Literal(std::get<Literal>(calc_stack_.top().top()));
         }
-        calc_stack_.pop();
+        calc_stack_.top().pop();
 
-        lhs = std::get<ReservedMemory*>(calc_stack_.top());
-        calc_stack_.pop();
+        lhs = std::get<ReservedMemory*>(calc_stack_.top().top());
+        calc_stack_.top().pop();
 
         auto res = (*lhs)[*rhs];
-        calc_stack_.emplace(res);
+        calc_stack_.top().emplace(res);
     } else if (operation.getType() == Token::Type::LvalueBinaryOperator) {
         Literal* rhs;
         ReservedMemory* lhs;
 
-        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
-            rhs = std::get<ReservedMemory*>(calc_stack_.top());
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+            rhs = std::get<ReservedMemory*>(calc_stack_.top().top());
         } else {
-            rhs = new Literal(std::get<Literal>(calc_stack_.top()));
+            rhs = new Literal(std::get<Literal>(calc_stack_.top().top()));
         }
-        calc_stack_.pop();
+        calc_stack_.top().pop();
 
-        lhs = std::get<ReservedMemory*>(calc_stack_.top());
-        calc_stack_.pop();
+        lhs = std::get<ReservedMemory*>(calc_stack_.top().top());
+        calc_stack_.top().pop();
 
         if (operation.getContent() == "=") {
             *lhs = *rhs;
@@ -215,12 +224,12 @@ void Interpreter::lvalueOperation(const Token &operation) {
             *lhs >>= *rhs;
         }
 
-        calc_stack_.emplace(lhs);
+        calc_stack_.top().emplace(lhs);
     } else if (operation.getType() == Token::Type::LvalueUnaryOperator) {
         ReservedMemory* lhs;
 
-        lhs = std::get<ReservedMemory*>(calc_stack_.top());
-        calc_stack_.pop();
+        lhs = std::get<ReservedMemory*>(calc_stack_.top().top());
+        calc_stack_.top().pop();
 
         if (operation.getContent() == "++") {
             *lhs += Literal(Type("int", false), "1");
@@ -228,26 +237,26 @@ void Interpreter::lvalueOperation(const Token &operation) {
             *lhs -= Literal(Type("int", false), "1");
         }
 
-        calc_stack_.emplace(lhs);
+        calc_stack_.top().emplace(lhs);
     } else {
         Literal *rhs = nullptr, *lhs = nullptr, res;
         bool got_reserved_1 = false, got_reserved_2 = false;
 
-        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
-            rhs = std::get<ReservedMemory*>(calc_stack_.top());
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+            rhs = std::get<ReservedMemory*>(calc_stack_.top().top());
             got_reserved_1 = true;
         } else {
-            rhs = new Literal(std::get<Literal>(calc_stack_.top()));
+            rhs = new Literal(std::get<Literal>(calc_stack_.top().top()));
         }
-        calc_stack_.pop();
+        calc_stack_.top().pop();
 
-        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
-            lhs = std::get<ReservedMemory*>(calc_stack_.top());
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+            lhs = std::get<ReservedMemory*>(calc_stack_.top().top());
             got_reserved_2 = true;
         } else {
-            lhs = new Literal(std::get<Literal>(calc_stack_.top()));
+            lhs = new Literal(std::get<Literal>(calc_stack_.top().top()));
         }
-        calc_stack_.pop();
+        calc_stack_.top().pop();
 
         if (operation.getContent() == "==") {
             if (got_reserved_1 && got_reserved_2) {
@@ -263,7 +272,7 @@ void Interpreter::lvalueOperation(const Token &operation) {
             }
         }
 
-        calc_stack_.emplace(res);
+        calc_stack_.top().emplace(res);
     }
 }
 
@@ -284,19 +293,19 @@ void Interpreter::operation(const Token &operation) {
         operation.getType() == Token::Type::GreaterThan) {
         Literal *rhs = nullptr, *lhs = nullptr, res;
 
-        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
-            rhs = std::get<ReservedMemory*>(calc_stack_.top());
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+            rhs = std::get<ReservedMemory*>(calc_stack_.top().top());
         } else {
-            rhs = new Literal(std::get<Literal>(calc_stack_.top()));
+            rhs = new Literal(std::get<Literal>(calc_stack_.top().top()));
         }
-        calc_stack_.pop();
+        calc_stack_.top().pop();
 
-        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
-            lhs = std::get<ReservedMemory*>(calc_stack_.top());
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+            lhs = std::get<ReservedMemory*>(calc_stack_.top().top());
         } else {
-            lhs = new Literal(std::get<Literal>(calc_stack_.top()));
+            lhs = new Literal(std::get<Literal>(calc_stack_.top().top()));
         }
-        calc_stack_.pop();
+        calc_stack_.top().pop();
 
         if (operation.getContent() == "+") {
             res = *lhs + *rhs;
@@ -332,21 +341,21 @@ void Interpreter::operation(const Token &operation) {
             res = *lhs >= *rhs;
         }
 
-        calc_stack_.emplace(res);
+        calc_stack_.top().emplace(res);
     } else if (operation.getType() == Token::Type::RvalueUnaryOperator) {
         Literal *literal;
-        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
-            literal = std::get<ReservedMemory*>(calc_stack_.top());
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+            literal = std::get<ReservedMemory*>(calc_stack_.top().top());
         } else {
-            literal = new Literal(std::get<Literal>(calc_stack_.top()));
+            literal = new Literal(std::get<Literal>(calc_stack_.top().top()));
         }
-        calc_stack_.pop();
+        calc_stack_.top().pop();
 
         Literal res;
         if (operation.getContent() == "!") {
             res = !(*literal);
         }
-        calc_stack_.emplace(res);
+        calc_stack_.top().emplace(res);
     }
 }
 
@@ -356,41 +365,41 @@ void Interpreter::operation(PRNGenerator::SysVals operation) {
     Literal lhs_lit, rhs_lit;
     switch (operation) {
         case PRNGenerator::SysVals::GoTo:
-            cur_ = std::get<size_t>(calc_stack_.top()) - 1;
-            calc_stack_.pop();
+            cur_ = std::get<size_t>(calc_stack_.top().top()) - 1;
+            calc_stack_.top().pop();
             break;
         case PRNGenerator::SysVals::GoToByFalse:
-            point = std::get<size_t>(calc_stack_.top());
-            calc_stack_.pop();
+            point = std::get<size_t>(calc_stack_.top().top());
+            calc_stack_.top().pop();
 
-            if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
-                lhs_var = std::get<ReservedMemory*>(calc_stack_.top());
+            if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+                lhs_var = std::get<ReservedMemory*>(calc_stack_.top().top());
 
                 if (!lhs_var->isTrue()) {
                     cur_ = point - 1;
                 }
             } else {
-                lhs_lit = std::get<Literal>(calc_stack_.top());
+                lhs_lit = std::get<Literal>(calc_stack_.top().top());
 
                 if (!lhs_lit.isTrue()) {
                     cur_ = point - 1;
                 }
             }
 
-            calc_stack_.pop();
+            calc_stack_.top().pop();
             break;
         case PRNGenerator::SysVals::SwitchCmp:
             break;
         case PRNGenerator::SysVals::Scan:
-            std::cin >> std::get<ReservedMemory*>(calc_stack_.top());
+            std::cin >> std::get<ReservedMemory*>(calc_stack_.top().top());
             break;
         case PRNGenerator::SysVals::Print:
-            if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
-                rhs_var = std::get<ReservedMemory*>(calc_stack_.top());
+            if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+                rhs_var = std::get<ReservedMemory*>(calc_stack_.top().top());
 
                 std::cout << *rhs_var;
             } else {
-                rhs_lit = std::get<Literal>(calc_stack_.top());
+                rhs_lit = std::get<Literal>(calc_stack_.top().top());
 
                 std::cout << rhs_lit;
             }

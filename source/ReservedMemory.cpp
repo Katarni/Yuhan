@@ -123,7 +123,12 @@ ReservedMemory::ReservedMemory(Type type) : Literal(type, "") {
     }
 }
 
-ReservedMemory *ReservedMemory::getFieldByName(const std::string &name) const {
+ReservedMemory *&ReservedMemory::getFieldByName(const std::string &name) {
+    if (std::get<std::map<std::string, ReservedMemory*>>(structs_data_).find(name) ==
+            std::get<std::map<std::string, ReservedMemory*>>(structs_data_).end()) {
+        std::get<std::map<std::string, ReservedMemory*>>(structs_data_).find(name)->second =
+                new ReservedMemory(*type_.getFields()[name]);
+    }
     return std::get<std::map<std::string, ReservedMemory*>>(structs_data_).find(name)->second;
 }
 

@@ -39,7 +39,7 @@ class Interpreter {
 
     size_t cur_;
 
-    std::stack<std::variant<ReservedMemory*, Literal, size_t, std::string>> calc_stack_;
+    std::stack<std::stack<std::variant<ReservedMemory*, Literal, size_t, std::string>>> calc_stack_;
     PRNGenerator *generator_;
 
     std::map<std::string, ReservedMemory*> global_vars_;

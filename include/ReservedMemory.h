@@ -138,7 +138,7 @@ class ReservedMemory : public Literal {
     ReservedMemory& operator=(const Literal& other);
 
     [[nodiscard]]
-    ReservedMemory* getFieldByName(const std::string& name) const;
+    ReservedMemory*& getFieldByName(const std::string& name);
 
     void setFields(const std::vector<std::pair<std::string, Type>>& fields);
 
