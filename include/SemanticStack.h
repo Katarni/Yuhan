@@ -11,7 +11,7 @@
 
 class SemanticStack {
  public:
-    SemanticStack(PRNGenerator* generator) : generator_(generator) {}
+    explicit SemanticStack(PRNGenerator* generator) : generator_(generator) {}
 
     void push(const Type& operand) noexcept;
     void push(const Token& operation) noexcept;
@@ -28,8 +28,8 @@ class SemanticStack {
 
     class Error : public std::exception {
      public: 
-        explicit Error(std::string what) : std::exception(), what_(std::move(what)) {}
-        explicit Error(const char* what) : std::exception(), what_(what) {}
+        Error(const Type& lhs, const Token& operation, const Type& rhs);
+        Error(const Type& operand, const Token& operation);
 
         [[nodiscard]]
         const char* what() const noexcept override;
