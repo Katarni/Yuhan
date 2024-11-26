@@ -89,7 +89,7 @@ void Interpreter::callFunc(const std::string &func, const std::vector<std::varia
 
     std::string func_name;
     std::vector<std::variant<ReservedMemory*, Literal>> args;
-    std::variant<ReservedMemory*, Literal, size_t, std::string> ret;
+    std::variant<ReservedMemory, Literal> ret;
     while (true) {
         auto state = generator_->getById(cur_);
 
@@ -135,9 +135,19 @@ void Interpreter::callFunc(const std::string &func, const std::vector<std::varia
                         }
                         break;
                     case PRNGenerator::SysVals::Return:
-                        ret = calc_stack_.top().top();
-                        calc_stack_.pop();
-                        calc_stack_.top().emplace(ret);
+                        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+                            ret = *std::get<ReservedMemory*>(calc_stack_.top().top());
+                            calc_stack_.pop();
+                            if (!calc_stack_.empty()) {
+                                calc_stack_.top().emplace(new ReservedMemory(std::get<ReservedMemory>(ret)));
+                            }
+                        } else {
+                            ret = std::get<Literal>(calc_stack_.top().top());
+                            calc_stack_.pop();
+                            if (!calc_stack_.empty()) {
+                                calc_stack_.top().emplace(std::get<Literal>(ret));
+                            }
+                        }
                         goto func_end;
                     case PRNGenerator::SysVals::GoTo:
                     case PRNGenerator::SysVals::GoToByFalse:
