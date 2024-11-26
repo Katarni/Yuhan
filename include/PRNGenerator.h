@@ -61,7 +61,7 @@ class PRNGenerator {
 
     std::pair<size_t, size_t> getFuncParams(const std::string &id);
 
-    std::string mainId() const;
+    const std::string& mainId() const;
 
  private:
     size_t cur_;

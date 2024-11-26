@@ -229,6 +229,41 @@ void Interpreter::lvalueOperation(const Token &operation) {
         }
 
         calc_stack_.emplace(lhs);
+    } else {
+        Literal *rhs = nullptr, *lhs = nullptr, res;
+        bool got_reserved_1 = false, got_reserved_2 = false;
+
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
+            rhs = std::get<ReservedMemory*>(calc_stack_.top());
+            got_reserved_1 = true;
+        } else {
+            rhs = new Literal(std::get<Literal>(calc_stack_.top()));
+        }
+        calc_stack_.pop();
+
+        if (std::holds_alternative<ReservedMemory*>(calc_stack_.top())) {
+            lhs = std::get<ReservedMemory*>(calc_stack_.top());
+            got_reserved_2 = true;
+        } else {
+            lhs = new Literal(std::get<Literal>(calc_stack_.top()));
+        }
+        calc_stack_.pop();
+
+        if (operation.getContent() == "==") {
+            if (got_reserved_1 && got_reserved_2) {
+                res = *static_cast<ReservedMemory*>(lhs) == *static_cast<ReservedMemory*>(rhs);
+            } else {
+                res = *lhs == *rhs;
+            }
+        } else {
+            if (got_reserved_1 && got_reserved_2) {
+                res = *static_cast<ReservedMemory*>(lhs) != *static_cast<ReservedMemory*>(rhs);
+            } else {
+                res = *lhs != *rhs;
+            }
+        }
+
+        calc_stack_.emplace(res);
     }
 }
 

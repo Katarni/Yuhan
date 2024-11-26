@@ -760,10 +760,60 @@ Literal operator!(const Literal& literal) {
 }
 
 Literal operator==(const Literal& lhs, const Literal& rhs) {
-    if (lhs.data_ == rhs.data_) {
-        return {Type("bool", false), "1"};
+    if (lhs.type_.getName() == "string" || rhs.type_.getName() == "string") {
+        return {Type("bool", false),
+                std::to_string(std::get<std::string>(lhs.data_) == std::get<std::string>(rhs.data_))};
     }
-    return {Type("bool", false), "0"};
+
+    if (lhs.type_.getName() == "float") {
+        if (rhs.type_.getName() == "float") {
+            return {Type("bool", false), std::to_string(std::get<float>(lhs.data_) == std::get<float>(rhs.data_))};
+        } else if (rhs.type_.getName() == "int") {
+            return {Type("bool", false), std::to_string(std::get<float>(lhs.data_) ==
+                                                        static_cast<float>(std::get<int>(rhs.data_)))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("bool", false), std::to_string(std::get<float>(lhs.data_) ==
+                                                        static_cast<float>(std::get<char>(rhs.data_)))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("bool", false), std::to_string(std::get<float>(lhs.data_) ==
+                                                        static_cast<float>(std::get<bool>(rhs.data_)))};
+        }
+    } else if (lhs.type_.getName() == "int") {
+        if (rhs.type_.getName() == "float") {
+            return {Type("bool", false), std::to_string(static_cast<float>(std::get<int>(lhs.data_)) ==
+                                                        std::get<float>(rhs.data_))};
+        } else if (rhs.type_.getName() == "int") {
+            return {Type("bool", false), std::to_string(std::get<int>(lhs.data_) == std::get<int>(rhs.data_))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("bool", false), std::to_string(std::get<int>(lhs.data_) == std::get<char>(rhs.data_))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("bool", false), std::to_string(std::get<int>(lhs.data_) == std::get<bool>(rhs.data_))};
+        }
+    } else if (lhs.type_.getName() == "char") {
+        if (rhs.type_.getName() == "float") {
+            return {Type("bool", false), std::to_string(static_cast<float>(std::get<char>(lhs.data_)) ==
+                                                        std::get<float>(rhs.data_))};
+        } else if (rhs.type_.getName() == "int") {
+            return {Type("bool", false), std::to_string(std::get<char>(lhs.data_) == std::get<int>(rhs.data_))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("bool", false), std::to_string(std::get<char>(lhs.data_) == std::get<char>(rhs.data_))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("bool", false), std::to_string(std::get<char>(lhs.data_) == std::get<bool>(rhs.data_))};
+        }
+    } else if (lhs.type_.getName() == "bool") {
+        if (rhs.type_.getName() == "float") {
+            return {Type("bool", false), std::to_string(static_cast<float>(std::get<bool>(lhs.data_)) ==
+                                                        std::get<float>(rhs.data_))};
+        } else if (rhs.type_.getName() == "int") {
+            return {Type("bool", false), std::to_string(std::get<bool>(lhs.data_) == std::get<int>(rhs.data_))};
+        } else if (rhs.type_.getName() == "char") {
+            return {Type("bool", false), std::to_string(std::get<bool>(lhs.data_) == std::get<char>(rhs.data_))};
+        } else if (rhs.type_.getName() == "bool") {
+            return {Type("bool", false), std::to_string(std::get<bool>(lhs.data_) == std::get<bool>(rhs.data_))};
+        }
+    }
+
+    throw std::runtime_error("no available operator and overloaded");
 }
 
 Literal operator!=(const Literal& lhs, const Literal& rhs) {
@@ -851,15 +901,19 @@ ReservedMemory*& ReservedMemory::operator[](const Literal& idx) {
         num_idx = static_cast<int>(std::get<bool>(idx.getData()));
     }
 
-    if (num_idx >= type_.getArraySize() || num_idx < 0) {
+    return (*this)[num_idx];
+}
+
+ReservedMemory*& ReservedMemory::operator[](size_t idx) {
+    if (idx >= type_.getArraySize() || idx < 0) {
         throw std::runtime_error("array out of range");
     }
 
-    if (std::get<std::vector<ReservedMemory*>>(structs_data_)[num_idx] == nullptr) {
-        std::get<std::vector<ReservedMemory*>>(structs_data_)[num_idx] = new ReservedMemory(type_.getArrayType());
+    if (std::get<std::vector<ReservedMemory*>>(structs_data_)[idx] == nullptr) {
+        std::get<std::vector<ReservedMemory*>>(structs_data_)[idx] = new ReservedMemory(type_.getArrayType());
     }
 
-    return std::get<std::vector<ReservedMemory*>>(structs_data_)[num_idx];
+    return std::get<std::vector<ReservedMemory*>>(structs_data_)[idx];
 }
 
 ReservedMemory::ReservedMemory(const ReservedMemory &other) {
@@ -964,4 +1018,30 @@ ReservedMemory &ReservedMemory::operator<<=(const Literal &other) {
 ReservedMemory &ReservedMemory::operator>>=(const Literal &other) {
     *this = *this >> other;
     return *this;
+}
+
+Literal operator==(ReservedMemory& lhs, ReservedMemory& rhs) {
+    if (lhs.type_.getName() == "array") {
+        if (lhs.type_.getArraySize() != rhs.type_.getArraySize()) {
+            return {Type("bool", false), "0"};
+        }
+
+        if (lhs.type_.getArrayType() != rhs.type_.getArrayType()) {
+            return {Type("bool", false), "0"};
+        }
+
+        for (int i = 0; i < lhs.type_.getArraySize(); ++i) {
+            if (lhs[i] != rhs[i]) {
+                return {Type("bool", false), "0"};
+            }
+        }
+
+        return {Type("bool", false), "1"};
+    }
+
+    return dynamic_cast<Literal&>(lhs) == dynamic_cast<Literal&>(rhs);
+}
+
+Literal operator!=(ReservedMemory& lhs, ReservedMemory& rhs) {
+    return !(lhs == rhs);
 }

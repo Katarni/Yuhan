@@ -145,6 +145,7 @@ class ReservedMemory : public Literal {
     friend std::istream& operator>>(std::istream& is, ReservedMemory*& var);
 
     ReservedMemory*& operator[](const Literal& idx);
+    ReservedMemory*& operator[](size_t idx);
 
     ReservedMemory& operator+=(const Literal& other);
     ReservedMemory& operator-=(const Literal& other);
@@ -156,6 +157,9 @@ class ReservedMemory : public Literal {
     ReservedMemory& operator|=(const Literal& other);
     ReservedMemory& operator<<=(const Literal& other);
     ReservedMemory& operator>>=(const Literal& other);
+
+    friend Literal operator==(ReservedMemory& lhs, ReservedMemory& rhs);
+    friend Literal operator!=(ReservedMemory& lhs, ReservedMemory& rhs);
 
  private:
     std::variant<std::vector<ReservedMemory*>, std::map<std::string, ReservedMemory*>> structs_data_;

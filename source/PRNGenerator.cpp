@@ -138,6 +138,6 @@ std::pair<size_t, size_t> PRNGenerator::getFuncParams(const std::string &id) {
     return {func_pos_[id], func_args_[id]};
 }
 
-std::string PRNGenerator::mainId() const {
+const std::string& PRNGenerator::mainId() const {
     return main_id_;
 }
