@@ -132,7 +132,7 @@ void Interpreter::callFunc(const std::string &func, const std::vector<std::varia
                         goto func_end;
                     case PRNGenerator::SysVals::GoTo:
                     case PRNGenerator::SysVals::GoToByFalse:
-                    case PRNGenerator::SysVals::Cmp:
+                    case PRNGenerator::SysVals::SwitchCmp:
                     case PRNGenerator::SysVals::Scan:
                     case PRNGenerator::SysVals::Print:
                         operation(std::get<PRNGenerator::SysVals>(state.first));
@@ -344,7 +344,7 @@ void Interpreter::operation(PRNGenerator::SysVals operation) {
 
             calc_stack_.pop();
             break;
-        case PRNGenerator::SysVals::Cmp:
+        case PRNGenerator::SysVals::SwitchCmp:
             break;
         case PRNGenerator::SysVals::Scan:
             std::cin >> std::get<ReservedMemory*>(calc_stack_.top());

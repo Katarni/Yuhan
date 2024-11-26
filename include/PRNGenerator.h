@@ -15,7 +15,7 @@ class PRNGenerator {
 
     enum class SysVals {
         FuncEnd, FuncStart, Semicolon, Return,
-        GoTo, GoToByFalse, SwitchCmp, Scan, Print
+        GoTo, GoToByFalse, SwitchCmp, Scan, Print, Comma
     };
 
     enum class PRNType {
@@ -58,6 +58,10 @@ class PRNGenerator {
     [[nodiscard]]
     std::pair<std::variant<Identifier, Token, Literal,
                             size_t, std::string, SysVals>, PRNType> getById(size_t idx) const;
+
+    std::pair<size_t, size_t> getFuncParams(const std::string &id);
+
+    std::string mainId() const;
 
  private:
     size_t cur_;
