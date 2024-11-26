@@ -21,6 +21,14 @@ ReservedMemory *&Interpreter::FunctionCall::createVar(const Identifier &name) {
 
 ReservedMemory *&Interpreter::createVar(const Identifier &name) {
     if (!function_stack_.empty()) {
+        if (function_stack_.top().findVar(name)) {
+            return function_stack_.top().getVar(name);
+        }
+
+        if (global_vars_.find(name.getName()) != global_vars_.end()) {
+            return global_vars_[name.getName()];
+        }
+
         function_stack_.top().createVar(name);
     }
 
@@ -56,7 +64,87 @@ size_t Interpreter::FunctionCall::returnAddress() const {
 }
 
 void Interpreter::global() {
+    std::string func_name;
+    std::vector<std::variant<ReservedMemory*, Literal>> args;
+    std::variant<ReservedMemory, Literal> ret;
 
+    cur_ = 0;
+
+    bool func = false;
+
+    calc_stack_.emplace();
+
+    while (cur_ < generator_->size()) {
+        auto state = generator_->getById(cur_);
+
+        if (state.second == PRNGenerator::PRNType::SystemValue &&
+            std::get<PRNGenerator::SysVals>(state.first) == PRNGenerator::SysVals::FuncStart) {
+            func = true;
+        }
+
+        if (func) {
+            if (state.second == PRNGenerator::PRNType::SystemValue &&
+                std::get<PRNGenerator::SysVals>(state.first) == PRNGenerator::SysVals::FuncEnd) {
+                func = false;
+            }
+            ++cur_;
+            continue;
+        }
+
+        switch (state.second) {
+            case PRNGenerator::PRNType::Identifier:
+                createVar(std::get<Identifier>(state.first));
+                calc_stack_.top().emplace(getVar(std::get<Identifier>(state.first)));
+                break;
+            case PRNGenerator::PRNType::Operation:
+                operation(std::get<Token>(state.first));
+                break;
+            case PRNGenerator::PRNType::Literal:
+                calc_stack_.top().emplace(std::get<Literal>(state.first));
+                break;
+            case PRNGenerator::PRNType::Address:
+                calc_stack_.top().emplace(std::get<size_t>(state.first));
+                break;
+            case PRNGenerator::PRNType::Function:
+                func_name = std::get<std::string>(state.first);
+                args.resize(generator_->getFuncParams(func_name).second);
+                for (int i = static_cast<int>(args.size() - 1); i >= 0; --i) {
+                    if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+                        args[i] = std::get<ReservedMemory*>(calc_stack_.top().top());
+                    } else {
+                        args[i] = std::get<Literal>(calc_stack_.top().top());
+                    }
+                    calc_stack_.top().pop();
+                }
+
+                callFunc(func_name, args);
+
+                break;
+            case PRNGenerator::PRNType::FieldName:
+                calc_stack_.top().emplace(std::get<std::string>(state.first));
+                break;
+            case PRNGenerator::PRNType::SystemValue:
+                switch (std::get<PRNGenerator::SysVals>(state.first)) {
+                    case PRNGenerator::SysVals::Semicolon:
+                        while (!calc_stack_.top().empty()) {
+                            calc_stack_.top().pop();
+                        }
+                        break;
+                    case PRNGenerator::SysVals::GoTo:
+                    case PRNGenerator::SysVals::GoToByFalse:
+                    case PRNGenerator::SysVals::SwitchCmp:
+                    case PRNGenerator::SysVals::Scan:
+                    case PRNGenerator::SysVals::Print:
+                        operation(std::get<PRNGenerator::SysVals>(state.first));
+                        break;
+                }
+                break;
+        }
+
+        ++cur_;
+    }
+
+    calc_stack_.pop();
 }
 
 void Interpreter::callFunc(const std::string &func, const std::vector<std::variant<ReservedMemory*, Literal>>& vars) {
@@ -373,6 +461,10 @@ void Interpreter::operation(PRNGenerator::SysVals operation) {
     size_t point;
     ReservedMemory *lhs_var = nullptr, *rhs_var = nullptr;
     Literal lhs_lit, rhs_lit;
+
+    Literal *rhs = nullptr, *lhs = nullptr, res;
+    bool got_reserved_1 = false, got_reserved_2 = false;
+
     switch (operation) {
         case PRNGenerator::SysVals::GoTo:
             cur_ = std::get<size_t>(calc_stack_.top().top()) - 1;
@@ -399,6 +491,28 @@ void Interpreter::operation(PRNGenerator::SysVals operation) {
             calc_stack_.top().pop();
             break;
         case PRNGenerator::SysVals::SwitchCmp:
+            if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+                rhs = std::get<ReservedMemory*>(calc_stack_.top().top());
+                got_reserved_1 = true;
+            } else {
+                rhs = new Literal(std::get<Literal>(calc_stack_.top().top()));
+            }
+            calc_stack_.top().pop();
+
+            if (std::holds_alternative<ReservedMemory*>(calc_stack_.top().top())) {
+                lhs = std::get<ReservedMemory*>(calc_stack_.top().top());
+                got_reserved_2 = true;
+            } else {
+                lhs = new Literal(std::get<Literal>(calc_stack_.top().top()));
+            }
+
+            if (got_reserved_1 && got_reserved_2) {
+                res = *static_cast<ReservedMemory*>(lhs) == *static_cast<ReservedMemory*>(rhs);
+            } else {
+                res = *lhs == *rhs;
+            }
+
+            calc_stack_.top().emplace(res);
             break;
         case PRNGenerator::SysVals::Scan:
             std::cin >> std::get<ReservedMemory*>(calc_stack_.top().top());
