@@ -575,7 +575,7 @@ std::pair<int, int> SyntacticAnalyzer::switchItem(Type &type_exp, std::pair<int,
         throw std::runtime_error("Wrong type in case");
     }
 
-    generator_->push(PRNGenerator::SysVals::Cmp);
+    generator_->push(PRNGenerator::SysVals::SwitchCmp);
 
     int cur_state = static_cast<int>(generator_->getCurIdx());
     generator_->push(-1);

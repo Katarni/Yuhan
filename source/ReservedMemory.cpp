@@ -29,8 +29,7 @@ Type::Type(const Type &other) {
     }
     for (const auto& [key, val] : other.fields_) {
         if (val != nullptr) {
-            fields_[key] = new Type();
-            *fields_[key] = *val;
+            fields_[key] = new Type(*val);
         }
     }
     is_lvalue_ = other.is_lvalue_;
@@ -46,8 +45,7 @@ Type& Type::operator=(const Type &other) {
     }
     for (const auto& [key, val] : other.fields_) {
         if (val != nullptr) {
-            fields_[key] = new Type();
-            *fields_[key] = *val;
+            fields_[key] = new Type(*val);
         }
     }
     is_lvalue_ = other.is_lvalue_;

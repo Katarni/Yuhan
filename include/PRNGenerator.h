@@ -15,7 +15,7 @@ class PRNGenerator {
 
     enum class SysVals {
         FuncEnd, FuncStart, Semicolon, Return,
-        GoTo, GoToByFalse, Cmp, Scan, Print, Comma
+        GoTo, GoToByFalse, SwitchCmp, Scan, Print
     };
 
     enum class PRNType {
@@ -59,10 +59,6 @@ class PRNGenerator {
     std::pair<std::variant<Identifier, Token, Literal,
                             size_t, std::string, SysVals>, PRNType> getById(size_t idx) const;
 
-    std::pair<size_t, size_t> getFuncParams(const std::string& id);
-
-    std::string mainId() const;
-
  private:
     size_t cur_;
     std::string main_id_;
@@ -74,3 +70,7 @@ class PRNGenerator {
                             size_t, std::string, SysVals>> prn_; // сюда добавить функции и служебные вещи
     std::vector<PRNType> types_; // информация о содержимом ячейки
 };
+
+
+std::ofstream& operator<<(std::ofstream& os, std::pair<std::variant<Identifier, Token, Literal,
+                                                size_t, std::string, PRNGenerator::SysVals>, PRNGenerator::PRNType> state);
