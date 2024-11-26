@@ -821,6 +821,7 @@ Type SyntacticAnalyzer::type() {
                 std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
     }
     type.setName(lex_.getContent());
+    type.setFields(tid_tree_.getStructsFields(type.getName()));
     getLex();
     return type;
 }

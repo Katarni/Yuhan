@@ -143,6 +143,10 @@ std::string TIDTree::checkFunctionName(TIDTree::NodeTID *ptr, std::string &name,
     }
 }
 
+std::vector<std::pair<std::string, Type>> TIDTree::getStructsFields(const std::string &name) {
+    return getStructFields(current_scope_, name);
+}
+
 void TIDTree::pushVariable(std::string name, Type type, std::string id) {
     std::vector<std::pair<std::string, Type>> fields;
     if (type.getName() != "int" && type.getName() != "float" &&
