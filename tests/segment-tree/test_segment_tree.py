@@ -29,7 +29,7 @@ def get_program_output(test):
 
 
 def get_correct_output(test):
-    return run("correct-programs/segment-tree", encoding="utf-8", capture_output=True, input=test).stdout
+    return run("./segment-tree", encoding="utf-8", capture_output=True, input=test).stdout
 
 
 def test_segment_tree():

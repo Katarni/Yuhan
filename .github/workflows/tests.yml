@@ -88,17 +88,17 @@ jobs:
           python-version: "3.13"
       - name: install pytest
         run: pip install pytest
-      - name: Build yuhan
+      - name: Build segment-tree
         run: |
-          mkdir tests/yuhan/build
-          cd tests/yuhan/build
+          mkdir tests/segment-tree/build
+          cd tests/segment-tree/build
           cmake ..
           make
       - name: Build segment tree
         run: |
-          cd tests/yuhan/correct-programs
+          cd tests/segment-tree/correct-programs
           g++ segment-tree.cpp -o segment-tree
       - name: Run test
         run: |
-          cd tests/yuhan
+          cd tests/segment-tree
           pytest .

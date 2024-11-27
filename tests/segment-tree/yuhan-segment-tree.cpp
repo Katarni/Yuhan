@@ -2,7 +2,7 @@
 #include "../../include/Interpreter.h"
 
 int main() {
-    std::string file_path = "programs/segment-tree.y";
+    std::string file_path = "segment-tree.y";
 //    std::cin >> file_path;
 
     std::ifstream file_fin(file_path);
