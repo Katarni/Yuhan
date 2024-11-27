@@ -88,7 +88,7 @@ jobs:
           python-version: "3.13"
       - name: install pytest
         run: pip install pytest
-      - name: Build segment-tree
+      - name: Build yuhan segment-tree
         run: |
           mkdir tests/segment-tree/build
           cd tests/segment-tree/build
@@ -96,9 +96,37 @@ jobs:
           make
       - name: Build segment tree
         run: |
-          cd tests/segment-tree/correct-programs
+          cd tests/segment-tree
           g++ segment-tree.cpp -o segment-tree
       - name: Run test
         run: |
           cd tests/segment-tree
+          pytest .
+
+  sort-test:
+    needs: sintex-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: install pytest
+        run: pip install pytest
+      - name: Build yuhan sort
+        run: |
+          mkdir tests/sort/build
+          cd tests/sort/build
+          cmake ..
+          make
+      - name: Build sort
+        run: |
+          cd tests/sort
+          g++ sort.cpp -o sort
+      - name: Run test
+        run: |
+          cd tests/sort
           pytest .
