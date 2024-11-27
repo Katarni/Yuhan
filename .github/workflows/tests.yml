@@ -22,7 +22,6 @@ jobs:
           cd tests/trie/build
           cmake ..
           make
-          cd ..
       - name: Run test
         run: |
           cd tests/trie
@@ -47,7 +46,6 @@ jobs:
           cd tests/lexer/build
           cmake ..
           make
-          cd ..
       - name: Run test
         run: |
           cd tests/lexer
@@ -72,8 +70,35 @@ jobs:
           cd tests/sintex/build
           cmake ..
           make
-          cd ..
       - name: Run test
         run: |
           cd tests/sintex
+          pytest .
+
+  segment-tree-test:
+    needs: sintex-test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+      - name: install pytest
+        run: pip install pytest
+      - name: Build yuhan
+        run: |
+          mkdir tests/yuhan/build
+          cd tests/yuhan/build
+          cmake ..
+          make
+      - name: Build segment tree
+        run: |
+          cd tests/yuhan/correct-programs
+          g++ segment-tree.cpp -o segment-tree
+      - name: Run test
+        run: |
+          cd tests/yuhan
           pytest .
