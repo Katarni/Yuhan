@@ -45,6 +45,8 @@ class Type {
 
     void clear();
 
+    std::map<std::string, Type*> getFields();
+
  private:
     std::string name_;
     size_t size_array_;
@@ -60,7 +62,7 @@ class Identifier {
     Identifier(std::string id, Type type) : name_(id), type_(type) {}
 
     [[nodiscard]]
-    Type& getType();
+    Type getType() const;
 
     void setType(Type other);
 
@@ -79,38 +81,87 @@ class Identifier {
 
 class Literal {
  public:
+    Literal() = default;
     Literal(Type type, std::string data);
 
     [[nodiscard]]
-    Type& getType();
-
+    Type getType() const;
     void setType(Type other);
 
     [[nodiscard]]
+    bool isTrue() const;
+
+    [[nodiscard]]
+    std::variant<int, char, bool, float, std::string>& getData();
     std::variant<int, char, bool, float, std::string> getData() const;
 
- private:
+    friend std::ostream& operator<<(std::ostream& os, const Literal& lit);
+
+    friend Literal operator!(const Literal& literal);
+
+    friend Literal operator+(const Literal& lhs, const Literal& rhs);
+    friend Literal operator-(const Literal& lhs, const Literal& rhs);
+    friend Literal operator*(const Literal& lhs, const Literal& rhs);
+    friend Literal operator/(const Literal& lhs, const Literal& rhs);
+    friend Literal operator%(const Literal& lhs, const Literal& rhs);
+    friend Literal operator&&(const Literal& lhs, const Literal& rhs);
+    friend Literal operator||(const Literal& lhs, const Literal& rhs);
+    friend Literal operator&(const Literal& lhs, const Literal& rhs);
+    friend Literal operator|(const Literal& lhs, const Literal& rhs);
+    friend Literal operator^(const Literal& lhs, const Literal& rhs);
+    friend Literal operator>>(const Literal& lhs, const Literal& rhs);
+    friend Literal operator<<(const Literal& lhs, const Literal& rhs);
+
+    friend Literal operator==(const Literal& lhs, const Literal& rhs);
+    friend Literal operator!=(const Literal& lhs, const Literal& rhs);
+    friend Literal operator<(const Literal& lhs, const Literal& rhs);
+    friend Literal operator>(const Literal& lhs, const Literal& rhs);
+    friend Literal operator<=(const Literal& lhs, const Literal& rhs);
+    friend Literal operator>=(const Literal& lhs, const Literal& rhs);
+
+ protected:
     std::variant<int, char, bool, float, std::string> data_;
     Type type_;
+
+    void setLvalue(bool lvalue) {
+        type_.setLvalue(lvalue);
+    }
 };
 
 
-class ReservedMemory {
+class ReservedMemory : public Literal {
  public:
+    ReservedMemory() = default;
     explicit ReservedMemory(Type type);
+    ReservedMemory(const Literal& other);
+    ReservedMemory(const ReservedMemory& other);
+    ReservedMemory& operator=(const ReservedMemory& other);
+    ReservedMemory& operator=(const Literal& other);
 
     [[nodiscard]]
-    Type& getType() {
-        return type_;
-    }
-
-    [[nodiscard]]
-    ReservedMemory* getFieldByName(const std::string& name) const;
+    ReservedMemory*& getFieldByName(const std::string& name);
 
     void setFields(const std::vector<std::pair<std::string, Type>>& fields);
 
+    friend std::istream& operator>>(std::istream& is, ReservedMemory*& var);
+
+    ReservedMemory*& operator[](const Literal& idx);
+    ReservedMemory*& operator[](size_t idx);
+
+    ReservedMemory& operator+=(const Literal& other);
+    ReservedMemory& operator-=(const Literal& other);
+    ReservedMemory& operator/=(const Literal& other);
+    ReservedMemory& operator*=(const Literal& other);
+    ReservedMemory& operator%=(const Literal& other);
+    ReservedMemory& operator^=(const Literal& other);
+    ReservedMemory& operator&=(const Literal& other);
+    ReservedMemory& operator|=(const Literal& other);
+    ReservedMemory& operator<<=(const Literal& other);
+    ReservedMemory& operator>>=(const Literal& other);
+
+    friend Literal operator==(ReservedMemory& lhs, ReservedMemory& rhs);
+    friend Literal operator!=(ReservedMemory& lhs, ReservedMemory& rhs);
+
  private:
-    Type type_;
-    std::variant<int, bool, float, char, std::string,
-                std::vector<ReservedMemory*>, std::map<std::string, ReservedMemory*>> data_;
+    std::variant<std::vector<ReservedMemory*>, std::map<std::string, ReservedMemory*>> structs_data_;
 };

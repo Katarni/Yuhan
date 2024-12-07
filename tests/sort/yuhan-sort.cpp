@@ -1,9 +1,8 @@
-#include "include/SyntacticAnalyzer.h"
-#include "include/TIDTree.h"
-#include "include/Interpreter.h"
+#include "../../include/SyntacticAnalyzer.h"
+#include "../../include/Interpreter.h"
 
 int main() {
-    std::string file_path = "../main.y";
+    std::string file_path = "sort.y";
 //    std::cin >> file_path;
 
     std::ifstream file_fin(file_path);
@@ -17,7 +16,7 @@ int main() {
     auto generator = new PRNGenerator;
 
     LexicalAnalyzer *lexer;
-    lexer = new LexicalAnalyzer(file_text, file_size, "../reserved-words.txt");
+    lexer = new LexicalAnalyzer(file_text, file_size, "../../reserved-words.txt");
 
     SyntacticAnalyzer sintex(lexer, generator);
 

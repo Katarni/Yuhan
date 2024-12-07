@@ -11,6 +11,7 @@ void SyntacticAnalyzer::getLex() {
 void SyntacticAnalyzer::exp14() {
     exp13();
     while (lex_.getType() == Token::Type::Comma) {
+        generator_->push(PRNGenerator::SysVals::Comma);
         sem_stack_.clear();
         getLex();
         exp13();
@@ -649,6 +650,7 @@ void SyntacticAnalyzer::switchStatement() {
     tid_tree_.closeScope();
 
     generator_->closeSwitch();
+    generator_->push(PRNGenerator::SysVals::Semicolon);
 }
 
 void SyntacticAnalyzer::returnStatement() {
@@ -694,6 +696,7 @@ void SyntacticAnalyzer::varDefinition() {
     Type type_var = type();
     var(type_var);
     while (lex_.getType() == Token::Type::Comma) {
+        generator_->push(PRNGenerator::SysVals::Comma);
         getLex();
         var(type_var);
     }
@@ -818,6 +821,7 @@ Type SyntacticAnalyzer::type() {
                 std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
     }
     type.setName(lex_.getContent());
+    type.setFields(tid_tree_.getStructsFields(type.getName()));
     getLex();
     return type;
 }
@@ -829,15 +833,28 @@ void SyntacticAnalyzer::var(Type type_var) {
     Variable vari(lex_.getContent(), type_var);
     auto id = genId();
     getLex();
-    generator_->push({id, type_var});
     if (lex_.getContent() != "=") {
         try {
             tid_tree_.pushVariable(vari.getName(), type_var, id);
+            if (!tid_tree_.isStructScope()) {
+                generator_->push(tid_tree_.checkVariable(vari.getName()));
+            }
         } catch (std::runtime_error &error) {
             throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" + std::to_string(lex_.getColumn()));
         }
         return;
     }
+
+    try {
+        tid_tree_.pushVariable(vari.getName(), type_var, id);
+        if (!tid_tree_.isStructScope()) {
+            generator_->push(tid_tree_.checkVariable(vari.getName()));
+        }
+    } catch (std::runtime_error &error) {
+        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
+                                 std::to_string(lex_.getColumn()));
+    }
+
     auto eq = lex_;
     getLex();
     exp12();
@@ -845,12 +862,6 @@ void SyntacticAnalyzer::var(Type type_var) {
     generator_->push(eq);
     try {
         sem_stack_.checkType(type_var);
-    } catch (std::runtime_error &error) {
-        throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
-                                 std::to_string(lex_.getColumn()));
-    }
-    try {
-        tid_tree_.pushVariable(vari.getName(), type_var, id);
     } catch (std::runtime_error &error) {
         throw std::runtime_error(std::string(error.what()) + " " + std::to_string(lex_.getLine()) + ":" +
                                  std::to_string(lex_.getColumn()));
@@ -910,6 +921,11 @@ void SyntacticAnalyzer::function() {
                                      std::to_string(lex_.getColumn()));
         }
     }
+
+    if (name_func == "main" && !args.empty()) {
+        throw std::runtime_error("main should have no arguments");
+    }
+
     generator_->setFuncArgsCnt(id_func, args.size());
     getLex();
     block();
@@ -930,6 +946,7 @@ void SyntacticAnalyzer::funcVarDefinition(std::vector<Variable> &args) {
     args.emplace_back(lex_.getContent(), type_arg);
     getLex();
     while (lex_.getType() == Token::Type::Comma) {
+        generator_->push(PRNGenerator::SysVals::Comma);
         getLex();
         type_arg = type();
         if (lex_.getType() == Token::Type::Ampersand) {
@@ -1054,13 +1071,14 @@ Type SyntacticAnalyzer::array() {
     getLex();
     type_arr.setArrayType(type());
     if (lex_.getType() != Token::Type::Comma) {
+        generator_->push(PRNGenerator::SysVals::Comma);
         throw lex_;
     }
     getLex();
     if (lex_.getType() != Token::Type::NumericLiteral) {
         throw lex_;
     }
-    type_arr.setArraySize(stoi(lex_.getContent()));
+    type_arr.setArraySize(std::stoi(lex_.getContent()));
     getLex();
     if (lex_.getContent() != ">") {
         throw lex_;
@@ -1091,6 +1109,7 @@ void SyntacticAnalyzer::vars(std::vector<Type> &args) {
                                  std::to_string(lex_.getColumn()));
     }
     while (lex_.getType() == Token::Type::Comma) {
+        generator_->push(PRNGenerator::SysVals::Comma);
         getLex();
         exp13();
         try {

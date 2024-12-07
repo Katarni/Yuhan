@@ -38,6 +38,10 @@ public:
 
     void checkContinue();
 
+    bool isStructScope();
+
+    std::vector<std::pair<std::string, Type>> getStructsFields(const std::string& name);
+
 private:
     class NodeTID {
     public:

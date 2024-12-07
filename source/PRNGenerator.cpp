@@ -134,57 +134,10 @@ PRNGenerator::getById(size_t idx) const {
     return {prn_[idx], types_[idx]};
 }
 
-std::ofstream &operator<<(std::ofstream &os,
-                         std::pair<std::variant<Identifier, Token, Literal, size_t,
-                                        std::string, PRNGenerator::SysVals>, PRNGenerator::PRNType> state) {
-    switch (state.second) {
-        case PRNGenerator::PRNType::Identifier:
-            os << "Identifier: " << std::get<Identifier>(state.first).getName();
-            break;
-        case PRNGenerator::PRNType::Operation:
-            os << "Operator: " << std::get<Token>(state.first).getContent();
-            break;
-        case PRNGenerator::PRNType::Literal:
-            // get val here
-            os << "Literal: " << std::get<Literal>(state.first).getType().getName();
-            break;
-        case PRNGenerator::PRNType::Address:
-            os << "Address: " << std::get<size_t>(state.first);
-            break;
-        case PRNGenerator::PRNType::Function:
-            os << "Function: " << std::get<std::string>(state.first);
-            break;
-        case PRNGenerator::PRNType::FieldName:
-            os << "Struct Field: " << std::get<std::string>(state.first);
-            break;
-        case PRNGenerator::PRNType::SystemValue:
-            switch (std::get<PRNGenerator::SysVals>(state.first)) {
-                case PRNGenerator::SysVals::FuncEnd:
-                    os << "Function End" << std::endl;
-                    break;
-                case PRNGenerator::SysVals::FuncStart:
-                    os << "Function Start" << std::endl;
-                    break;
-                case PRNGenerator::SysVals::Semicolon:
-                    os << "Semicolon" << std::endl;
-                    break;
-                case PRNGenerator::SysVals::Return:
-                    os << "Return" << std::endl;
-                    break;
-                case PRNGenerator::SysVals::GoTo:
-                    os << "GoTo" << std::endl;
-                    break;
-                case PRNGenerator::SysVals::GoToByFalse:
-                    os << "GoTo by False" << std::endl;
-                    break;
-                case PRNGenerator::SysVals::SwitchCmp:
-                    os << "Switch Cmp" << std::endl;
-                    break;
-            }
-            break;
-    }
+std::pair<size_t, size_t> PRNGenerator::getFuncParams(const std::string &id) {
+    return {func_pos_[id], func_args_[id]};
+}
 
-    os << std::endl;
-
-    return os;
+const std::string& PRNGenerator::mainId() const {
+    return main_id_;
 }
