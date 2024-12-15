@@ -7,8 +7,17 @@
 #include "includes.h"
 
 
+/*!
+    \brief Класс лексемы
+    \author Katarni
+    \warning Наследован от std::exception
+
+    Используется для хранения лексемы, ее типа и местарасполажения.
+    Наследован от std::exception.
+*/
 class Token : public std::exception {
  public:
+    /// Набор возможных типов лексемы
     enum class Type {
         ReservedWord, Identifier,
         LvalueBinaryOperator, RvalueBinaryOperator,
@@ -55,5 +64,5 @@ class Token : public std::exception {
     Type type_;
     std::string content_, what_;
 
-    void generateWhat();
+    void generateWhat(); ///< Генерирует описание ошибки при изменении полей класса
 };
