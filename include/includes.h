@@ -1,3 +1,11 @@
+/*!
+    \file
+    \brief
+    \authors Katarni, Алена Иванова
+
+    Подключенные пакеты STL
+*/
+
 #include <iostream>
 #include <map>
 #include <fstream>

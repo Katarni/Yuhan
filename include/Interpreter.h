@@ -7,6 +7,12 @@
 #include "PRNGenerator.h"
 
 
+/*!
+    \brief Интерпретатор Yuhan
+    \author Katarni
+
+    Интерпретатор кода для языка Yuhan. Используется для основного исполнения кода.
+*/
 class Interpreter {
  public:
     explicit Interpreter(PRNGenerator *generator) : generator_(generator), cur_(0) {}

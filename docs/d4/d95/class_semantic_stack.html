@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Yuhan
+   <div id="projectname">Yuhan<span id="projectnumber">&#160;1.0.0</span>
    </div>
   </td>
  </tr>
@@ -47,10 +47,16 @@ $(function() {
   <div class="headertitle"><div class="title">Класс SemanticStack</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Семантический стек  
+ <a href="#details">Подробнее...</a></p>
+
+<p><code>#include &lt;<a class="el" href="../../da/de1/_semantic_stack_8h_source.html">SemanticStack.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="nested-classes" name="nested-classes"></a>
 Классы</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="../../d0/d03/class_semantic_stack_1_1_error.html">Error</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Ошибка семантического стека  <a href="../../d0/d03/class_semantic_stack_1_1_error.html#details">Подробнее...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
@@ -64,30 +70,132 @@ void&#160;</td><td class="memItemRight" valign="bottom"><b>push</b> (const <a cl
 <tr class="memitem:ad6b9b3944c0eab4d78f07d6cbcd3c36d" id="r_ad6b9b3944c0eab4d78f07d6cbcd3c36d"><td class="memItemLeft" align="right" valign="top"><a id="ad6b9b3944c0eab4d78f07d6cbcd3c36d" name="ad6b9b3944c0eab4d78f07d6cbcd3c36d"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>push</b> (const <a class="el" href="../../db/dc1/class_token.html">Token</a> &amp;operation) noexcept</td></tr>
 <tr class="separator:ad6b9b3944c0eab4d78f07d6cbcd3c36d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8a5b99ea3deacd360c930b1115984d6b" id="r_a8a5b99ea3deacd360c930b1115984d6b"><td class="memItemLeft" align="right" valign="top"><a id="a8a5b99ea3deacd360c930b1115984d6b" name="a8a5b99ea3deacd360c930b1115984d6b"></a>
-<a class="el" href="../../d8/df6/class_type.html">Type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>popOperand</b> ()</td></tr>
+<tr class="memitem:a8a5b99ea3deacd360c930b1115984d6b" id="r_a8a5b99ea3deacd360c930b1115984d6b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../d8/df6/class_type.html">Type</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8a5b99ea3deacd360c930b1115984d6b">popOperand</a> ()</td></tr>
 <tr class="separator:a8a5b99ea3deacd360c930b1115984d6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8c3f26be59b5991b1fa1c15d98152227" id="r_a8c3f26be59b5991b1fa1c15d98152227"><td class="memItemLeft" align="right" valign="top"><a id="a8c3f26be59b5991b1fa1c15d98152227" name="a8c3f26be59b5991b1fa1c15d98152227"></a>
-<a class="el" href="../../db/dc1/class_token.html">Token</a>&#160;</td><td class="memItemRight" valign="bottom"><b>popOperation</b> ()</td></tr>
+<tr class="memitem:a8c3f26be59b5991b1fa1c15d98152227" id="r_a8c3f26be59b5991b1fa1c15d98152227"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/dc1/class_token.html">Token</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a8c3f26be59b5991b1fa1c15d98152227">popOperation</a> ()</td></tr>
 <tr class="separator:a8c3f26be59b5991b1fa1c15d98152227"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a015eb763019372e3bbd6759313cc01c2" id="r_a015eb763019372e3bbd6759313cc01c2"><td class="memItemLeft" align="right" valign="top"><a id="a015eb763019372e3bbd6759313cc01c2" name="a015eb763019372e3bbd6759313cc01c2"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>checkUno</b> ()</td></tr>
+<tr class="memitem:a015eb763019372e3bbd6759313cc01c2" id="r_a015eb763019372e3bbd6759313cc01c2"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a015eb763019372e3bbd6759313cc01c2">checkUno</a> ()</td></tr>
 <tr class="separator:a015eb763019372e3bbd6759313cc01c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ade65156f6705fc5178863e058e5ca89a" id="r_ade65156f6705fc5178863e058e5ca89a"><td class="memItemLeft" align="right" valign="top"><a id="ade65156f6705fc5178863e058e5ca89a" name="ade65156f6705fc5178863e058e5ca89a"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>checkBinary</b> ()</td></tr>
+<tr class="memitem:ade65156f6705fc5178863e058e5ca89a" id="r_ade65156f6705fc5178863e058e5ca89a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ade65156f6705fc5178863e058e5ca89a">checkBinary</a> ()</td></tr>
 <tr class="separator:ade65156f6705fc5178863e058e5ca89a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4d2dbc991b6b86e6f73b72a44843edc6" id="r_a4d2dbc991b6b86e6f73b72a44843edc6"><td class="memItemLeft" align="right" valign="top"><a id="a4d2dbc991b6b86e6f73b72a44843edc6" name="a4d2dbc991b6b86e6f73b72a44843edc6"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>checkBool</b> ()</td></tr>
+<tr class="memdesc:a4d2dbc991b6b86e6f73b72a44843edc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Проверка, что выражение в стеке преобразуется к bool. <br /></td></tr>
 <tr class="separator:a4d2dbc991b6b86e6f73b72a44843edc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a07d152235f7b9f5f2fb6b2abeaf9e8ad" id="r_a07d152235f7b9f5f2fb6b2abeaf9e8ad"><td class="memItemLeft" align="right" valign="top"><a id="a07d152235f7b9f5f2fb6b2abeaf9e8ad" name="a07d152235f7b9f5f2fb6b2abeaf9e8ad"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>checkType</b> (<a class="el" href="../../d8/df6/class_type.html">Type</a> type)</td></tr>
+<tr class="memdesc:a07d152235f7b9f5f2fb6b2abeaf9e8ad"><td class="mdescLeft">&#160;</td><td class="mdescRight">Проверка, что выражение в стеке преобразуется к type. <br /></td></tr>
 <tr class="separator:a07d152235f7b9f5f2fb6b2abeaf9e8ad"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab3b17040ee02a4399a0d3aba341ebb56" id="r_ab3b17040ee02a4399a0d3aba341ebb56"><td class="memItemLeft" align="right" valign="top"><a id="ab3b17040ee02a4399a0d3aba341ebb56" name="ab3b17040ee02a4399a0d3aba341ebb56"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><b>clear</b> () noexcept</td></tr>
 <tr class="separator:ab3b17040ee02a4399a0d3aba341ebb56"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>Объявления и описания членов класса находятся в файле:<ul>
-<li>include/<a class="el" href="../../da/de1/_semantic_stack_8h_source.html">SemanticStack.h</a></li>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p>Семантический стек </p>
+<dl class="section author"><dt>Автор</dt><dd>Katarni</dd></dl>
+<p>Семантический стек для проверки корректности операций и операндов. Используется в семантическом управляемом переводе в ПОЛИЗ </p>
+</div><h2 class="groupheader">Методы</h2>
+<a id="ade65156f6705fc5178863e058e5ca89a" name="ade65156f6705fc5178863e058e5ca89a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ade65156f6705fc5178863e058e5ca89a">&#9670;&#160;</a></span>checkBinary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SemanticStack::checkBinary </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="exception"><dt>Исключения</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="../../d0/d03/class_semantic_stack_1_1_error.html" title="Ошибка семантического стека">SemanticStack::Error</a></td><td>Если операция неприменина к данным операндам</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Проверка бинарной операции </p>
+
+</div>
+</div>
+<a id="a015eb763019372e3bbd6759313cc01c2" name="a015eb763019372e3bbd6759313cc01c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a015eb763019372e3bbd6759313cc01c2">&#9670;&#160;</a></span>checkUno()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void SemanticStack::checkUno </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="exception"><dt>Исключения</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="../../d0/d03/class_semantic_stack_1_1_error.html" title="Ошибка семантического стека">SemanticStack::Error</a></td><td>Если операция неприменина к данным операндам</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Проверка унарной операции </p>
+
+</div>
+</div>
+<a id="a8a5b99ea3deacd360c930b1115984d6b" name="a8a5b99ea3deacd360c930b1115984d6b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a5b99ea3deacd360c930b1115984d6b">&#9670;&#160;</a></span>popOperand()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../d8/df6/class_type.html">Type</a> SemanticStack::popOperand </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Возвращает</dt><dd>Тип опреанда на вершине стека </dd></dl>
+<dl class="exception"><dt>Исключения</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>Если на вершине стека операция </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section warning"><dt>Предупреждения</dt><dd>Удаляет операнд с вершины стека </dd></dl>
+
+</div>
+</div>
+<a id="a8c3f26be59b5991b1fa1c15d98152227" name="a8c3f26be59b5991b1fa1c15d98152227"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8c3f26be59b5991b1fa1c15d98152227">&#9670;&#160;</a></span>popOperation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../db/dc1/class_token.html">Token</a> SemanticStack::popOperation </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Возвращает</dt><dd>Операцию на вершине стека </dd></dl>
+<dl class="exception"><dt>Исключения</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">std::runtime_error</td><td>Если на вершине стека операнд </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section warning"><dt>Предупреждения</dt><dd>Удаляет операцию с вершины стека </dd></dl>
+
+</div>
+</div>
+<hr/>Объявления и описания членов классов находятся в файлах:<ul>
+<li>/Users/timurahmetzanov/Projects/Yuhan/include/<a class="el" href="../../da/de1/_semantic_stack_8h_source.html">SemanticStack.h</a></li>
+<li>/Users/timurahmetzanov/Projects/Yuhan/source/<b>SemanticStack.cpp</b></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

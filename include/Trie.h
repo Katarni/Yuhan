@@ -192,6 +192,12 @@ public:
 };
 
 
+/*!
+    \brief Переменная
+    \author Алена Иванова
+
+    Используется в борах для обозначения параметров функций и полей структур
+*/
 class Variable {
 public:
     Variable(std::string name, Type type);

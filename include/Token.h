@@ -4,6 +4,14 @@
 
 #pragma once
 
+/*!
+    \file
+    \brief Лексема
+    \author Katarni
+
+    Описание лексемы
+*/
+
 #include "includes.h"
 
 

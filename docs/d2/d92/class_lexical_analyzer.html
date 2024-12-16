@@ -19,7 +19,7 @@
  <tbody>
  <tr id="projectrow">
   <td id="projectalign">
-   <div id="projectname">Yuhan
+   <div id="projectname">Yuhan<span id="projectnumber">&#160;1.0.0</span>
    </div>
   </td>
  </tr>
@@ -46,18 +46,47 @@ $(function() {
   <div class="headertitle"><div class="title">Класс LexicalAnalyzer</div></div>
 </div><!--header-->
 <div class="contents">
+
+<p>Лексический анализатор  
+ <a href="#details">Подробнее...</a></p>
+
+<p><code>#include &lt;<a class="el" href="../../d6/db7/_lexical_analyzer_8h_source.html">LexicalAnalyzer.h</a>&gt;</code></p>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Открытые члены</h2></td></tr>
 <tr class="memitem:a28ef62a89bf9543b4ba105031da5a519" id="r_a28ef62a89bf9543b4ba105031da5a519"><td class="memItemLeft" align="right" valign="top"><a id="a28ef62a89bf9543b4ba105031da5a519" name="a28ef62a89bf9543b4ba105031da5a519"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>LexicalAnalyzer</b> (char *text, size_t text_size, const std::string &amp;reserved_words_file)</td></tr>
 <tr class="separator:a28ef62a89bf9543b4ba105031da5a519"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6a994d17702737164c9ec8b7cad9f0f" id="r_ad6a994d17702737164c9ec8b7cad9f0f"><td class="memItemLeft" align="right" valign="top"><a id="ad6a994d17702737164c9ec8b7cad9f0f" name="ad6a994d17702737164c9ec8b7cad9f0f"></a>
-<a class="el" href="../../db/dc1/class_token.html">Token</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getToken</b> ()</td></tr>
+<tr class="memitem:ad6a994d17702737164c9ec8b7cad9f0f" id="r_ad6a994d17702737164c9ec8b7cad9f0f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="../../db/dc1/class_token.html">Token</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#ad6a994d17702737164c9ec8b7cad9f0f">getToken</a> ()</td></tr>
 <tr class="separator:ad6a994d17702737164c9ec8b7cad9f0f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<hr/>Объявления и описания членов класса находятся в файле:<ul>
-<li>include/<a class="el" href="../../d6/db7/_lexical_analyzer_8h_source.html">LexicalAnalyzer.h</a></li>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p>Лексический анализатор </p>
+<dl class="section author"><dt>Автор</dt><dd>Katarni</dd></dl>
+<p>Реализация лексического анализатора </p>
+</div><h2 class="groupheader">Методы</h2>
+<a id="ad6a994d17702737164c9ec8b7cad9f0f" name="ad6a994d17702737164c9ec8b7cad9f0f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad6a994d17702737164c9ec8b7cad9f0f">&#9670;&#160;</a></span>getToken()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="../../db/dc1/class_token.html">Token</a> LexicalAnalyzer::getToken </td>
+          <td>(</td>
+          <td class="paramname"><span class="paramname"></span></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<dl class="section return"><dt>Возвращает</dt><dd>Следующая лексема </dd></dl>
+<dl class="section warning"><dt>Предупреждения</dt><dd>Последняя лексема всегда имеет тип EndOfFile </dd></dl>
+
+</div>
+</div>
+<hr/>Объявления и описания членов классов находятся в файлах:<ul>
+<li>/Users/timurahmetzanov/Projects/Yuhan/include/<a class="el" href="../../d6/db7/_lexical_analyzer_8h_source.html">LexicalAnalyzer.h</a></li>
+<li>/Users/timurahmetzanov/Projects/Yuhan/source/<b>LexicalAnalyzer.cpp</b></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->

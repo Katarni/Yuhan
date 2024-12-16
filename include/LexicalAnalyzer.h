@@ -8,12 +8,22 @@
 #include "Trie.h"
 
 
+/*!
+    \brief Лексический анализатор
+    \author Katarni
+
+    Реализация лексического анализатора
+*/
 class LexicalAnalyzer {
  public:
     explicit LexicalAnalyzer(char *text, size_t text_size, const std::string& reserved_words_file);
 
     ~LexicalAnalyzer();
 
+    /*!
+        \return Следующая лексема
+        \warning Последняя лексема всегда имеет тип EndOfFile
+    */
     [[nodiscard]]
     Token getToken();
 
