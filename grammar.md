@@ -1,6 +1,5 @@
 
-\<program> ::= \<includes> {\<programBody>} \<endOfFile>  
-\<includes> ::= {`#include` \<literalString>}  
+\<program> ::= {\<programBody>} \<endOfFile>  
 \<namespace> ::= `namespace` \<identifier> `{` {\<programBody>}`}`  
 \<structBody> ::= \<varDefinition> | \<struct>  
 \<programBody> ::= \<namespace> | \<function> | \<structBody>  
