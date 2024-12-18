@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.10.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Yuhan: Класс Token</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<script type="text/javascript" src="../../clipboard.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Yuhan<span id="projectnumber">&#160;1.0.0</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.10.0 -->
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('../../',false,false,'search.php','Поиск');
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div class="header">
+  <div class="summary">
+<a href="#pub-types">Открытые типы</a> &#124;
+<a href="#pub-methods">Открытые члены</a> &#124;
+<a href="#friends">Друзья</a> &#124;
+<a href="../../d6/d41/class_token-members.html">Полный список членов класса</a>  </div>
+  <div class="headertitle"><div class="title">Класс Token</div></div>
+</div><!--header-->
+<div class="contents">
+
+<p>Класс лексемы  
+ <a href="#details">Подробнее...</a></p>
+
+<p><code>#include &lt;<a class="el" href="../../dd/dcd/_token_8h_source.html">Token.h</a>&gt;</code></p>
+<div class="dynheader">
+Граф наследования:Token:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="../../db/dc1/class_token.png" alt=""/>
+ </div></div>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
+Открытые типы</h2></td></tr>
+<tr class="memitem:acf70e9411196c602738c3ed2428c7137" id="r_acf70e9411196c602738c3ed2428c7137"><td class="memItemLeft" align="right" valign="top"><a id="acf70e9411196c602738c3ed2428c7137" name="acf70e9411196c602738c3ed2428c7137"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#acf70e9411196c602738c3ed2428c7137">Type</a> { <br />
+&#160;&#160;<b>ReservedWord</b>
+, <b>Identifier</b>
+, <b>LvalueBinaryOperator</b>
+, <b>RvalueBinaryOperator</b>
+, <br />
+&#160;&#160;<b>Dot</b>
+, <b>Comma</b>
+, <b>NumericLiteral</b>
+, <b>Semicolon</b>
+, <br />
+&#160;&#160;<b>OpenParenthesis</b>
+, <b>CloseParenthesis</b>
+, <b>OpenCurlyBrace</b>
+, <b>CloseCurlyBrace</b>
+, <br />
+&#160;&#160;<b>OpenSquareBracket</b>
+, <b>CloseSquareBracket</b>
+, <b>LvalueUnaryOperator</b>
+, <b>RvalueUnaryOperator</b>
+, <br />
+&#160;&#160;<b>StringLiteral</b>
+, <b>EndOfFile</b>
+, <b>Another</b>
+, <b>ExponentialLiteral</b>
+, <br />
+&#160;&#160;<b>PlusOrMinusOperator</b>
+, <b>FloatLiteral</b>
+, <b>CharLiteral</b>
+, <b>LessThan</b>
+, <br />
+&#160;&#160;<b>GreaterThan</b>
+, <b>Colon</b>
+, <b>DoubleColon</b>
+, <b>Ampersand</b>
+, <br />
+&#160;&#160;<b>NamespaceIdentifier</b>
+<br />
+ }</td></tr>
+<tr class="memdesc:acf70e9411196c602738c3ed2428c7137"><td class="mdescLeft">&#160;</td><td class="mdescRight">Набор возможных типов лексемы <br /></td></tr>
+<tr class="separator:acf70e9411196c602738c3ed2428c7137"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
+Открытые члены</h2></td></tr>
+<tr class="memitem:ab084072a27f63d227111615e7fc88355" id="r_ab084072a27f63d227111615e7fc88355"><td class="memItemLeft" align="right" valign="top"><a id="ab084072a27f63d227111615e7fc88355" name="ab084072a27f63d227111615e7fc88355"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>Token</b> (const <a class="el" href="../../db/dc1/class_token.html">Token</a> &amp;other)=default</td></tr>
+<tr class="separator:ab084072a27f63d227111615e7fc88355"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72b262b4a9a7c71b5129606ec71c700d" id="r_a72b262b4a9a7c71b5129606ec71c700d"><td class="memItemLeft" align="right" valign="top"><a id="a72b262b4a9a7c71b5129606ec71c700d" name="a72b262b4a9a7c71b5129606ec71c700d"></a>
+const char *&#160;</td><td class="memItemRight" valign="bottom"><b>what</b> () const noexcept override</td></tr>
+<tr class="separator:a72b262b4a9a7c71b5129606ec71c700d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05a212b1033d9ff1b0e7dbe1c564f13e" id="r_a05a212b1033d9ff1b0e7dbe1c564f13e"><td class="memItemLeft" align="right" valign="top"><a id="a05a212b1033d9ff1b0e7dbe1c564f13e" name="a05a212b1033d9ff1b0e7dbe1c564f13e"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setLine</b> (size_t line)</td></tr>
+<tr class="separator:a05a212b1033d9ff1b0e7dbe1c564f13e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a18fb3ca16220eef7f0f7c1cdfaea5abe" id="r_a18fb3ca16220eef7f0f7c1cdfaea5abe"><td class="memItemLeft" align="right" valign="top"><a id="a18fb3ca16220eef7f0f7c1cdfaea5abe" name="a18fb3ca16220eef7f0f7c1cdfaea5abe"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setColumn</b> (size_t column)</td></tr>
+<tr class="separator:a18fb3ca16220eef7f0f7c1cdfaea5abe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcf75fdc8d2a0d808497d42993dd49c3" id="r_afcf75fdc8d2a0d808497d42993dd49c3"><td class="memItemLeft" align="right" valign="top"><a id="afcf75fdc8d2a0d808497d42993dd49c3" name="afcf75fdc8d2a0d808497d42993dd49c3"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setType</b> (<a class="el" href="#acf70e9411196c602738c3ed2428c7137">Type</a> type)</td></tr>
+<tr class="separator:afcf75fdc8d2a0d808497d42993dd49c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81a7fd27facbd81424d32938fe879d46" id="r_a81a7fd27facbd81424d32938fe879d46"><td class="memItemLeft" align="right" valign="top"><a id="a81a7fd27facbd81424d32938fe879d46" name="a81a7fd27facbd81424d32938fe879d46"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>setContent</b> (const std::string &amp;content)</td></tr>
+<tr class="separator:a81a7fd27facbd81424d32938fe879d46"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab21cf00d2d6c4852070c5a40d0b00af6" id="r_ab21cf00d2d6c4852070c5a40d0b00af6"><td class="memItemLeft" align="right" valign="top"><a id="ab21cf00d2d6c4852070c5a40d0b00af6" name="ab21cf00d2d6c4852070c5a40d0b00af6"></a>
+const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>getContent</b> () const</td></tr>
+<tr class="separator:ab21cf00d2d6c4852070c5a40d0b00af6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8939df822cc76c29924f937295bf6d97" id="r_a8939df822cc76c29924f937295bf6d97"><td class="memItemLeft" align="right" valign="top"><a id="a8939df822cc76c29924f937295bf6d97" name="a8939df822cc76c29924f937295bf6d97"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>getLine</b> () const</td></tr>
+<tr class="separator:a8939df822cc76c29924f937295bf6d97"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a79f99008af51138abde224865b5a3ab7" id="r_a79f99008af51138abde224865b5a3ab7"><td class="memItemLeft" align="right" valign="top"><a id="a79f99008af51138abde224865b5a3ab7" name="a79f99008af51138abde224865b5a3ab7"></a>
+size_t&#160;</td><td class="memItemRight" valign="bottom"><b>getColumn</b> () const</td></tr>
+<tr class="separator:a79f99008af51138abde224865b5a3ab7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a129b1a1e572126addfb491233a01b76b" id="r_a129b1a1e572126addfb491233a01b76b"><td class="memItemLeft" align="right" valign="top"><a id="a129b1a1e572126addfb491233a01b76b" name="a129b1a1e572126addfb491233a01b76b"></a>
+<a class="el" href="#acf70e9411196c602738c3ed2428c7137">Type</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getType</b> () const</td></tr>
+<tr class="separator:a129b1a1e572126addfb491233a01b76b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="friends" name="friends"></a>
+Друзья</h2></td></tr>
+<tr class="memitem:a0c4d76a759de7ff76f694d911b39d092" id="r_a0c4d76a759de7ff76f694d911b39d092"><td class="memItemLeft" align="right" valign="top"><a id="a0c4d76a759de7ff76f694d911b39d092" name="a0c4d76a759de7ff76f694d911b39d092"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><b>operator==</b> (const <a class="el" href="../../db/dc1/class_token.html">Token</a> &amp;lhs, const <a class="el" href="../../db/dc1/class_token.html">Token</a> &amp;rhs)</td></tr>
+<tr class="separator:a0c4d76a759de7ff76f694d911b39d092"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
+<a name="details" id="details"></a><h2 class="groupheader">Подробное описание</h2>
+<div class="textblock"><p>Класс лексемы </p>
+<dl class="section author"><dt>Автор</dt><dd>Katarni </dd></dl>
+<dl class="section warning"><dt>Предупреждения</dt><dd>Наследован от std::exception</dd></dl>
+<p>Используется для хранения лексемы, ее типа и местарасполажения. Наследован от std::exception. </p>
+</div><hr/>Объявления и описания членов классов находятся в файлах:<ul>
+<li>/Users/timurahmetzanov/Projects/Yuhan/include/<a class="el" href="../../dd/dcd/_token_8h_source.html">Token.h</a></li>
+<li>/Users/timurahmetzanov/Projects/Yuhan/source/<b>Token.cpp</b></li>
+</ul>
+</div><!-- contents -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+</small></address>
+</body>
+</html>

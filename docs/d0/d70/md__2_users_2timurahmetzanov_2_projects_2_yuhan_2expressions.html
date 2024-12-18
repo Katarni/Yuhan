@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.10.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Yuhan: Грамматика выражений</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<script type="text/javascript" src="../../clipboard.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Yuhan<span id="projectnumber">&#160;1.0.0</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.10.0 -->
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('../../',false,false,'search.php','Поиск');
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div><div class="header">
+  <div class="headertitle"><div class="title">Грамматика выражений</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p><a class="anchor" id="autotoc_md0"></a> &lt;exp14&gt; ::= &lt;exp13&gt;{<code>,</code> &lt;exp13&gt;} <br  />
+ &lt;exp13&gt; ::= &lt;exp12&gt;{&lt;op13&gt; &lt;exp12&gt;} <br  />
+ &lt;op13&gt; ::= <code>=</code> | <code>+=</code> | <code>-=</code> | <code>*=</code> | <code>/=</code> | <code>%=</code> | <code>&amp;=</code> | <code>|=</code> | <code>^=</code> | <code>&lt;&lt;=</code> | <code>&gt;&gt;=</code> <br  />
+ &lt;exp12&gt; ::= &lt;exp11&gt;{<code>or</code> &lt;exp11&gt;} <br  />
+ &lt;exp11&gt; ::= &lt;exp10&gt;{<code>and</code> &lt;exp10&gt;} <br  />
+ &lt;exp10&gt; ::= &lt;exp9&gt;{<code>|</code> &lt;exp9&gt;} <br  />
+ &lt;exp9&gt; ::= &lt;exp8&gt;{<code>^</code> &lt;exp8&gt;} <br  />
+ &lt;exp8&gt; ::= &lt;exp7&gt;{<code>&amp;</code> &lt;exp7&gt;} <br  />
+ &lt;exp7&gt; ::= &lt;exp6&gt;{&lt;op7&gt; &lt;exp6&gt;} <br  />
+ &lt;op7&gt; ::= <code>==</code> | <code>!=</code> <br  />
+ &lt;exp6&gt; ::= &lt;exp5&gt;{&lt;op6&gt; &lt;exp5&gt;} <br  />
+ &lt;op6&gt; ::= <code>&gt;</code> | <code>&lt;</code> | <code>&lt;=</code> | <code>&gt;=</code> <br  />
+ &lt;exp5&gt; ::= &lt;exp4&gt;{&lt;op5&gt; &lt;exp4&gt;} <br  />
+ &lt;op5&gt; ::= <code>&gt;&gt;</code> | <code>&lt;&lt;</code> <br  />
+ &lt;exp4&gt; ::= &lt;exp3&gt;{&lt;op4&gt; &lt;exp3&gt;} <br  />
+ &lt;op4&gt; ::= <code>+</code> | <code>-</code> <br  />
+ &lt;exp3&gt; ::= &lt;exp2&gt;{&lt;op3&gt; &lt;exp2&gt;} <br  />
+ &lt;op3&gt; ::= <code>*</code> | <code>/</code> | <code>%</code> <br  />
+ &lt;exp2&gt; ::= {&lt;op2&gt;} &lt;exp1&gt; <br  />
+ &lt;op2&gt; ::= <code>++</code> | <code>--</code> | <code>!</code> | <code>+</code> | <code>-</code> <br  />
+ &lt;vars&gt; ::= &lt;exp13&gt; {<code>,</code> &lt;exp13&gt;} <br  />
+ &lt;exp1&gt; ::= &lt;literal&gt; | <code>(</code> &lt;exp14&gt;<code>)</code> &lt;B&gt; | (&lt;identifier&gt; | &lt;namespaceIdentifier&gt;) [<code>(</code>[&lt;vars&gt;] <code>)</code>] &lt;B&gt; <br  />
+ &lt;B&gt; ::= {<code>[</code> &lt;exp14&gt;<code>]</code> | <code>.</code> &lt;identifier&gt;} <br  />
+ </p>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+</small></address>
+</body>
+</html>

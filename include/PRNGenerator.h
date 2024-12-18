@@ -9,6 +9,12 @@
 #include "ReservedMemory.h"
 
 
+/*!
+    \brief Генератор ПОЛИЗа
+    \author Katarni
+
+    Генератор ПОЛИЗа с помощью синтаксически управляемого перевода
+*/
 class PRNGenerator {
  public:
     PRNGenerator() : cur_(0) {}

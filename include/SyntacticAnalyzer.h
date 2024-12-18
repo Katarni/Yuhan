@@ -5,11 +5,17 @@
 #include "SemanticStack.h"
 
 
+/*!
+    \brief Синтаксический анализатор
+    \author Алена Иванова
+
+    Реализация синтаксического и семантического алализаторов
+*/
 class SyntacticAnalyzer {
 public:
     SyntacticAnalyzer(LexicalAnalyzer* lexer, PRNGenerator* generator);
 
-    void startAnalysis();
+    void startAnalysis(); ///< Старт анализа
 
 private:
     LexicalAnalyzer *lexer_;

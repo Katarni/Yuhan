@@ -6,4 +6,4 @@
 
 ## Language grammar
 expression and language grammar in [docs](docs/)  
-operation priority is [here](docs/operation-priority.md)
+operation priority is [here](operation-priority.md)

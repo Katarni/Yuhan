@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ru">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=11"/>
+<meta name="generator" content="Doxygen 1.10.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Yuhan: grammar</title>
+<link href="../../tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="../../jquery.js"></script>
+<script type="text/javascript" src="../../dynsections.js"></script>
+<script type="text/javascript" src="../../clipboard.js"></script>
+<link href="../../doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr id="projectrow">
+  <td id="projectalign">
+   <div id="projectname">Yuhan<span id="projectnumber">&#160;1.0.0</span>
+   </div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- Создано системой Doxygen 1.10.0 -->
+<script type="text/javascript" src="../../menudata.js"></script>
+<script type="text/javascript" src="../../menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:d3d9a9a6595521f9666a5e94cc830dab83b65699&amp;dn=expat.txt MIT */
+$(function() {
+  initMenu('../../',false,false,'search.php','Поиск');
+});
+/* @license-end */
+</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div><div class="header">
+  <div class="headertitle"><div class="title">grammar</div></div>
+</div><!--header-->
+<div class="contents">
+<div class="textblock"><p>&lt;program&gt; ::= &lt;includes&gt; {&lt;programBody&gt;} &lt;endOfFile&gt; <br  />
+ &lt;includes&gt; ::= {<code>#include</code> &lt;literalString&gt;} <br  />
+ &lt;namespace&gt; ::= <code>namespace</code> &lt;identifier&gt; <code>{</code> {&lt;programBody&gt;}<code>}</code> <br  />
+ &lt;structBody&gt; ::= &lt;varDefinition&gt; | &lt;struct&gt; <br  />
+ &lt;programBody&gt; ::= &lt;namespace&gt; | &lt;function&gt; | &lt;structBody&gt; <br  />
+ &lt;struct&gt; ::= <code>struct</code> &lt;identifier&gt; <code>{</code> {&lt;structBody&gt;} <code>}</code> <code>;</code> <br  />
+ &lt;type&gt; ::= [<code>typename</code>] <code>int</code> | [<code>typename</code>] <code>float</code> | [<code>typename</code>] <code>bool</code> | [<code>typename</code>] <code>char</code> | [<code>typename</code>] <code>string</code> | [<code>typename</code>] <code>array</code> <code>&lt;</code> &lt;type&gt;<code>,</code> &lt;literalInt&gt; <code>&gt;</code> | <code>typename</code> (&lt;identifier&gt; | &lt;namespaceIdentifier&gt;) <br  />
+ &lt;varDefinition&gt; ::= &lt;type&gt; &lt;var&gt; {<code>,</code> &lt;var&gt;}<code>;</code> <br  />
+ &lt;var&gt; ::= &lt;identifier&gt; | &lt;identifier&gt; <code>=</code> &lt;exp12&gt; <br  />
+ &lt;funcVarDefinition&gt; ::= &lt;type&gt;[<code>&amp;</code>] &lt;identifier&gt; {<code>,</code> &lt;type&gt;[<code>&amp;</code>] &lt;identifier&gt;} <br  />
+ &lt;function&gt; ::= <code>func</code> &lt;type&gt; &lt;identifier&gt; <code>(</code> [&lt;funcVarDefinition&gt;] <code>)</code> &lt;block&gt; <br  />
+ &lt;block&gt; ::= <code>{</code>{&lt;statement&gt;}<code>}</code> <br  />
+ &lt;statement&gt; ::= &lt;if&gt; | &lt;while&gt; | &lt;for&gt; | &lt;switch&gt; | <code>break</code> <code>;</code> | <code>continue</code> <code>;</code> | &lt;varDefenition&gt; | &lt;return&gt; | &lt;block&gt; | <code>;</code> | &lt;exp14&gt; <br  />
+ &lt;if&gt; ::= <code>if</code> <code>(</code> &lt;exp14&gt; <code>)</code> &lt;statement&gt; [<code>else</code> &lt;statement&gt;] <br  />
+ &lt;while&gt; ::= <code>while</code> <code>(</code> &lt;exp14&gt; <code>)</code> &lt;statement&gt; <br  />
+ &lt;for&gt; ::= <code>for</code> <code>(</code> [(&lt;exp14&gt; | &lt;varDefinition&gt;)] <code>;</code> [&lt;exp14&gt;] <code>;</code> [&lt;exp14&gt;] <code>)</code> &lt;statement&gt; <br  />
+ &lt;switchItem&gt; ::= <code>case</code> &lt;literal&gt; &lt;block&gt; <br  />
+ &lt;switch&gt; ::= <code>switch</code> <code>(</code> &lt;exp14&gt; <code>)</code> <code>{</code> {&lt;switchItem&gt;} [<code>default</code> &lt;block&gt;] <code>}</code> <br  />
+ &lt;return&gt; ::= <code>return</code> [&lt;exp14&gt;] <code>;</code> <br  />
+ &lt;literal&gt; ::= &lt;literalInt&gt; | &lt;literalFloat&gt; | &lt;literalExponential&gt; | &lt;literalChar&gt; | &lt;literalBool&gt; | &lt;literalString&gt; <br  />
+ </p>
+</div></div><!-- contents -->
+</div><!-- PageDoc -->
+<!-- start footer part -->
+<hr class="footer"/><address class="footer"><small>
+Создано системой&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="../../doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.10.0
+</small></address>
+</body>
+</html>

@@ -2,11 +2,18 @@
 
 #include "Trie.h"
 
-
+/// Набор возможных типов области видимости
 enum class TypeScope {
     Namespace, Struct, Function, Loop, Switch, SwitchItem, Other
 };
 
+
+/*!
+    \brief Дерево областей видимости
+    \author Алена Иванова
+
+    Дерево областей видимости. Используется при семантическом анализе кода.
+*/
 class TIDTree {
 public:
     TIDTree();
@@ -43,6 +50,13 @@ public:
     std::vector<std::pair<std::string, Type>> getStructsFields(const std::string& name);
 
 private:
+    /*!
+        \brief Область видимости
+        \author Алена Иванова
+
+        Область видимости в коде. Нода дерева областей вилимости.
+        Содержит боры для переменных, структур и функций, объявленных в данной области видимости
+    */
     class NodeTID {
     public:
         NodeTID(TypeScope type, std::string& namespace_, NodeTID *parent);

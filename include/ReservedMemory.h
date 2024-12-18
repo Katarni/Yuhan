@@ -4,9 +4,23 @@
 
 #pragma once
 
+/*!
+    \file
+    \brief Описание класснов, хранящих данные
+    \authors Алена Иванова, Katarni
+
+    Классы, описывающие типы данных, литерары, идентификаторы и занимаемую память
+*/
+
 #include "Token.h"
 
 
+/*!
+    \brief Тип данных
+    \author Алена Иванова
+
+    Используется для хранения типа у литерала и переменной
+*/
 class Type {
  public:
     Type();
@@ -19,14 +33,14 @@ class Type {
 
     Type& operator=(const Type &other);
 
-    bool operator==(const Type& other) const;
+    bool operator==(const Type& other) const; ///< Поэлементное сравнение на равенство
     bool operator!=(const Type& other) const;
 
     [[nodiscard]]
-    bool compareNoLvalue(const Type& other) const;
+    bool compareNoLvalue(const Type& other) const; ///< Сравнение типов без учета lvalue/rvalue
 
     [[nodiscard]]
-    bool compareWithCast(const Type &other) const;
+    bool compareWithCast(const Type &other) const; ///< Сравнение типов с учетов неявных преобразований
 
     [[nodiscard]]
     bool isLvalue() const;
@@ -52,10 +66,17 @@ class Type {
     size_t size_array_;
     Type* array_type_;
     bool is_lvalue_;
-    std::map<std::string, Type*> fields_;
+    std::map<std::string, Type*> fields_; ///< Если тип пользовательский (создан с помощью struct, хранит типы ее полей
 };
 
 
+/*!
+    \brief Класс переменной (идентификатора)
+    \author Katarni
+    \warning Не хранит значение переменной
+
+    Хранит имя переменной и ее тип (тип всегда lvalue)
+*/
 class Identifier {
  public:
     Identifier() = default;
@@ -79,6 +100,13 @@ class Identifier {
 };
 
 
+/*!
+    \brief Класс литерала
+    \author Katarni
+
+    Хранит тип и значение литерала.
+    Определение всех операций над литералами
+*/
 class Literal {
  public:
     Literal() = default;
@@ -129,6 +157,14 @@ class Literal {
 };
 
 
+/*!
+    \brief Занятая память
+    \author Katarni
+    \warning непосредственно может хранить только массивы и структуры. Если используется базовый тип,
+            то хранится в инстансе родителя.
+
+    Хранит данные, наследник Literal. Операции (большинство) исполняются в родительском классе (полиморфизм)
+*/
 class ReservedMemory : public Literal {
  public:
     ReservedMemory() = default;
